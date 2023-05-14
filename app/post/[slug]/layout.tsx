@@ -8,13 +8,24 @@ export async function generateStaticParams() {
 export function generateMetadata({ params }: { params: { slug: string } }) {
   const post = allPosts.find((c) => c.url === `/post/${params.slug}`);
   return {
-    title: "craft.mxkaske.dev",
-    description: "My personal craft corner",
+    title: post?.title,
+    description: post?.description,
+    twitter: {
+      images: [
+        `${process.env.VERCEL_URL}/api/og?title=${post?.title}&description=${post?.description}`,
+      ],
+      card: "summary_large_image",
+      title: post?.title,
+      description: post?.description,
+    },
     openGraph: {
       type: "website",
       images: [
         `${process.env.VERCEL_URL}/api/og?title=${post?.title}&description=${post?.description}`,
       ],
+      title: post?.title,
+      description: post?.description,
+      url: `http://craft.mxkaske.dev/posts/${post?.slug}`,
     },
   };
 }

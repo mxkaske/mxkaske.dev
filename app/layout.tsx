@@ -14,9 +14,18 @@ const calSans = LocalFont({
 export const metadata: Metadata = {
   title: "craft.mxkaske.dev",
   description: "Never stop crafting.",
+  twitter: {
+    images: [`${process.env.VERCEL_URL}/api/og`],
+    card: "summary_large_image",
+    title: "craft.mxkaske.dev",
+    description: "Never stop crafting.",
+  },
   openGraph: {
     type: "website",
     images: [`${process.env.VERCEL_URL}/api/og`],
+    title: "craft.mxkaske.dev",
+    description: "Never stop crafting.",
+    url: "http://craft.mxkaske.dev", // FIXME: make it non-static
   },
 };
 
