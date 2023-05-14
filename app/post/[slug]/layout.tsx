@@ -11,21 +11,18 @@ export function generateMetadata({ params }: { params: { slug: string } }) {
     title: post?.title,
     description: post?.description,
     twitter: {
-      images: [
-        `${process.env.VERCEL_URL}/api/og?title=${post?.title}&description=${post?.description}`,
-      ],
+      images: [`/api/og?title=${post?.title}&description=${post?.description}`],
       card: "summary_large_image",
       title: post?.title,
       description: post?.description,
     },
     openGraph: {
       type: "website",
-      images: [
-        `${process.env.VERCEL_URL}/api/og?title=${post?.title}&description=${post?.description}`,
-      ],
+      images: [`/api/og?title=${post?.title}&description=${post?.description}`],
       title: post?.title,
       description: post?.description,
       url: `http://craft.mxkaske.dev/posts/${post?.slug}`,
+      // Could alsop include `publishTime` and `author` - see https://nextjs.org/docs/app/api-reference/functions/generate-metadata#opengraph
     },
   };
 }
