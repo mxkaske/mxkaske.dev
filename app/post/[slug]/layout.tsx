@@ -18,13 +18,10 @@ export function generateMetadata({ params }: { params: { slug: string } }) {
       title: post?.title,
       description: post?.description,
       url: `/posts/${post?.slug}`,
-      // Could alsop include `publishTime` and `author` - see https://nextjs.org/docs/app/api-reference/functions/generate-metadata#opengraph
+      // Could also include `publishTime` and `author` - see https://nextjs.org/docs/app/api-reference/functions/generate-metadata#opengraph
     },
-    viewport: {
-      width: "device-width",
-      initialScale: 1,
-      maximumScale: 1,
-    },
+    // https://css-tricks.com/16px-or-larger-text-prevents-ios-form-zoom/
+    // disabling viewport zoom is a bad practice
   };
 }
 
