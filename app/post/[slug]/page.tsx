@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import { Content } from "./content";
 import { Github } from "lucide-react";
 import { Link } from "@/components/mdx/link";
+import { Redis } from "@upstash/redis";
+
+const redis = Redis.fromEnv();
 
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat("en-US", {
@@ -11,11 +14,23 @@ function formatDate(date: Date) {
   }).format(date);
 }
 
-export default function CraftPage({ params }: { params: { slug: string } }) {
+function formatNumber(value: number) {
+  return new Intl.NumberFormat("en-US").format(value);
+}
+
+export default async function CraftPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const post = allPosts.find((c) => c.url === `/post/${params.slug}`);
   if (!post) {
     notFound();
   }
+
+  const views =
+    (await redis.get<number>(["pageviews", "posts", post.slug].join(":"))) ?? 0;
+
   return (
     <article className="max-w-prose mx-auto">
       <div className="flex justify-between items-end">
@@ -37,8 +52,15 @@ export default function CraftPage({ params }: { params: { slug: string } }) {
         </a>
       </div>
       <Content post={post} />
-      <div className="mt-8">
-        <Link href="/">Back</Link>
+      <div className="mt-8 flex justify-between items-center">
+        <div>
+          <Link href="/">Back</Link>
+        </div>
+        <div>
+          <p className="text-muted-foreground font-mono text-sm tracking-tighter">
+            {formatNumber(views)} views
+          </p>
+        </div>
       </div>
     </article>
   );
