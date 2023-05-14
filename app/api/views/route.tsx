@@ -6,10 +6,21 @@ const redis = Redis.fromEnv();
 export const runtime = "edge";
 
 export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const hasSlug = searchParams.has("slug");
+  const slug = hasSlug ? searchParams.get("slug") : undefined;
+
+  const views =
+    (await redis.get<number>(["pageviews", "posts", slug].join(":"))) ?? 0;
+
+  return new NextResponse(views.toString(), { status: 200 });
+}
+
+export async function POST(request: NextRequest) {
   const ip = request.ip;
   const searchParams = request.nextUrl.searchParams;
   const hasSlug = searchParams.has("slug");
-  const slug = hasSlug ? searchParams.get("slug") : null;
+  const slug = hasSlug ? searchParams.get("slug") : undefined;
 
   if (ip) {
     const buf = await crypto.subtle.digest(
@@ -29,6 +40,10 @@ export async function GET(request: NextRequest) {
     if (!isNew) {
       new NextResponse("Already Increased Counter", { status: 200 });
     }
+  }
+
+  if (!slug) {
+    new NextResponse("Slug Not Found", { status: 404 });
   }
 
   await redis.incr(["pageviews", "posts", slug].join(":"));

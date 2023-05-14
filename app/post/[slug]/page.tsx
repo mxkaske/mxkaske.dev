@@ -3,9 +3,11 @@ import { notFound } from "next/navigation";
 import { Content } from "./content";
 import { Github } from "lucide-react";
 import { Link } from "@/components/mdx/link";
-import { Redis } from "@upstash/redis";
 
-const redis = Redis.fromEnv();
+const URL =
+  process.env.VERCEL_ENV === "production"
+    ? `https://craft.mxkaske/dev`
+    : process.env.NEXT_PUBLIC_VERCEL_URL;
 
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat("en-US", {
@@ -28,8 +30,10 @@ export default async function CraftPage({
     notFound();
   }
 
-  const views =
-    (await redis.get<number>(["pageviews", "posts", post.slug].join(":"))) ?? 0;
+  const res = await fetch(`${URL}/api/views?slug=${post.slug}`, {
+    next: { revalidate: 10 },
+  });
+  const views = Number(await res.json());
 
   return (
     <article className="max-w-prose mx-auto">

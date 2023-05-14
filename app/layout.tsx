@@ -14,6 +14,7 @@ const calSans = LocalFont({
 export const metadata: Metadata = {
   title: "craft.mxkaske.dev",
   description: "Never stop crafting.",
+  metadataBase: new URL("https://craft.mxkaske.dev"),
   twitter: {
     images: [`/api/og`],
     card: "summary_large_image",
@@ -25,7 +26,6 @@ export const metadata: Metadata = {
     images: [`/api/og`],
     title: "craft.mxkaske.dev",
     description: "Never stop crafting.",
-    url: "http://craft.mxkaske.dev", // FIXME: make it non-static
   },
 };
 

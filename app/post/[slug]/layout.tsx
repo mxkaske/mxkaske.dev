@@ -1,10 +1,6 @@
 import React from "react";
 import { allPosts } from "@/.contentlayer/generated";
 
-export async function generateStaticParams() {
-  return allPosts.map((c) => ({ slug: c.url }));
-}
-
 export function generateMetadata({ params }: { params: { slug: string } }) {
   const post = allPosts.find((c) => c.url === `/post/${params.slug}`);
   return {
@@ -21,7 +17,7 @@ export function generateMetadata({ params }: { params: { slug: string } }) {
       images: [`/api/og?title=${post?.title}&description=${post?.description}`],
       title: post?.title,
       description: post?.description,
-      url: `http://craft.mxkaske.dev/posts/${post?.slug}`,
+      url: `/posts/${post?.slug}`,
       // Could alsop include `publishTime` and `author` - see https://nextjs.org/docs/app/api-reference/functions/generate-metadata#opengraph
     },
   };

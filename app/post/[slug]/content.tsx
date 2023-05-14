@@ -9,7 +9,7 @@ export function Content({ post }: { post: Post }) {
   const MDXContent = useMDXComponent(post.body.code);
 
   React.useEffect(() => {
-    fetch(`/api/incr?slug=${post.slug}`);
+    fetch(`/api/views?slug=${post.slug}`, { method: "POST" });
   }, [post.slug]);
 
   return (
