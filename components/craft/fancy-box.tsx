@@ -131,9 +131,14 @@ export function FancyBox() {
     );
   };
 
+  const onComboboxOpenChange = (value: boolean) => {
+    inputRef.current?.blur(); // HACK: otherwise, would scroll automatically to the bottom of page
+    setOpenCombobox(value);
+  };
+
   return (
     <div className="max-w-[200px]">
-      <Popover open={openCombobox} onOpenChange={setOpenCombobox}>
+      <Popover open={openCombobox} onOpenChange={onComboboxOpenChange}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
