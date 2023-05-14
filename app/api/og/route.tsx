@@ -40,7 +40,7 @@ export async function GET(request: Request) {
             <div tw="flex flex-col">
               <div
                 style={{ fontFamily: "cal", fontWeight: 600 }} // FIXME: seems not to work
-                tw="flex text-6xl tracking-tight"
+                tw="flex text-6xl tracking-tight mb-4"
               >
                 {title ?? "craft.mxkaske.dev"}
               </div>
