@@ -20,6 +20,11 @@ export function generateMetadata({ params }: { params: { slug: string } }) {
       url: `/posts/${post?.slug}`,
       // Could alsop include `publishTime` and `author` - see https://nextjs.org/docs/app/api-reference/functions/generate-metadata#opengraph
     },
+    viewport: {
+      width: "device-width",
+      initialScale: 1,
+      maximumScale: 1,
+    },
   };
 }
 
