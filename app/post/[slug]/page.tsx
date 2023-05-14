@@ -32,15 +32,10 @@ export default async function CraftPage({
     notFound();
   }
 
-  const res = await fetch(`${URL}/api/views?slug=${post.slug}`, {
-    next: { revalidate: 10 },
-  });
-
-  console.log(res);
-
+  // const res = await fetch(`${URL}/api/views?slug=${post.slug}`, {
+  //   next: { revalidate: 10 },
+  // });
   // const views = await res.json();
-
-  // console.log(views);
 
   return (
     <article className="max-w-prose mx-auto">
