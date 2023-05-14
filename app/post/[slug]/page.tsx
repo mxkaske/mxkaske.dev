@@ -35,7 +35,12 @@ export default async function CraftPage({
   const res = await fetch(`${URL}/api/views?slug=${post.slug}`, {
     next: { revalidate: 10 },
   });
-  const views = Number(await res.json());
+
+  console.log(res);
+
+  // const views = await res.json();
+
+  // console.log(views);
 
   return (
     <article className="max-w-prose mx-auto">
@@ -63,9 +68,9 @@ export default async function CraftPage({
           <Link href="/">Back</Link>
         </div>
         <div>
-          <p className="text-muted-foreground font-mono text-sm tracking-tighter">
+          {/* <p className="text-muted-foreground font-mono text-sm tracking-tighter">
             {formatNumber(views)} views
-          </p>
+          </p> */}
         </div>
       </div>
     </article>
