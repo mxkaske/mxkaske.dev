@@ -21,7 +21,8 @@ export default function Home() {
                 key={post.slug}
                 className="border border-border rounded-md max-w-sm group/card"
               >
-                <div className="w-full h-32 flex items-center justify-center overflow-hidden">
+                {/* group-hover/card:backdrop-blur-[2px] backdrop-blur-sm */}
+                <div className="w-full h-32 rounded-t-md flex items-center justify-center overflow-hidden">
                   <Component />
                 </div>
                 <Link href={post.url}>
@@ -49,7 +50,7 @@ export default function Home() {
             <Twitter className="h-5 w-5" />
           </a>
           <a
-            href="https://github.com/mxkaske/mxkaske.com"
+            href="https://github.com/mxkaske/mxkaske.dev"
             target="_blank"
             rel="noreferrer"
             className="p-2 text-foreground bg-background rounded-md hover:bg-muted"

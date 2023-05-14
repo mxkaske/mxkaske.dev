@@ -1,5 +1,6 @@
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import "@/styles/globals.css";
+import { Metadata } from "next";
 import { Inter } from "next/font/google";
 import LocalFont from "next/font/local";
 
@@ -10,9 +11,13 @@ const calSans = LocalFont({
   variable: "--font-calsans",
 });
 
-export const metadata = {
-  title: "craft.mxkaske.com",
-  description: "My personal craft corner",
+export const metadata: Metadata = {
+  title: "craft.mxkaske.dev",
+  description: "Never stop crafting.",
+  openGraph: {
+    type: "website",
+    images: [`${process.env.VERCEL_URL}/api/og`],
+  },
 };
 
 export default function RootLayout({

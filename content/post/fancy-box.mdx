@@ -1,9 +1,9 @@
 ---
 date: 2023-05-10
 title: Fancy Box
-githubUrl: https://github.com/mxkaske/mxkaske.com/tree/main/components/craft/fancy-box.tsx
+githubUrl: https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/fancy-box.tsx
 component: FancyBox
-description: A Combobox to create, edit and delete labels.
+description: Multi-select combobox with label creation and editing options.
 ---
 
 <CraftWrapper>
@@ -26,11 +26,17 @@ It uses the following components:
 The **only** change to the core files was adding a smaller `Button` size:
 
 ```js
-size: {
-  default: "h-10 py-2 px-4",
-  xs: "h-8 px-2 rounded-md", // added
-  // ...
-},
+// Button.tsx
+const buttonVariants = cva(
+  variants: {
+    size: {
+      xs: "h-8 px-2 rounded-md", // added
+      // ...
+    }
+    // ..
+  }
+  // ..
+)
 ```
 
-The source code is available on [GitHub](https://github.com/mxkaske/mxkaske.com/tree/main/components/craft/fancy-box.tsx).
+The source code is available on [GitHub](https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/fancy-box.tsx).
