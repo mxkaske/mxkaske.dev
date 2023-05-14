@@ -46,7 +46,6 @@ import {
 import { DialogClose } from "@radix-ui/react-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useCommandState } from "cmdk";
 
 type Framework = Record<"value" | "label" | "color", string>;
 
@@ -99,8 +98,8 @@ export function FancyBox() {
 
   const createFramework = (name: string) => {
     const newFramework = {
-      label: name,
       value: name.toLowerCase(),
+      label: name,
       color: "#ffffff",
     };
     setFrameworks((prev) => [...prev, newFramework]);
@@ -113,28 +112,15 @@ export function FancyBox() {
         ? [...currentFrameworks, framework]
         : currentFrameworks.filter((l) => l.value !== framework.value)
     );
-    // REMINDER: Used because if interaction was "onclick", it wouldn't focus input anymore and therefore scroll behaviour would be odd.
     inputRef?.current?.focus();
   };
 
   const updateFramework = (framework: Framework, newFramework: Framework) => {
     setFrameworks((prev) =>
-      prev.map((f) => {
-        if (f.value === framework.value) {
-          return newFramework;
-        } else {
-          return f;
-        }
-      })
+      prev.map((f) => (f.value === framework.value ? newFramework : f))
     );
     setSelectedValues((prev) =>
-      prev.map((f) => {
-        if (f.value === framework.value) {
-          return newFramework;
-        } else {
-          return f;
-        }
-      })
+      prev.map((f) => (f.value === framework.value ? newFramework : f))
     );
   };
 
@@ -204,9 +190,8 @@ export function FancyBox() {
             </CommandGroup>
             <CommandSeparator alwaysRender />
             <CommandGroup>
-              {/* TODO: check if DialogTrigger is usable */}
               <CommandItem
-                value={`:${inputValue}:`}
+                value={`:${inputValue}:`} // HACK: that way, the edit button will always be shown
                 className="text-xs text-muted-foreground"
                 onSelect={() => setOpenDialog(true)}
               >
@@ -289,39 +274,24 @@ const CommandItemCreate = ({
   frameworks: Framework[];
   onSelect: () => void;
 }) => {
-  const isFirstRender = React.useRef(true);
-  const value = useCommandState((state) => state.value);
+  const hasNoFramework = !frameworks
+    .map(({ value }) => value)
+    .includes(`${inputValue.toLowerCase()}`);
 
-  const inputValueExists = [
-    ...frameworks.map(({ value }) => value),
-    `:${inputValue.toLowerCase()}:`, // "Edit Labels" value
-    // `:${inputValue}:`, // "Edit Labels" value
-  ].includes(inputValue.toLowerCase());
+  const render = inputValue !== "" && hasNoFramework;
 
-  const valueExists = [
-    ...frameworks.map(({ value }) => value),
-    `:${inputValue.toLowerCase()}:`, // "Edit Labels" value
-  ].includes(value);
+  if (!render) return null;
 
-  const render =
-    ((!inputValueExists && valueExists) || !valueExists) && inputValue !== "";
-
-  React.useEffect(() => {
-    isFirstRender.current = false;
-  }, []);
-
-  if (isFirstRender.current || !render) return null;
-
-  // REMINDER: somehow, a "Hello " (space at the end) will not render the <CommandItem /> as expected
+  // BUG: whenever a space is appended, the Create-Button will not be shown.
   return (
     <CommandItem
-      key={`${inputValue.trim()}`}
-      value={`${inputValue.trim()}`}
+      key={`${inputValue}`}
+      value={`${inputValue}`}
       className="text-xs text-muted-foreground"
       onSelect={onSelect}
     >
       <div className={cn("mr-2 h-4 w-4")} />
-      Create new label &quot;{inputValue.trim()}&quot;
+      Create new label &quot;{inputValue}&quot;
     </CommandItem>
   );
 };
@@ -349,86 +319,85 @@ const DialogListItem = ({
   }, [accordionValue]);
 
   return (
-    <React.Fragment key={value}>
-      <Accordion
-        type="single"
-        collapsible
-        value={accordionValue}
-        onValueChange={setAccordionValue}
-      >
-        <AccordionItem value={value}>
-          <div className="flex justify-between items-center">
-            <div>
-              <Badge variant="outline" style={badgeStyle(color)}>
-                {label}
-              </Badge>
-            </div>
-            <div className="flex items-center gap-4">
-              <AccordionTrigger>Edit</AccordionTrigger>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  {/* size="xs" */}
-                  <Button variant="destructive" size="xs">
-                    Delete
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Are you sure sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      You are about to delete the label{" "}
-                      <Badge variant="outline" style={badgeStyle(color)}>
-                        {label}
-                      </Badge>{" "}
-                      .
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={onDelete}>
-                      Delete
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
+    <Accordion
+      key={value}
+      type="single"
+      collapsible
+      value={accordionValue}
+      onValueChange={setAccordionValue}
+    >
+      <AccordionItem value={value}>
+        <div className="flex justify-between items-center">
+          <div>
+            <Badge variant="outline" style={badgeStyle(color)}>
+              {label}
+            </Badge>
           </div>
-          <AccordionContent>
-            <form
-              className="flex items-end gap-4"
-              onSubmit={(e) => {
-                onSubmit(e);
-                setAccordionValue("");
-              }}
-            >
-              <div className="w-full gap-3 grid">
-                <Label htmlFor="name">Label name</Label>
-                <Input
-                  ref={inputRef}
-                  id="name"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  className="h-8"
-                />
-              </div>
-              <div className="gap-3 grid">
-                <Label htmlFor="color">Color</Label>
-                <Input
-                  id="color"
-                  type="color"
-                  value={colorValue}
-                  onChange={(e) => setColorValue(e.target.value)}
-                  className="h-8 px-2 py-1"
-                />
-              </div>
-              {/* size="xs" */}
-              <Button type="submit" disabled={disabled} size="xs">
-                Save
-              </Button>
-            </form>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-    </React.Fragment>
+          <div className="flex items-center gap-4">
+            <AccordionTrigger>Edit</AccordionTrigger>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                {/* REMINDER: size="xs" */}
+                <Button variant="destructive" size="xs">
+                  Delete
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    You are about to delete the label{" "}
+                    <Badge variant="outline" style={badgeStyle(color)}>
+                      {label}
+                    </Badge>{" "}
+                    .
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={onDelete}>
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        </div>
+        <AccordionContent>
+          <form
+            className="flex items-end gap-4"
+            onSubmit={(e) => {
+              onSubmit(e);
+              setAccordionValue("");
+            }}
+          >
+            <div className="w-full gap-3 grid">
+              <Label htmlFor="name">Label name</Label>
+              <Input
+                ref={inputRef}
+                id="name"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                className="h-8"
+              />
+            </div>
+            <div className="gap-3 grid">
+              <Label htmlFor="color">Color</Label>
+              <Input
+                id="color"
+                type="color"
+                value={colorValue}
+                onChange={(e) => setColorValue(e.target.value)}
+                className="h-8 px-2 py-1"
+              />
+            </div>
+            {/* REMINDER: size="xs" */}
+            <Button type="submit" disabled={disabled} size="xs">
+              Save
+            </Button>
+          </form>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 };

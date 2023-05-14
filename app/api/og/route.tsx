@@ -38,12 +38,15 @@ export async function GET(request: Request) {
         <div tw="flex flex-col w-full h-full text-white p-16">
           <div tw="flex-1 flex flex-col items-center justify-center max-w-2xl m-auto">
             <div tw="flex flex-col">
-              <h2 style={{ fontFamily: "cal" }} tw="text-4xl tracking-tight">
-                {title || "craft.mxkaske.dev"}
-              </h2>
-              <p tw="text-2xl" style={{ color: "rgb(127, 142, 163)" }}>
+              <div
+                style={{ fontFamily: "cal", fontWeight: 600 }} // FIXME: seems not to work
+                tw="flex text-6xl tracking-tight"
+              >
+                {title ?? "craft.mxkaske.dev"}
+              </div>
+              <div tw="flex text-4xl" style={{ color: "rgb(127, 142, 163)" }}>
                 {description}
-              </p>
+              </div>
             </div>
           </div>
         </div>
