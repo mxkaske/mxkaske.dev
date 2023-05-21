@@ -132,7 +132,8 @@ export function getCaretCoordinates(
   // The  *only* reliable way to do that is to copy the *entire* rest of the
   // textarea's content into the <span> created at the caret position.
   // For inputs, just '.' would be enough, but no need to bother.
-  span.textContent = element.value.substring(position) || "."; // || because a completely empty faux span doesn't render at all
+  // REMINDER: changed it from "." to empty string ""...
+  span.textContent = element.value.substring(position) || ""; // || because a completely empty faux span doesn't render at all
   div.appendChild(span);
 
   var coordinates = {
