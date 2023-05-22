@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { renderHTML } from "./render-html-from-md";
+import { useProcessor } from "./use-processor";
 // TODO: TabsList has an interesting tab focus. Need to investigate on it
 
 const people = [{ username: "@mxkaske" }, { username: "@shadcn" }];
@@ -24,6 +24,7 @@ const FancyArea = () => {
   const [commandValue, setCommandValue] = useState("");
   const [textValue, setTextValue] = useState("");
   const [currentTab, setCurrentTab] = useState("write"); // possible to use TS here?
+  const Component = useProcessor(textValue);
 
   useEffect(() => {
     if (currentTab === "write") {
@@ -59,10 +60,10 @@ const FancyArea = () => {
       const text = textarea.value;
       const currentWord = getCurrentWord();
       setTextValue(text);
-      console.log(currentWord);
+      // console.log(currentWord);
       if (dropdown) {
         if (currentWord.startsWith("@")) {
-          console.log("current word starts with @");
+          // console.log("current word starts with @");
           setCurrentWord(currentWord);
           dropdown.style.left = caret.left + "px";
           dropdown.style.top = caret.top + caret.height + "px";
@@ -85,16 +86,16 @@ const FancyArea = () => {
         if (e.key === "ArrowUp") {
           e.preventDefault();
           input.dispatchEvent(new KeyboardEvent("keydown", e));
-          console.log("up arrow");
+          // console.log("up arrow");
         } else if (e.key === "ArrowDown") {
           e.preventDefault();
           input.dispatchEvent(new KeyboardEvent("keydown", e));
-          console.log("down arrow");
+          // console.log("down arrow");
         } else if (e.key === "Enter") {
           // TODO: make sure to be possible to enter after selecting a word.
           e.preventDefault();
           input.dispatchEvent(new KeyboardEvent("keydown", e));
-          console.log("enter");
+          // console.log("enter");
         }
       }
     }
@@ -148,14 +149,14 @@ const FancyArea = () => {
       while ((match = wordRegex.exec(text)) !== null) {
         startIndex = match.index;
         endIndex = startIndex + match[0].length;
-        console.log({ caretPos, startIndex, endIndex, match });
+        // console.log({ caretPos, startIndex, endIndex, match });
 
         if (caretPos >= startIndex && caretPos <= endIndex) {
           break;
         }
       }
 
-      console.log(startIndex, endIndex);
+      // console.log(startIndex, endIndex);
 
       // Replace the word with a new word using document.execCommand
       if (startIndex !== undefined && endIndex !== undefined) {
@@ -184,7 +185,10 @@ const FancyArea = () => {
     }
   }
 
-  if (currentTab === "preview") console.log(renderHTML(textValue));
+
+  if (currentTab === "preview") { 
+    // console.log(renderHTML(textValue)) 
+  };
 
   return (
     <Tabs
@@ -205,10 +209,10 @@ const FancyArea = () => {
             className="resize-none h-auto" // REMINDER: font-[sans-serif]
             value={textValue}
             rows={5}
-            // FIXME: if value, than we need onChange.
-            // onChange={(e) => setTextValue(e.target.value)}
+          // FIXME: if value, than we need onChange.
+          // onChange={(e) => setTextValue(e.target.value)}
           />
-          <p className="text-sm text-muted-foreground prose-none">
+          <p className="text-sm text-muted-foreground prose-none mt-1">
             Supports markdown.
           </p>
           <Command
@@ -240,13 +244,13 @@ const FancyArea = () => {
         </div>
       </TabsContent>
       <TabsContent value="preview">
-        <div
+          <div
           // prose (smaller size?)
-          className="w-[350px] h-[118px] overflow-auto px-3 py-2 rounded-md border border-input text-sm"
-          dangerouslySetInnerHTML={{
-            __html: renderHTML(textValue),
-          }}
-        />
+          className="w-[352px] h-[140px] overflow-auto px-3 py-2"
+        >
+          {/* @ts-ignore */}
+          {Component}
+        </div>
       </TabsContent>
     </Tabs>
   );
