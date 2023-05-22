@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 
 const HoverCard = HoverCardPrimitive.Root
 
+// REMINDER: needed for <Mention /> with default container="body"
 const HoverPortal = HoverCardPrimitive.Portal
 
 const HoverCardTrigger = HoverCardPrimitive.Trigger

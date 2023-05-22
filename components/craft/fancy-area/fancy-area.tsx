@@ -10,19 +10,23 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
 import { useProcessor } from "./use-processor";
+import { people } from "./data";
 // TODO: TabsList has an interesting tab focus. Need to investigate on it
 
-const people = [{ username: "@mxkaske" }, { username: "@shadcn" }];
+// TODO: create a default preview text
 
+const defaultText = `Build by @mxkaske, _powered by_ @shadcn **ui**.`
+
+// TODO: rename to TextInput as the folder is already called FancyArea?!?
 const FancyArea = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [currentWord, setCurrentWord] = useState(""); // TODO: check if we can work without it!
   const [commandValue, setCommandValue] = useState("");
-  const [textValue, setTextValue] = useState("");
+  const [textValue, setTextValue] = useState(defaultText);
   const [currentTab, setCurrentTab] = useState("write"); // possible to use TS here?
   const Component = useProcessor(textValue);
 
@@ -54,9 +58,7 @@ const FancyArea = () => {
     const dropdown = dropdownRef.current;
 
     if (textarea) {
-      const caret = getCaretCoordinates(textarea, textarea.selectionEnd, {
-        debug: true,
-      });
+      const caret = getCaretCoordinates(textarea, textarea.selectionEnd);
       const text = textarea.value;
       const currentWord = getCurrentWord();
       setTextValue(text);
@@ -194,6 +196,7 @@ const FancyArea = () => {
     <Tabs
       defaultValue="write"
       className="w-[350px]"
+      // value={currentTab}
       onValueChange={setCurrentTab}
     >
       <TabsList>
@@ -246,7 +249,7 @@ const FancyArea = () => {
       <TabsContent value="preview">
           <div
           // prose (smaller size?)
-          className="w-[352px] h-[140px] overflow-auto px-3 py-2"
+          className="w-[352px] h-[140px] overflow-auto prose dark:prose-invert"
         >
           {/* @ts-ignore */}
           {Component}
