@@ -1,3 +1,4 @@
+import { BGGrid } from "@/components/craft/bg-grid";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import "@/styles/globals.css";
 import { Metadata } from "next";
@@ -38,7 +39,7 @@ export default function RootLayout({
     <html lang="en" style={{ colorScheme: "system" }}>
       <body className={`${inter.className} ${calSans.variable}`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
+          <BGGrid>{children}</BGGrid>
         </ThemeProvider>
       </body>
     </html>

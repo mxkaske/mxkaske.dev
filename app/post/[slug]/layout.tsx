@@ -32,6 +32,10 @@ export default function BaseLayout({
 }) {
   return (
     // if bgblur, add backdrop-blur-[2px]
-    <main className="container py-16 min-h-screen">{children}</main>
+    <main className="mx-auto container max-w-prose py-8 min-h-screen flex">
+      <div className="backdrop-blur-[2px] flex-1 flex flex-col py-8 px-3 -mx-3 rounded-md">
+        {children}
+      </div>
+    </main>
   );
 }

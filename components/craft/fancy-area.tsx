@@ -14,13 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { renderHTML } from "./render-html-from-md";
 // TODO: TabsList has an interesting tab focus. Need to investigate on it
 
-const people = [
-  { username: "@john" },
-  { username: "@jane" },
-  { username: "@alice" },
-  { username: "@bob" },
-  { username: "@maximilian" },
-];
+const people = [{ username: "@mxkaske" }, { username: "@shadcn" }];
 
 const FancyArea = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -214,6 +208,9 @@ const FancyArea = () => {
             // FIXME: if value, than we need onChange.
             // onChange={(e) => setTextValue(e.target.value)}
           />
+          <p className="text-sm text-muted-foreground prose-none">
+            Supports markdown.
+          </p>
           <Command
             ref={dropdownRef}
             value={commandValue}
@@ -244,6 +241,7 @@ const FancyArea = () => {
       </TabsContent>
       <TabsContent value="preview">
         <div
+          // prose (smaller size?)
           className="w-[350px] h-[118px] overflow-auto px-3 py-2 rounded-md border border-input text-sm"
           dangerouslySetInnerHTML={{
             __html: renderHTML(textValue),

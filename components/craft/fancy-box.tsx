@@ -47,6 +47,9 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+// FIXME: https://twitter.com/lemcii/status/1659649371162419202?s=46&t=gqNnMIjMWXiG2Rbrr5gT6g
+// Removing states would help maybe?
+
 type Framework = Record<"value" | "label" | "color", string>;
 
 const FRAMEWORKS = [
