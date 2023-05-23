@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { Textarea } from "@/components/ui/textarea";
-import { getCaretCoordinates, getCaretPosition } from "./caret-utils";
+import { getCaretCoordinates, getCurrentWord, replaceWord } from "./utils";
 import {
   Command,
   CommandGroup,
@@ -21,157 +21,79 @@ export function Write({ textValue, setTextValue }: Props) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [currentWord, setCurrentWord] = useState(""); // TODO: check if we can work without it!
   const [commandValue, setCommandValue] = useState("");
 
-  useEffect(() => {
-    const textarea = textareaRef.current;
-    textarea?.addEventListener("input", handleInput);
-    textarea?.addEventListener("keydown", handleKeyDown);
-    textarea?.addEventListener("blur", handleBlur);
-    return () => {
-      textarea?.removeEventListener("input", handleInput);
-      textarea?.removeEventListener("keydown", handleKeyDown);
-      textarea?.removeEventListener("blur", handleBlur);
-    };
-  }, []);
-
   const handleBlur = useCallback(() => {
-    () => {
-      // FIXME: check if click is on dropdown or not. creates issues
-      const dropdown = dropdownRef.current;
-      if (dropdown) {
-        // dropdown.classList.add("hidden");
-      }
-      setCurrentWord("");
-    }
-  }, [])
-
-  const handleInput = useCallback(() => {
-    const textarea = textareaRef.current;
     const dropdown = dropdownRef.current;
-
-    if (textarea) {
-      const caret = getCaretCoordinates(textarea, textarea.selectionEnd);
-      const text = textarea.value;
-      const currentWord = getCurrentWord();
-      setTextValue(text);
-      // console.log(currentWord);
-      if (dropdown) {
-        if (currentWord.startsWith("@")) {
-          // console.log("current word starts with @");
-          setCurrentWord(currentWord);
-          dropdown.style.left = caret.left + "px";
-          dropdown.style.top = caret.top + caret.height + "px";
-          dropdown.classList.remove("hidden"); // FIXME: should be moved to html tag with cn
-        } else {
-          currentWord !== "" && setCurrentWord("");
-          dropdown.classList.add("hidden");
-        }
-      }
+    if (dropdown) {
+      dropdown.classList.add("hidden");
+      setCommandValue("");
     }
   }, [])
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     const textarea = textareaRef.current;
     const input = inputRef.current;
-    if (textarea && input) {
-      const currentWord = getCurrentWord();
-      // github checks if not only currentWord starts with "@" but also _only_ has "@" to open the dropdown.
-      if (currentWord.startsWith("@")) {
-        if (e.key === "ArrowUp") {
+    const dropdown = dropdownRef.current;
+    if (textarea && input && dropdown) {
+      const currentWord = getCurrentWord(textarea);
+      const isDropdownHidden = dropdown.classList.contains("hidden")
+      if (currentWord.startsWith("@") && !isDropdownHidden) {
+        // TODO: add Escape
+        if (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "Enter" || e.key === "Escape") {
           e.preventDefault();
           input.dispatchEvent(new KeyboardEvent("keydown", e));
-          // console.log("up arrow");
-        } else if (e.key === "ArrowDown") {
-          e.preventDefault();
-          input.dispatchEvent(new KeyboardEvent("keydown", e));
-          // console.log("down arrow");
-        } else if (e.key === "Enter") {
-          // TODO: make sure to be possible to enter after selecting a word.
-          e.preventDefault();
-          input.dispatchEvent(new KeyboardEvent("keydown", e));
-          // console.log("enter");
         }
       }
     }
   }, [])
 
-  const getCurrentWord = useCallback(() => {
-    const textarea = textareaRef.current;
-    if (textarea) {
-      const text = textarea.value;
-      const { caretStartIndex } = getCaretPosition(textarea);
-      // Find the start position of the word
-      let start = caretStartIndex;
-      while (start > 0 && text[start - 1].match(/\S/)) {
-        start--;
-      }
-
-      // Find the end position of the word
-      let end = caretStartIndex;
-      while (end < text.length && text[end].match(/\S/)) {
-        end++;
-      }
-
-      const w = text.substring(start, end);
-
-      return w;
-    }
-    return "";
-  }, []);
-
-  function replaceWord(replacementWord: string) {
+  const onTextValueChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const text = e.target.value;
     const textarea = textareaRef.current;
     const dropdown = dropdownRef.current;
-    if (textarea) {
-      const text = textarea.value;
-      const caretPos = textarea.selectionStart;
 
-      // Find the word that needs to be replaced
-      const wordRegex = /[\w@#]+/g;
-      let match;
-      let startIndex;
-      let endIndex;
-
-      while ((match = wordRegex.exec(text)) !== null) {
-        startIndex = match.index;
-        endIndex = startIndex + match[0].length;
-        // console.log({ caretPos, startIndex, endIndex, match });
-
-        if (caretPos >= startIndex && caretPos <= endIndex) {
-          break;
-        }
-      }
-
-      // console.log(startIndex, endIndex);
-
-      // Replace the word with a new word using document.execCommand
-      if (startIndex !== undefined && endIndex !== undefined) {
-        // Preserve the current selection range
-        const selectionStart = textarea.selectionStart;
-        const selectionEnd = textarea.selectionEnd;
-
-        // Modify the selected range to encompass the word to be replaced
-        textarea.setSelectionRange(startIndex, endIndex);
-
-        // REMINDER: Fastest way to include CMD + Z compatibility
-        // Execute the command to replace the selected text with the new word
-        document.execCommand("insertText", false, replacementWord);
-
-        // Restore the original selection range
-        textarea.setSelectionRange(
-          selectionStart - (endIndex - startIndex) + replacementWord.length,
-          selectionEnd - (endIndex - startIndex) + replacementWord.length
-        );
-
-        if (dropdown) {
-          setCurrentWord("");
+    if (textarea && dropdown) {
+      const caret = getCaretCoordinates(textarea, textarea.selectionEnd);
+      const currentWord = getCurrentWord(textarea);
+      setTextValue(text);
+      console.log({ currentWord })
+      if (currentWord.startsWith("@")) {
+        setCommandValue(currentWord);
+        dropdown.style.left = caret.left + "px";
+        dropdown.style.top = caret.top + caret.height + "px";
+        dropdown.classList.remove("hidden");
+      } else {
+        // FIXME: We need to store the last word...
+        if (currentWord !== "") {
+          setCommandValue("");
           dropdown.classList.add("hidden");
         }
       }
     }
-  }
+  }, [setTextValue])
+
+  const onCommandSelect = useCallback((value: string) => {
+    const textarea = textareaRef.current
+    if (textarea) {
+      replaceWord(textarea, `${value}`);
+      const dropdown = dropdownRef.current;
+      if (dropdown) {
+        setCommandValue("");
+        dropdown.classList.add("hidden");
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    textarea?.addEventListener("keydown", handleKeyDown);
+    textarea?.addEventListener("blur", handleBlur);
+    return () => {
+      textarea?.removeEventListener("keydown", handleKeyDown);
+      textarea?.removeEventListener("blur", handleBlur);
+    };
+  }, [handleBlur, handleKeyDown]);
 
 
   return (
@@ -182,22 +104,18 @@ export function Write({ textValue, setTextValue }: Props) {
         autoCorrect="off"
         className="resize-none h-auto" // REMINDER: font-[sans-serif]
         value={textValue}
+        onChange={onTextValueChange}
         rows={5}
-      // FIXME: if value, than we need onChange.
-      // onChange={(e) => setTextValue(e.target.value)}
       />
       <p className="text-sm text-muted-foreground prose-none mt-1">
         Supports markdown.
       </p>
       <Command
         ref={dropdownRef}
-        value={commandValue}
-        onValueChange={setCommandValue}
         className={cn("max-w-min absolute hidden h-auto max-h-32")}
       >
         <div className="hidden">
-          {/* Make it controlled */}
-          <CommandInput ref={inputRef} value={currentWord} />
+          <CommandInput ref={inputRef} value={commandValue} />
         </div>
         <CommandGroup className="overflow-auto max-w-min">
           {people.map((p) => {
@@ -205,9 +123,7 @@ export function Write({ textValue, setTextValue }: Props) {
               <CommandItem
                 key={p.username}
                 value={p.username}
-                onSelect={(value) => {
-                  replaceWord(`${value}`); // TODO: should I include a space? But than, if space already exists will be duplicated
-                }}
+                onSelect={onCommandSelect}
               >
                 {p.username}
               </CommandItem>
