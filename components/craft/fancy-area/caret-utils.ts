@@ -49,6 +49,13 @@ const isBrowser = typeof window !== "undefined";
 // @ts-expect-error
 const isFirefox = isBrowser && window.mozInnerScreenX != null;
 
+export function getCaretPosition(element: HTMLTextAreaElement) {
+  return {
+    caretStartIndex: element.selectionStart || 0,
+    caretEndIndex: element.selectionEnd || 0,
+  }
+};
+
 export function getCaretCoordinates(
   element: HTMLTextAreaElement,
   position: number,

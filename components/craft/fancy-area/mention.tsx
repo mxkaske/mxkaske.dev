@@ -10,18 +10,21 @@ import {
 import { people } from "./data";
 
 export function Mention({ children }: { children: React.ReactNode }) {
-	const isValid = Array.isArray(children) && children.length === 1 && typeof children[0] === 'string';
-	if (!isValid) {
+	const isString = Array.isArray(children) && children.length === 1 && typeof children[0] === 'string';
+	// REMINDER: children has other children - return early
+	if (!isString) {
 		return children;
 	}
 
 	const user = people.find(({ username }) => username == children[0]);
+	// REMINDER: only allowed users are rendered with HoverCard
 	if (!user) {
 		return children;
 	}
 
 	const fallback = user.username.substring(1, 3).toUpperCase()
 	const twitterUrl = `https://twitter.com/${user.username.substring(1)}`
+
 	return (
 		<HoverCard>
 			<HoverCardTrigger asChild>
