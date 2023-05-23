@@ -9,21 +9,27 @@ import {
 } from "@/components/ui/hover-card"
 import { people } from "./data";
 
-export function Mention({ children }: { children: React.ReactNode }) {
+interface Props {
+	children: React.ReactNode,
+	name: string
+}
+
+export function Mention({ children, name }: Props) {
 	const isString = Array.isArray(children) && children.length === 1 && typeof children[0] === 'string';
 	// REMINDER: children has other children - return early
 	if (!isString) {
 		return children;
 	}
 
+	// REMINDER: name does not include prefix '@', children[0] does
 	const user = people.find(({ username }) => username == children[0]);
 	// REMINDER: only allowed users are rendered with HoverCard
 	if (!user) {
 		return children;
 	}
 
-	const fallback = user.username.substring(1, 3).toUpperCase()
-	const twitterUrl = `https://twitter.com/${user.username.substring(1)}`
+	const fallback = name.substring(1, 3).toUpperCase()
+	const twitterUrl = `https://twitter.com/${name}`
 
 	return (
 		<HoverCard>

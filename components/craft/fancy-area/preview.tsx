@@ -11,6 +11,7 @@ export function Preview({ textValue }: Props) {
   return <div
     className="w-[352px] h-[140px] overflow-auto prose dark:prose-invert"
   >
+    {/* TODO: check if Component is ReactElement, then render <Component /> */}
     {/* @ts-ignore */}
     {Component}
   </div>
