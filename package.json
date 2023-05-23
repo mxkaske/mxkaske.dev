@@ -43,6 +43,7 @@
     "react-dom": "18.2.0",
     "rehype-raw": "^6.1.1",
     "rehype-react": "^7.2.0",
+    "rehype-sanitize": "^5.0.1",
     "rehype-stringify": "^9.0.3",
     "remark-parse": "^10.0.2",
     "remark-rehype": "^10.1.0",
@@ -50,6 +51,7 @@
     "tailwindcss": "3.3.2",
     "tailwindcss-animate": "^1.0.5",
     "typescript": "5.0.4",
-    "unified": "^10.1.2"
+    "unified": "^10.1.2",
+    "zod": "^3.21.4"
   }
 }

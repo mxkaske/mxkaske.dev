@@ -3,12 +3,13 @@ import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import rehypeRaw from "rehype-raw";
 import rehypeReact from 'rehype-react';
-import {createElement, Fragment, useEffect, useState} from 'react'
+import rehypeSanitize, {defaultSchema} from 'rehype-sanitize';
+import { createElement, Fragment, useEffect, useState } from 'react'
 import { Mention } from "./mention";
 
 export function useProcessor(md: string) {
   const [content, setContent] = useState<React.ReactNode>(null)
-  
+
   const mentionRegex = /@(\w+)/g;
   const text = md.replace(mentionRegex, '<mention>@$1</mention>');
 
@@ -17,6 +18,8 @@ export function useProcessor(md: string) {
       .use(remarkParse)
       .use(remarkRehype, { allowDangerousHtml: true })
       .use(rehypeRaw)
+      .use(rehypeSanitize, {...defaultSchema, 
+      tagNames: [...defaultSchema.tagNames!, "mention"] })
       // @ts-expect-error
       .use(rehypeReact, {
         createElement,
