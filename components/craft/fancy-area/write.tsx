@@ -23,7 +23,7 @@ export function Write({ textValue, setTextValue }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [commandValue, setCommandValue] = useState("");
 
-  const handleBlur = useCallback(() => {
+  const handleBlur = useCallback((e: Event) => {
     const dropdown = dropdownRef.current;
     if (dropdown) {
       dropdown.classList.add("hidden");
@@ -39,8 +39,11 @@ export function Write({ textValue, setTextValue }: Props) {
       const currentWord = getCurrentWord(textarea);
       const isDropdownHidden = dropdown.classList.contains("hidden")
       if (currentWord.startsWith("@") && !isDropdownHidden) {
-        // TODO: add Escape
-        if (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "Enter" || e.key === "Escape") {
+        // FIXME: handle Escape
+        if (e.key === "ArrowUp" || e.keyCode === 38
+          || e.key === "ArrowDown" || e.keyCode === 40
+          || e.key === "Enter" || e.keyCode === 13
+          || e.key === "Escape" || e.keyCode === 27) {
           e.preventDefault();
           input.dispatchEvent(new KeyboardEvent("keydown", e));
         }
@@ -64,40 +67,64 @@ export function Write({ textValue, setTextValue }: Props) {
         dropdown.style.top = caret.top + caret.height + "px";
         dropdown.classList.remove("hidden");
       } else {
-        // FIXME: We need to store the last word...
-        if (currentWord !== "") {
-          setCommandValue("");
-          dropdown.classList.add("hidden");
-        }
+        // TODO: check if we don't need it!
+        // if (currentWord !== "") {
+        //   setCommandValue("");
+        //   dropdown.classList.add("hidden");
+        // }
       }
     }
   }, [setTextValue])
 
   const onCommandSelect = useCallback((value: string) => {
     const textarea = textareaRef.current
-    if (textarea) {
+    const dropdown = dropdownRef.current;
+    if (textarea && dropdown) {
       replaceWord(textarea, `${value}`);
-      const dropdown = dropdownRef.current;
-      if (dropdown) {
+      setCommandValue("");
+      dropdown.classList.add("hidden");
+    }
+  }, [])
+
+  const handleClick = useCallback((e: Event) => {
+    console.log("click")
+    e.preventDefault();
+    e.stopPropagation();
+  }, [])
+
+  const handleSectionChange = useCallback((e: Event) => {
+    const textarea = textareaRef.current
+    const dropdown = dropdownRef.current;
+    if (textarea && dropdown) {
+      const currentWord = getCurrentWord(textarea);
+      console.log(currentWord)
+      if (!currentWord.startsWith("@") && commandValue !== "") {
         setCommandValue("");
         dropdown.classList.add("hidden");
       }
     }
-  }, [])
+  }, [commandValue])
 
   useEffect(() => {
     const textarea = textareaRef.current;
+    const dropdown = dropdownRef.current;
     textarea?.addEventListener("keydown", handleKeyDown);
+    document?.addEventListener("selectionchange", handleSectionChange)
+    dropdown?.addEventListener("touchstart", handleClick);
+    dropdown?.addEventListener("mousedown", handleClick)
     textarea?.addEventListener("blur", handleBlur);
     return () => {
       textarea?.removeEventListener("keydown", handleKeyDown);
+      document?.removeEventListener("selectionchange", handleSectionChange)
+      dropdown?.removeEventListener("touchstart", handleClick);
       textarea?.removeEventListener("blur", handleBlur);
+      dropdown?.removeEventListener("mousedown", handleClick)
     };
-  }, [handleBlur, handleKeyDown]);
+  }, [handleBlur, handleKeyDown, handleClick, handleSectionChange]);
 
 
   return (
-    <div className="w-[350px] relative">
+    <div className="w-full relative">
       <Textarea
         ref={textareaRef}
         autoComplete="off"

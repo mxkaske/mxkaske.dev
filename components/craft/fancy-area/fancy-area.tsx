@@ -14,7 +14,7 @@ export function FancyArea() {
   return (
     <Tabs
       defaultValue="write"
-      className="w-[350px]"
+      className="max-w-[350px] w-full"
     >
       <TabsList>
         <TabsTrigger value="write">Write</TabsTrigger>
