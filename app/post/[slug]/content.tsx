@@ -13,7 +13,7 @@ export function Content({ post }: { post: Post }) {
   }, [post.slug]);
 
   return (
-    <div className="prose dark:prose-invert mx-auto">
+    <div className="prose dark:prose-invert mx-auto prose-headings:font-cal">
       <MDXContent components={components} />
     </div>
   );

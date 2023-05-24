@@ -97,7 +97,7 @@ export function FancyBox() {
   const [openCombobox, setOpenCombobox] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
   const [inputValue, setInputValue] = React.useState<string>("");
-  const [selectedValues, setSelectedValues] = React.useState<Framework[]>([]);
+  const [selectedValues, setSelectedValues] = React.useState<Framework[]>([FRAMEWORKS[0]]);
 
   const createFramework = (name: string) => {
     const newFramework = {

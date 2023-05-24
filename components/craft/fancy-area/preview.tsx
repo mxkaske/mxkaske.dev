@@ -9,7 +9,7 @@ interface Props {
 export function Preview({ textValue }: Props) {
   const Component = useProcessor(textValue);
   return <div
-    className="w-full h-[140px] overflow-auto prose dark:prose-invert"
+    className="w-full overflow-auto prose dark:prose-invert prose-sm h-[159.5px] px-1 border border-transparent prose-headings:font-cal"
   >
     {/* TODO: check if Component is ReactElement, then render <Component /> */}
     {/* @ts-ignore */}
