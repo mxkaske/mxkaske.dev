@@ -137,6 +137,7 @@ export function Write({ textValue, setTextValue }: Props) {
       <p className="text-sm text-muted-foreground prose-none mt-1">
         Supports markdown.
       </p>
+      {/* FIXME: missing shadow in light mode - check out CommandDialog for it */}
       <Command
         ref={dropdownRef}
         className={cn("max-w-min absolute hidden h-auto max-h-32")}

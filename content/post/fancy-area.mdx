@@ -2,13 +2,102 @@
 # TODO: change date
 date: 2023-05-30
 title: Fancy Area
-githubUrl: https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/fancy-area.tsx
+githubUrl: https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/fancy-area
 component: FancyArea
-description: .... Like GitHub.
+description: A markdown textarea with mention support including hover cards in the preview. Just like GitHub.
 ---
 
 <CraftWrapper>
   <FancyArea />
 </CraftWrapper>
 
-The Textarea is inspired by [GitHub](https://github.com)'s PR comment area and is powered by [shadcn/ui](https://ui.shadcn.com). Almost all elements are [radix-ui](https://www.radix-ui.com) components, styled with [tailwindcss](http://tailwindcss.com/).
+The Textarea is inspired by [GitHub](https://github.com)'s PR comment area and is powered by [shadcn/ui](https://ui.shadcn.com). Almost all elements are [radix-ui](https://www.radix-ui.com) components, styled with [tailwindcss](http://tailwindcss.com).
+
+## UI
+
+Let's keep it short and use [ui.shadcn](https://ui.shadcn.com).
+
+The following components are being used:
+
+- [Tabs](https://ui.shadcn.com/docs/components/tabs)
+- [Command](https://ui.shadcn.com/docs/components/command)
+- [Textarea](https://ui.shadcn.com/docs/components/textarea)
+- [HoverCard](https://ui.shadcn.com/docs/components/hover-card)
+- [Avatar](https://ui.shadcn.com/docs/components/avatar)
+
+To style the **preview**, we use the [`@tailwindcss/typography`](https://tailwindcss.com/docs/typography-plugin) plugin with the `prose` utility class.
+
+## Mention Combobox
+
+{/* TODO: write first what we want to acchieve */}
+
+This was the hardest part. Getting the right **keyboard events** and edge cases require a lot of testing. If you recognize an unexpected behavior, feel free to create a [GitHub Issue](https://github.com/mxkaske/mxkaske.dev/issues).
+
+With the help of Chat GPT and the [textarea-caret-position](https://github.com/component/textarea-caret-position) package that I have copy and pasted the function from _(We don't want to reinvent the wheel)_, the following three utility functions are being used:
+
+- [getCaretCoordinates](): will create a duplicate `textarea` as `div` and returns the current `{ x, y }` position of the caret
+- [getCurrentWord](): will return the current word where the caret is at
+- [replaceWord](): replaces the word where the caret is at with new word
+
+## Transform Markdown into React
+
+The transformation is mainly handled by `rehype` plugins.
+
+```bash
+npm i unified remark-parse remark-rehype rehype-raw rehype-sanitize rehype-react
+```
+
+Let's break all the plugins down:
+
+{/* TODO: anchor with codes are missing hover state */}
+
+The following steps transform the user input into valid `react` components:
+
+1. [`remark-parse`](https://github.com/remarkjs/remark/tree/main/packages/remark-parse): parses markdown content
+2. [`remark-rehype`](<(https://github.com/remarkjs/remark-rehype)>): turns markdown into HTML and `"allowDangerousHtml"`
+3. [`rehype-raw`](https://github.com/rehypejs/rehype-raw): turns raw embedded HTML into proper HTML nodes
+4. [`rehype-sanitize`](https://github.com/rehypejs/rehype-sanitize): only allows safe HTML nodes
+5. [`rehype-react`](https://github.com/rehypejs/rehype-react): transforms HTML into react components
+
+```tsx
+export function useProcessor(md: string) {
+  const [content, setContent] = useState<React.ReactNode>(null);
+
+  // wrap words starting with '@' with custom element
+  // e.g. "@jack" turns into `<mention username="jack">@jack</mention>`
+  const mentionRegex = /@(\w+)/g;
+  const text = md.replace(mentionRegex, '<mention username="$1">@$1</mention>');
+
+  useEffect(() => {
+    unified()
+      .use(remarkParse)
+      .use(remarkRehype, { allowDangerousHtml: true })
+      .use(rehypeRaw)
+      .use(rehypeSanitize, {
+        ...defaultSchema,
+        tagNames: [...defaultSchema.tagNames!, "mention"],
+        attributes: {
+          ...defaultSchema.attributes,
+          mention: ["username"],
+        },
+      })
+      // @ts-expect-error
+      .use(rehypeReact, {
+        createElement,
+        components: {
+          mention: Mention,
+        },
+      })
+      .process(text)
+      .then((file) => {
+        setContent(file.result);
+      });
+  }, [text]);
+
+  return content || Fragment;
+}
+```
+
+Because we are using a custom `react` component to render the `HoverCard`, we will need to allow the custom `<mention>` element when sanitizing the HTML to be safe with `rehype-sanitize` as well as extending the `rehype-react` object that maps tag names to components. In our case `{ mention: Mention }`.
+
+Check out the full [`use-processor.ts`](/mxkaske.dev/components/craft/fancy-area/use-processor.ts) file.

@@ -8,8 +8,8 @@ const URL =
   process.env.VERCEL_ENV === "production"
     ? `https://craft.mxkaske/dev`
     : process.env.VERCEL_ENV === "preview"
-    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-    : process.env.NEXT_PUBLIC_VERCEL_URL;
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+      : process.env.NEXT_PUBLIC_VERCEL_URL;
 
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat("en-US", {
@@ -38,7 +38,7 @@ export default async function CraftPage({
   // const views = await res.json();
 
   return (
-    <article className="max-w-prose mx-auto">
+    <article>
       <div className="flex justify-between items-end">
         <div>
           <p className="text-foreground font-cal font-bold text-lg">
