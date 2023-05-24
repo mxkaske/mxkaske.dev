@@ -24,6 +24,7 @@ export function Write({ textValue, setTextValue }: Props) {
   const [commandValue, setCommandValue] = useState("");
 
   const handleBlur = useCallback((e: Event) => {
+    console.log("blur")
     const dropdown = dropdownRef.current;
     if (dropdown) {
       dropdown.classList.add("hidden");
@@ -87,7 +88,6 @@ export function Write({ textValue, setTextValue }: Props) {
   }, [])
 
   const handleClick = useCallback((e: Event) => {
-    console.log("click")
     e.preventDefault();
     e.stopPropagation();
   }, [])
@@ -110,13 +110,13 @@ export function Write({ textValue, setTextValue }: Props) {
     const dropdown = dropdownRef.current;
     textarea?.addEventListener("keydown", handleKeyDown);
     document?.addEventListener("selectionchange", handleSectionChange)
-    dropdown?.addEventListener("touchstart", handleClick);
+    // dropdown?.addEventListener("touchstart", handleClick);
     dropdown?.addEventListener("mousedown", handleClick)
     textarea?.addEventListener("blur", handleBlur);
     return () => {
       textarea?.removeEventListener("keydown", handleKeyDown);
       document?.removeEventListener("selectionchange", handleSectionChange)
-      dropdown?.removeEventListener("touchstart", handleClick);
+      // dropdown?.removeEventListener("touchstart", handleClick);
       textarea?.removeEventListener("blur", handleBlur);
       dropdown?.removeEventListener("mousedown", handleClick)
     };
