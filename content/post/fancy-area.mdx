@@ -20,7 +20,7 @@ Let's keep it short and use [ui.shadcn](https://ui.shadcn.com).
 The following components are being used:
 
 - [Tabs](https://ui.shadcn.com/docs/components/tabs)
-- [Command](https://ui.shadcn.com/docs/components/command)
+- [Command](https://ui.shadcn.com/docs/components/command) _(powered by [cmdk](https://github.com/pacocoursey/cmdk))_
 - [Textarea](https://ui.shadcn.com/docs/components/textarea)
 - [HoverCard](https://ui.shadcn.com/docs/components/hover-card)
 - [Avatar](https://ui.shadcn.com/docs/components/avatar)
@@ -38,6 +38,119 @@ With the help of Chat GPT and the [textarea-caret-position](https://github.com/c
 - [getCaretCoordinates](): will create a duplicate `textarea` as `div` and returns the current `{ x, y }` position of the caret
 - [getCurrentWord](): will return the current word where the caret is at
 - [replaceWord](): replaces the word where the caret is at with new word
+
+We didn't wrap our `Command` Component around a `Popover` or `CommandDialog` (like we did in [`Fancy Box`](https://craft.mxkaske.dev/post/fancy-box)) to keep being able to focus the textarea. That's why we included some extra tailwindcss utility classes to make it look similar.
+
+To replace a word, we are using the deprecated, but still heavily used and supported function.
+
+```js
+document.execCommand("insertText", false, value);
+```
+
+To do so, we select the word to be replaced programmatically by setting the `selectionStart` and `selectionEnd` textarea properties and replace it with the above command with the new value.
+
+The reason for its usage: it easily supports **undo**.
+
+> Feel free to [contact me](https://twitter.com/mxkaske) if you have simple _non-deprecated_ way to do the same.
+
+The supported _handles_ (like @mxkaske, @shadcn,...) are statically written inside of the code (see [data.ts]()). There is a potential rework to use dynamic data inside of `Command` using the `Command.Loading` component while fetching data from your API.
+
+We hide the `Command.Input` and update the value via state updates. That way, it allows us to use the cmdk package with our custom use case under the hood.
+
+The `Command` listens to the caret position and the current word where the caret actually is and will be displayed whenever the `currentWord.startsWith(“@“)`.
+
+Let's have a look at the simplified version of the `write.tsx` file:
+
+```tsx
+"use client";
+
+import React, { useRef, useState, useEffect, useCallback } from "react";
+import { Textarea } from "@/components/ui/textarea";
+import { getCaretCoordinates, getCurrentWord, replaceWord } from "./utils";
+import {
+  Command,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+import { people } from "./data";
+
+export function Write() {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [commandValue, setCommandValue] = useState("");
+  const [textValue, setTextValue] = useState("");
+
+  const onTextValueChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      // check if current word starts with "@"
+      // updates dropdown position based on caret coordinates
+    },
+    [setTextValue, commandValue]
+  );
+
+  const onCommandSelect = useCallback((value: string) => {
+    // replace current word with new value
+    // hide dropdown
+  }, []);
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    const dropdown = dropdownRef.current;
+    // support keyboard accessibility
+    textarea?.addEventListener("keydown", handleKeyDown);
+    // when caret position changes, check if current word still starts with "@" otherwise hide dropdown
+    document?.addEventListener("selectionchange", handleSectionChange);
+    // prevent default and stop propagation as otherwise textarea would loose focus
+    dropdown?.addEventListener("mousedown", handleClick);
+    // hide dropdown if open
+    textarea?.addEventListener("blur", handleBlur);
+    return () => {
+      textarea?.removeEventListener("keydown", handleKeyDown);
+      document?.removeEventListener("selectionchange", handleSectionChange);
+      textarea?.removeEventListener("blur", handleBlur);
+      dropdown?.removeEventListener("mousedown", handleClick);
+    };
+  }, [handleBlur, handleKeyDown, handleClick, handleSectionChange]);
+
+  return (
+    <div className="relative w-full">
+      <Textarea
+        ref={textareaRef}
+        value={textValue}
+        onChange={onTextValueChange}
+      />
+      <Command
+        ref={dropdownRef}
+        className="absolute hidden h-auto max-h-32 max-w-min overflow-y-scroll"
+      >
+        <div className="hidden">
+          {/* REMINDER: className="hidden" won't hide the SearchIcon and border-top */}
+          <CommandInput ref={inputRef} value={commandValue} />
+        </div>
+        <CommandGroup className="max-w-min overflow-auto">
+          {people.map((p) => {
+            return (
+              <CommandItem
+                key={p.username}
+                value={p.username}
+                onSelect={onCommandSelect}
+              >
+                {p.username}
+              </CommandItem>
+            );
+          })}
+        </CommandGroup>
+      </Command>
+    </div>
+  );
+}
+```
+
+## Mention HoverCard
+
+The ‘Mention’ Component that is being used in the preview is a _copy cat_ of shadcn example. This is also why Avatar is being used.
 
 ## Transform Markdown into React
 
@@ -64,9 +177,9 @@ export function useProcessor(md: string) {
   const [content, setContent] = useState<React.ReactNode>(null);
 
   // wrap words starting with '@' with custom element
-  // e.g. "@jack" turns into `<mention username="jack">@jack</mention>`
+  // e.g. "@jack" turns into `<mention handle="jack">@jack</mention>`
   const mentionRegex = /@(\w+)/g;
-  const text = md.replace(mentionRegex, '<mention username="$1">@$1</mention>');
+  const text = md.replace(mentionRegex, '<mention handle="$1">@$1</mention>');
 
   useEffect(() => {
     unified()
@@ -78,10 +191,10 @@ export function useProcessor(md: string) {
         tagNames: [...defaultSchema.tagNames!, "mention"],
         attributes: {
           ...defaultSchema.attributes,
-          mention: ["username"],
+          mention: ["handle"],
         },
       })
-      // @ts-expect-error
+      // @ts-expect-error because mention is not valid html-tag
       .use(rehypeReact, {
         createElement,
         components: {

@@ -41,9 +41,13 @@
     "postcss": "8.4.23",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "reading-time": "^1.5.0",
+    "rehype-autolink-headings": "^6.1.1",
+    "rehype-pretty-code": "^0.9.5",
     "rehype-raw": "^6.1.1",
     "rehype-react": "^7.2.0",
     "rehype-sanitize": "^5.0.1",
+    "rehype-slug": "^5.1.0",
     "rehype-stringify": "^9.0.3",
     "remark-parse": "^10.0.2",
     "remark-rehype": "^10.1.0",
@@ -53,5 +57,9 @@
     "typescript": "5.0.4",
     "unified": "^10.1.2",
     "zod": "^3.21.4"
+  },
+  "devDependencies": {
+    "prettier": "^2.8.8",
+    "prettier-plugin-tailwindcss": "^0.3.0"
   }
 }

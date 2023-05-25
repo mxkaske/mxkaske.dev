@@ -11,7 +11,7 @@ export function useProcessor(md: string) {
   const [content, setContent] = useState<React.ReactNode>(null)
 
   const mentionRegex = /@(\w+)/g;
-  const text = md.replace(mentionRegex, '<mention username="$1">@$1</mention>'); // TODO: pass props
+  const text = md.replace(mentionRegex, '<mention handle="$1">@$1</mention>');
 
   useEffect(() => {
     unified()
@@ -23,10 +23,10 @@ export function useProcessor(md: string) {
         tagNames: [...defaultSchema.tagNames!, "mention"],
         attributes: {
           ...defaultSchema.attributes,
-          mention: ["username"]
+          mention: ["handle"]
         }
       })
-      // @ts-expect-error
+      // @ts-expect-error because mention is not valid html-tag
       .use(rehypeReact, {
         createElement,
         components: {

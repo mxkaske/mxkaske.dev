@@ -24,7 +24,6 @@ export function Write({ textValue, setTextValue }: Props) {
   const [commandValue, setCommandValue] = useState("");
 
   const handleBlur = useCallback((e: Event) => {
-    console.log("blur")
     const dropdown = dropdownRef.current;
     if (dropdown) {
       dropdown.classList.add("hidden");
@@ -68,14 +67,14 @@ export function Write({ textValue, setTextValue }: Props) {
         dropdown.style.top = caret.top + caret.height + "px";
         dropdown.classList.remove("hidden");
       } else {
-        // TODO: check if we don't need it!
-        // if (currentWord !== "") {
-        //   setCommandValue("");
-        //   dropdown.classList.add("hidden");
-        // }
+        // REMINDER: apparently, we need it when deleting
+        if (commandValue !== "") {
+          setCommandValue("");
+          dropdown.classList.add("hidden");
+        }
       }
     }
-  }, [setTextValue])
+  }, [setTextValue, commandValue])
 
   const onCommandSelect = useCallback((value: string) => {
     const textarea = textareaRef.current
@@ -122,7 +121,6 @@ export function Write({ textValue, setTextValue }: Props) {
     };
   }, [handleBlur, handleKeyDown, handleClick, handleSectionChange]);
 
-
   return (
     <div className="w-full relative">
       <Textarea
@@ -140,9 +138,10 @@ export function Write({ textValue, setTextValue }: Props) {
       {/* FIXME: missing shadow in light mode - check out CommandDialog for it */}
       <Command
         ref={dropdownRef}
-        className={cn("max-w-min absolute hidden h-auto max-h-32")}
+        className={cn("max-w-min absolute hidden h-auto max-h-32 border border-popover shadow overflow-y-scroll")}
       >
         <div className="hidden">
+          {/* REMINDER: className="hidden" won't hide the SearchIcon and border-top */}
           <CommandInput ref={inputRef} value={commandValue} />
         </div>
         <CommandGroup className="overflow-auto max-w-min">
@@ -160,6 +159,5 @@ export function Write({ textValue, setTextValue }: Props) {
         </CommandGroup>
       </Command>
     </div>
-
   );
 };

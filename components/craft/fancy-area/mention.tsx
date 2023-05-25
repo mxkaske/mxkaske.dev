@@ -11,10 +11,10 @@ import { people } from "./data";
 
 interface Props {
 	children: React.ReactNode,
-	username: string
+	handle: string
 }
 
-export function Mention({ children, username }: Props) {
+export function Mention({ children, handle }: Props) {
 	const isString = Array.isArray(children) && children.length === 1 && typeof children[0] === 'string';
 	// REMINDER: children has other children - return early
 	if (!isString) {
@@ -28,8 +28,8 @@ export function Mention({ children, username }: Props) {
 		return children;
 	}
 
-	const fallback = username.substring(1, 3).toUpperCase()
-	const twitterUrl = `https://twitter.com/${username}`
+	const fallback = handle.substring(1, 3).toUpperCase()
+	const twitterUrl = `https://twitter.com/${handle}`
 
 	return (
 		<HoverCard>
