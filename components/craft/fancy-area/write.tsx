@@ -23,6 +23,10 @@ export function Write({ textValue, setTextValue }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [commandValue, setCommandValue] = useState("");
 
+  // TODO: check if this is possible?!?
+  // const texarea = textareaRef.current;
+  // const dropdown = dropdownRef.current;
+
   const handleBlur = useCallback((e: Event) => {
     const dropdown = dropdownRef.current;
     if (dropdown) {
@@ -108,15 +112,13 @@ export function Write({ textValue, setTextValue }: Props) {
     const textarea = textareaRef.current;
     const dropdown = dropdownRef.current;
     textarea?.addEventListener("keydown", handleKeyDown);
-    document?.addEventListener("selectionchange", handleSectionChange)
-    // dropdown?.addEventListener("touchstart", handleClick);
-    dropdown?.addEventListener("mousedown", handleClick)
     textarea?.addEventListener("blur", handleBlur);
+    document?.addEventListener("selectionchange", handleSectionChange)
+    dropdown?.addEventListener("mousedown", handleClick)
     return () => {
       textarea?.removeEventListener("keydown", handleKeyDown);
-      document?.removeEventListener("selectionchange", handleSectionChange)
-      // dropdown?.removeEventListener("touchstart", handleClick);
       textarea?.removeEventListener("blur", handleBlur);
+      document?.removeEventListener("selectionchange", handleSectionChange)
       dropdown?.removeEventListener("mousedown", handleClick)
     };
   }, [handleBlur, handleKeyDown, handleClick, handleSectionChange]);
@@ -135,13 +137,13 @@ export function Write({ textValue, setTextValue }: Props) {
       <p className="text-sm text-muted-foreground prose-none mt-1">
         Supports markdown.
       </p>
-      {/* FIXME: missing shadow in light mode - check out CommandDialog for it */}
       <Command
         ref={dropdownRef}
         className={cn("max-w-min absolute hidden h-auto max-h-32 border border-popover shadow overflow-y-scroll")}
       >
         <div className="hidden">
           {/* REMINDER: className="hidden" won't hide the SearchIcon and border-top */}
+          {/* FIXME: maybe just use the default Command.Input Component */}
           <CommandInput ref={inputRef} value={commandValue} />
         </div>
         <CommandGroup className="overflow-auto max-w-min">

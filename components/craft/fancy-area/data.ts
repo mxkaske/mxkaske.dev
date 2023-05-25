@@ -9,13 +9,12 @@ export const people = [{
 	profileImg: "https://pbs.twimg.com/profile_images/1559935773151051778/0O_Bf4LY_400x400.jpg",
 	description: "Developer · Climber · Just call me Max",
 	joined: "January 2017"
-},
-{
+}, {
 	username: "@chronark_",
 	profileImg: "https://pbs.twimg.com/profile_images/1437670380957835264/gu8S0olw_400x400.jpg",
 	description: "Building open source and serverless solutions @upstash",
 	joined: "June 2019"
-},{
+}, {
 	username: "@rauchg",
 	profileImg: "https://pbs.twimg.com/profile_images/1576257734810312704/ucxb4lHy_400x400.jpg",
 	description: "@vercel CEO",
