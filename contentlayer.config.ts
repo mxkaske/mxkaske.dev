@@ -1,4 +1,9 @@
 import { defineDocumentType, makeSource } from "contentlayer/source-files";
+import readingTime from "reading-time";
+import autolinkHeadings from "./contentlayer/plugins/autolink-headings";
+import prettyCode from "./contentlayer/plugins/rehype-pretty-code";
+import slug from "rehype-slug";
+
 
 // FIXME: Post != Craft
 
@@ -42,10 +47,17 @@ export const Post = defineDocumentType(() => ({
       type: "string",
       resolve: (post) => `/post/${post._raw.flattenedPath}`,
     },
+    readingTime: {
+      type: "string",
+      resolve: (post) => readingTime(post.body.raw).text
+    }
   },
 }));
 
 export default makeSource({
   contentDirPath: "content/post",
   documentTypes: [Post],
+  mdx: {
+    rehypePlugins: [slug, autolinkHeadings, prettyCode],
+  },
 });

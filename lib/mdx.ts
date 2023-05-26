@@ -3,6 +3,7 @@
 import { FancyBox } from "@/components/craft/fancy-box";
 import { CraftWrapper } from "@/components/mdx/craft-wrapper";
 import { Link } from "@/components/mdx/link";
+import { FancyArea } from "@/components/craft/fancy-area/fancy-area";
 
 export const components = {
   // Image: Image,
@@ -10,4 +11,5 @@ export const components = {
   a: Link,
   FancyBox,
   CraftWrapper,
+  FancyArea,
 };

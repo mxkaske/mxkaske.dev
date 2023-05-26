@@ -47,6 +47,9 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+// FIXME: https://twitter.com/lemcii/status/1659649371162419202?s=46&t=gqNnMIjMWXiG2Rbrr5gT6g
+// Removing states would help maybe?
+
 type Framework = Record<"value" | "label" | "color", string>;
 
 const FRAMEWORKS = [
@@ -94,7 +97,7 @@ export function FancyBox() {
   const [openCombobox, setOpenCombobox] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
   const [inputValue, setInputValue] = React.useState<string>("");
-  const [selectedValues, setSelectedValues] = React.useState<Framework[]>([]);
+  const [selectedValues, setSelectedValues] = React.useState<Framework[]>([FRAMEWORKS[0]]);
 
   const createFramework = (name: string) => {
     const newFramework = {
