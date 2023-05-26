@@ -1,6 +1,6 @@
 import NextLink, { type LinkProps as NextLinkProps } from "next/link";
 import React from "react";
-import { twMerge } from "tailwind-merge";
+import { cn } from "@/lib/utils";
 
 export interface LinkProps extends Omit<NextLinkProps, "href"> {
   href?: string;
@@ -20,7 +20,8 @@ export function Link({ className, href, ...props }: LinkProps) {
 
   return (
     <Anchor
-      className={twMerge(
+      className={cn(
+        // ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md
         "text-foreground underline underline-offset-4 decoration-border hover:decoration-foreground",
         className
       )}

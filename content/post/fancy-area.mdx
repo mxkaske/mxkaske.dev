@@ -25,33 +25,19 @@ The following components are being used:
 - [HoverCard](https://ui.shadcn.com/docs/components/hover-card)
 - [Avatar](https://ui.shadcn.com/docs/components/avatar)
 
-To style the **preview**, we use the [`@tailwindcss/typography`](https://tailwindcss.com/docs/typography-plugin) plugin with the `prose` utility class.
+To style the **preview**, we use the [`@tailwindcss/typography`](https://tailwindcss.com/docs/typography-plugin) plugin including the `prose` utility class.
 
 ## A Combobox inside the Textarea
 
-{/* TODO: write first what we want to acchieve */}
+Getting the right **keyboard**, **mouse** and **touch events** and keeping the textarea focus while navigating through the mention Combobox required lots of work and testing. If you recognize an unexpected behavior, feel free to create a [GitHub Issue](https://github.com/mxkaske/mxkaske.dev/issues).
 
-This was the hardest part. Getting the right **keyboard**, **mouse** and **touch events** and keeping the textarea focus while navigating through the mention Combobox required a lot of testing. If you recognize an unexpected behavior, feel free to create a [GitHub Issue](https://github.com/mxkaske/mxkaske.dev/issues).
+For our implementation, three utility functions have been created:
 
-With the help of Chat GPT and the [textarea-caret-position](https://github.com/component/textarea-caret-position) package that I have copy and pasted the function from _(We don't want to reinvent the wheel)_, the following three utility functions are being used:
+- `getCaretCoordinates()`: creates a duplicate `textarea` as `div` and return the current `{ x, y }` position of the caret _(see [textarea-caret-position](https://github.com/component/textarea-caret-position))_
+- `getCurrentWord()`: returns the current word where the caret is at
+- `replaceWord(value)`: replaces the word where the caret is at with the new word
 
-- [getCaretCoordinates](): will create a duplicate `textarea` as `div` and returns the current `{ x, y }` position of the caret.
-- [getCurrentWord](): will return the current word where the caret is at.
-- [replaceWord](): replaces the word where the caret is at with the new word. To replace a word, we are using the deprecated, but still heavily used and supported function:
-
-  ```js
-  document.execCommand("insertText", false, value);
-  ```
-
-  To do so, we select the word to be replaced programmatically by setting the `textarea.selectionStart` and `textarea.selectionEnd` properties based on the current word and replace it with the above command with the new value.
-
-  The reason for its usage: it **easily supports undo**. Please [contact me](https://twitter.com/mxkaske) if you have simple _non-deprecated_ way to do the same.
-
-We hide the `Command.Input` and update the value via state updates. That way, it allows us to use the cmdk package with our custom use case under the hood.
-
-The `Command` listens to the caret position and the current word where the caret actually is and will be displayed whenever the `currentWord.startsWith(“@“)`.
-
-Let's have a look at the simplified version of the `write.tsx` file:
+Before further investigation, let's have a look at the simplified version of the `Write` Compnent:
 
 ```tsx
 "use client";
@@ -74,34 +60,46 @@ export function Write() {
   const [commandValue, setCommandValue] = useState("");
   const [textValue, setTextValue] = useState("");
 
-  const onTextValueChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      // check if current word starts with "@"
-      // updates dropdown position based on caret coordinates
-    },
-    [setTextValue, commandValue]
-  );
+  const onTextValueChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    // checks if getCurrentWord() starts with "@" and updates dropdown position based on getCaretCoordinates()
+  };
 
-  const onCommandSelect = useCallback((value: string) => {
-    // replace current word with new value and hide dropdown
-  }, []);
+  const onCommandSelect = (value: string) => {
+    // replaceWord() getCurrentWord() with the `value` and hide dropdown
+  };
+
+  const handleMouseDown = (e: Event) => {
+    // prevents default and stops propagating event, otherwise textarea will unfocus
+  };
+
+  const handleSectionChange = (e: Event) => {
+    // detects caret position changes and adapts dropdown visiblity based on getCurrentWord()
+  };
+
+  const handleBlur = (e: Event) => {
+    // hides dropdown when textarea loses focus
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    // prevent default if dropdown is visible and dispatch keyboard events to input
+  };
 
   useEffect(() => {
-    const textarea = textareaRef.current;
-    const dropdown = dropdownRef.current;
-    // support keyboard accessibility
-    textarea?.addEventListener("keydown", handleKeyDown);
-    // hide dropdown if open
-    textarea?.addEventListener("blur", handleBlur);
-    // when caret position changes, check if current word still starts with "@" otherwise hide dropdown
-    document?.addEventListener("selectionchange", handleSectionChange);
-    // prevent default and stop propagation as otherwise textarea would loose focus
-    dropdown?.addEventListener("mousedown", handleClick);
+    textareaRef.current?.addEventListener("keydown", handleKeyDown);
+    textareaRef.current?.addEventListener("blur", handleBlur);
+    documentRef.current?.addEventListener(
+      "selectionchange",
+      handleSectionChange
+    );
+    dropdownRef.current?.addEventListener("mousedown", handleMouseDown);
     return () => {
-      textarea?.removeEventListener("keydown", handleKeyDown);
-      textarea?.removeEventListener("blur", handleBlur);
-      document?.removeEventListener("selectionchange", handleSectionChange);
-      dropdown?.removeEventListener("mousedown", handleClick);
+      textareaRef.current?.removeEventListener("keydown", handleKeyDown);
+      textareaRef.current?.removeEventListener("blur", handleBlur);
+      documentRef.current?.removeEventListener(
+        "selectionchange",
+        handleSectionChange
+      );
+      dropdownRef.current?.removeEventListener("mousedown", handleMouseDown);
     };
   }, [handleBlur, handleKeyDown, handleClick, handleSectionChange]);
 
@@ -139,15 +137,25 @@ export function Write() {
 }
 ```
 
-### Additional informations
+Important implementation details are:
 
-We didn't wrap our `Command` Component around a `Popover` or `CommandDialog` (like we did in [`Fancy Box`](https://craft.mxkaske.dev/post/fancy-box)) to keep being able to focus the textarea. That's why we included some extra tailwindcss utility classes to make it look similar.
+- We hide the `Command.Input` and update the value via state updates. That way, it allows us to use the cmdk package with our custom use case under the hood.
 
-The supported `people.username` are statically written inside of the code (see [data.ts]()). A reiteration of that **Fancy Area** Component could include dynamic data fetching via API resulting in using the `Command.Loading` Component.
+- We propagate **keyboard events** from the textarea to the input field when dropdown is visible with: `inputRef.current?.dispatchEvent(new KeyboardEvent("keydown", e))`
 
-## Mention HoverCard
+- The `Textarea` listens to the caret position and the current word where the caret actually is and will be displayed whenever the `currentWord.startsWith(“@“)`.
 
-The `Mention` Component that is being used in the preview is a _copy cat_ of shadcn example. This is also why the `Avatar` Component is being used. Period.
+- We didn't wrap our `Command` Component around a `Popover` or `CommandDialog` (like we did in [`Fancy Box`](https://craft.mxkaske.dev/post/fancy-box)). The Components will focus automatically and we would lose the ability to continue writing in the textarea.
+
+- The supported `people` are statically written inside of the code (see [data.ts]()). A re-iteration of that **Fancy Area** Component could include dynamic data fetching via API resulting in using the `Command.Loading` Component.
+
+- To replace a word, we are using the deprecated, but still heavily used and supported function:
+
+  ```js
+  document.execCommand("insertText", false, value);
+  ```
+
+  The reason for its usage: it **easily supports undo**. Please [contact me](https://twitter.com/mxkaske) if you have simple _non-deprecated_ way to do the same.
 
 ## Transform Markdown into React
 
@@ -215,6 +223,27 @@ export function useProcessor(md: string) {
 }
 ```
 
-Because we are using a custom `react` component to render the `HoverCard`, we will need to allow the custom `<mention>` element when sanitizing the HTML to be safe with `rehype-sanitize` as well as extending the `rehype-react` object that maps tag names to components. In our case `{ mention: Mention }`.
+We are using a Regex `/@(\w+)/g` to wrap all the words, starting with "@", inside of a custom `<mention>` element. This also means that we need to tell `rehype-sanitize` that this specific html-tag and its corresponding attribute `handle` is safe as well as extending the `rehype-react` object that maps tag names to components. In our case `{ mention: Mention }`.
 
-Check out the [`use-processor.ts`](/mxkaske.dev/components/craft/fancy-area/use-processor.ts) file.
+We now can safely import the users content with:
+
+```jsx
+const Component = useProcessor(markdownContent);
+```
+
+## Mention HoverCard
+
+The `Mention` Component that is being used in the preview is a _copy cat_ of shadcn example. This is also why the `Avatar` Component is being used. Period.
+
+## Conclusion
+
+In total, 6 files have been created:
+
+1. `fancy-area.tsx` sticks everything together
+2. `write.tsx` includes the textarea and combobox logic
+3. `preview.tsx` displays the content
+4. `use-processor.ts` generates jsx out of md
+5. `utils.ts` includes the utility functions
+6. `mention.tsx` keeps the hover card separate from the preview
+
+The source code is available on [GitHub](https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/fancy-area).

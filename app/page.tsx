@@ -1,3 +1,4 @@
+import React from "react";
 import { Post, allPosts } from "@/.contentlayer/generated";
 import { ModeToggle } from "@/components/theme/toggle-mode";
 import { components } from "@/lib/mdx";
@@ -18,15 +19,15 @@ const allPostsByMonth = allPosts.reduce((acc, curr) => {
 export default function Home() {
   return (
     <div className="mx-auto container max-w-prose min-h-screen flex flex-col py-4 md:py-8 px-2 md:px-4">
-      <div className="backdrop-blur-[2px] flex-1 flex flex-col rounded-lg bg-background/50 p-4 md:p-8">
+      <div className="backdrop-blur-[2px] flex-1 flex flex-col rounded-lg bg-background/50 p-4 md:p-8 border border-border/50 gap-8">
         <main className="flex-1">
           <h1 className="font-cal font-bold tracking-tight text-lg mb-8 text-foreground">
             mx<span className="text-muted-foreground">kaske</span>
           </h1>
-          <div className="grid gap-6">
+          <div className="grid gap-6 grid-cols-[auto_1fr]">
             {Object.keys(allPostsByMonth).map((month => {
-              return <div key={month}>
-                <p className="mb-4 text-sm text-muted-foreground font-light font-mono">{month}</p>
+              return <React.Fragment key={month}>
+                <div><p className="mb-4 text-sm text-muted-foreground font-light font-mono">{month}</p></div>
                 <div className="grid gap-6">
                   {allPostsByMonth[month].sort((a, b) => (a.date > b.date ? -1 : 1))
                     .map((post) => {
@@ -59,7 +60,7 @@ export default function Home() {
                       );
                     })}
                 </div>
-              </div>
+              </React.Fragment>
             }))
             }
           </div>

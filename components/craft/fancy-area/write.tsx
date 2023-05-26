@@ -90,7 +90,7 @@ export function Write({ textValue, setTextValue }: Props) {
     }
   }, [])
 
-  const handleClick = useCallback((e: Event) => {
+  const handleMouseDown = useCallback((e: Event) => {
     e.preventDefault();
     e.stopPropagation();
   }, [])
@@ -114,14 +114,14 @@ export function Write({ textValue, setTextValue }: Props) {
     textarea?.addEventListener("keydown", handleKeyDown);
     textarea?.addEventListener("blur", handleBlur);
     document?.addEventListener("selectionchange", handleSectionChange)
-    dropdown?.addEventListener("mousedown", handleClick)
+    dropdown?.addEventListener("mousedown", handleMouseDown)
     return () => {
       textarea?.removeEventListener("keydown", handleKeyDown);
       textarea?.removeEventListener("blur", handleBlur);
       document?.removeEventListener("selectionchange", handleSectionChange)
-      dropdown?.removeEventListener("mousedown", handleClick)
+      dropdown?.removeEventListener("mousedown", handleMouseDown)
     };
-  }, [handleBlur, handleKeyDown, handleClick, handleSectionChange]);
+  }, [handleBlur, handleKeyDown, handleMouseDown, handleSectionChange]);
 
   return (
     <div className="w-full relative">
