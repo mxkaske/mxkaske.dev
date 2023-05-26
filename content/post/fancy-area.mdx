@@ -148,7 +148,7 @@ Important implementation details are:
 
 - We didn't wrap our `Command` Component around a `Popover` or `CommandDialog` (like we did in [`Fancy Box`](https://craft.mxkaske.dev/post/fancy-box)). The Components would focus automatically and we would lose the ability to continue writing in the textarea.
 
-- The supported `people` are statically written inside of the code (see [data.ts]()). A re-iteration of that **Fancy Area** Component could include dynamic data fetching via API resulting in using the `Command.Loading` Component.
+- The supported `people` are statically written inside of the code (see [data.ts](https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/fancy-area/data.ts)). A re-iteration of that **Fancy Area** Component could include dynamic data fetching via API and therefore using the `Command.Loading` Component.
 
 - To replace a word, we are using the deprecated, but still heavily used and yet supported function:
 
@@ -240,7 +240,7 @@ The `Mention` Component that is being used in the preview is a _copy cat_ of sha
 
 ## Conclusion
 
-In total, 6 files have been created:
+In total, 7 files have been created:
 
 1. [`fancy-area.tsx`](https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/fancy-area/fancy-area.tsx) brings everything together
 2. [`write.tsx`](https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/fancy-area/write.tsx) includes the logic for the textarea and combobox
@@ -248,6 +248,7 @@ In total, 6 files have been created:
 4. [`use-processor.ts`](https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/fancy-area/use-processor.ts) generates JSX out of Markdown
 5. [`utils.ts`](https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/fancy-area/utils.ts) includes utility functions for writing
 6. [`mention.tsx`](https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/fancy-area/mention.tsx) keeps the hover card separate from the preview
+7. [`data.ts`](https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/fancy-area/data.ts) includes the list of allowed handles and user properties
 
 > If it finds interest, I'll will update the Components to make it more reusable.
 
