@@ -1,7 +1,7 @@
 import { allPosts } from "@/.contentlayer/generated";
 import { notFound } from "next/navigation";
 import { Content } from "./content";
-import { Github, Link as LinkIcon } from "lucide-react";
+import { ChevronLeft, Github, Link as LinkIcon } from "lucide-react";
 import { Link } from "@/components/mdx/link";
 
 const URL =

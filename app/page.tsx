@@ -18,13 +18,13 @@ const allPostsByMonth = allPosts.reduce((acc, curr) => {
 
 export default function Home() {
   return (
-    <div className="mx-auto container max-w-prose min-h-screen flex flex-col py-4 md:py-8 px-2 md:px-4">
-      <div className="backdrop-blur-[2px] flex-1 flex flex-col rounded-lg bg-background/50 p-4 md:p-8 border border-border/50 gap-8">
-        <main className="flex-1">
-          <h1 className="font-cal font-bold tracking-tight text-lg mb-8 text-foreground">
+    <div className="mx-auto container max-w-[calc(65ch+100px)] min-h-screen flex flex-col py-4 md:py-8 px-2 md:px-4">
+      <div className="backdrop-blur-[2px] flex-1 flex flex-col rounded-lg bg-background/50 p-4 sm:p-8 border border-border/50">
+        <main className="flex-1 mb-8">
+          <h1 className="font-cal font-bold tracking-tight text-lg text-foreground mb-8">
             mx<span className="text-muted-foreground">kaske</span>
           </h1>
-          <div className="grid gap-6 grid-cols-[auto_1fr]">
+          <div className="grid gap-4 sm:gap-8 sm:grid-cols-[auto_1fr]">
             {Object.keys(allPostsByMonth).map((month => {
               return <React.Fragment key={month}>
                 <div><p className="mb-4 text-sm text-muted-foreground font-light font-mono">{month}</p></div>

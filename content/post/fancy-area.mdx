@@ -1,6 +1,5 @@
 ---
-# TODO: change date
-date: 2023-05-30
+date: 2023-05-26
 title: Fancy Area
 githubUrl: https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/fancy-area
 component: FancyArea
@@ -11,11 +10,11 @@ description: A markdown textarea with mention support including hover cards in t
   <FancyArea />
 </CraftWrapper>
 
-The Textarea is inspired by [GitHub](https://github.com)'s PR comment area and is powered by [shadcn/ui](https://ui.shadcn.com). Almost all elements are [radix-ui](https://www.radix-ui.com) components, styled with [tailwindcss](http://tailwindcss.com).
+The Textarea is inspired by [GitHub](https://github.com)'s PR comment section. The impressive part is the **@mention support** including hover cards in the preview. The goal is to reproduce it **without text editor** library.
 
 ## UI
 
-Let's keep it short and use [ui.shadcn](https://ui.shadcn.com).
+Let's keep it short and use [ui.shadcn](https://ui.shadcn.com) components, which are mainly [radix-ui](https://www.radix-ui.com) primitives, styled with [tailwindcss](http://tailwindcss.com).
 
 The following components are being used:
 
@@ -29,28 +28,28 @@ To style the **preview**, we use the [`@tailwindcss/typography`](https://tailwin
 
 ## A Combobox inside the Textarea
 
-Getting the right **keyboard**, **mouse** and **touch events** and keeping the textarea focus while navigating through the mention Combobox required lots of work and testing. If you recognize an unexpected behavior, feel free to create a [GitHub Issue](https://github.com/mxkaske/mxkaske.dev/issues).
+Getting the right **keyboard**, **mouse** and **touch events** and keeping the textarea focus while navigating through the mention Combobox required lots of work and testing. If you recognize any unexpected behavior, feel free to create a [GitHub Issue](https://github.com/mxkaske/mxkaske.dev/issues).
 
 For our implementation, three utility functions have been created:
 
-- `getCaretCoordinates()`: creates a duplicate `textarea` as `div` and return the current `{ x, y }` position of the caret _(see [textarea-caret-position](https://github.com/component/textarea-caret-position))_
+- `getCaretCoordinates()`: creates a duplicate `textarea` as `div` to return the current `{ top, left, height }` properties of the caret _(cheat seen in [textarea-caret-position](https://github.com/component/textarea-caret-position))_
 - `getCurrentWord()`: returns the current word where the caret is at
 - `replaceWord(value)`: replaces the word where the caret is at with the new word
 
-Before further investigation, let's have a look at the simplified version of the `Write` Compnent:
+Let's have a look at a simplified version of the `Write` Component:
 
 ```tsx
 "use client";
 
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
-import { getCaretCoordinates, getCurrentWord, replaceWord } from "./utils";
 import {
   Command,
   CommandGroup,
   CommandInput,
   CommandItem,
 } from "@/components/ui/command";
+import { getCaretCoordinates, getCurrentWord, replaceWord } from "./utils";
 import { people } from "./data";
 
 export function Write() {
@@ -61,7 +60,8 @@ export function Write() {
   const [textValue, setTextValue] = useState("");
 
   const onTextValueChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    // checks if getCurrentWord() starts with "@" and updates dropdown position based on getCaretCoordinates()
+    // checks if getCurrentWord().startsWith("@") and updates dropdown position based on getCaretCoordinates()
+    // also updates the textValue state
   };
 
   const onCommandSelect = (value: string) => {
@@ -69,11 +69,11 @@ export function Write() {
   };
 
   const handleMouseDown = (e: Event) => {
-    // prevents default and stops propagating event, otherwise textarea will unfocus
+    // prevents default and stops propagating event, otherwise textarea would lose focus
   };
 
   const handleSectionChange = (e: Event) => {
-    // detects caret position changes and adapts dropdown visiblity based on getCurrentWord()
+    // detects caret position changes and adapts dropdown visiblity based on the getCurrentWord()
   };
 
   const handleBlur = (e: Event) => {
@@ -82,6 +82,7 @@ export function Write() {
 
   const handleKeyDown = (e: KeyboardEvent) => {
     // prevent default if dropdown is visible and dispatch keyboard events to input
+    // allows us to support keyboard navigation without changing the carets position
   };
 
   useEffect(() => {
@@ -115,7 +116,7 @@ export function Write() {
         className="absolute hidden h-auto max-h-32 max-w-min overflow-y-scroll"
       >
         <div className="hidden">
-          {/* REMINDER: className="hidden" won't hide the SearchIcon and border-top */}
+          {/* REMINDER: className="hidden" won't hide the SearchIcon and border */}
           <CommandInput ref={inputRef} value={commandValue} />
         </div>
         <CommandGroup className="max-w-min overflow-auto">
@@ -139,23 +140,23 @@ export function Write() {
 
 Important implementation details are:
 
-- We hide the `Command.Input` and update the value via state updates. That way, it allows us to use the cmdk package with our custom use case under the hood.
+- We hide the `CommandInput` and update the value via state updates. That way, it allows us to use the cmdk package with our custom use case under the hood.
 
 - We propagate **keyboard events** from the textarea to the input field when dropdown is visible with: `inputRef.current?.dispatchEvent(new KeyboardEvent("keydown", e))`
 
 - The `Textarea` listens to the caret position and the current word where the caret actually is and will be displayed whenever the `currentWord.startsWith(“@“)`.
 
-- We didn't wrap our `Command` Component around a `Popover` or `CommandDialog` (like we did in [`Fancy Box`](https://craft.mxkaske.dev/post/fancy-box)). The Components will focus automatically and we would lose the ability to continue writing in the textarea.
+- We didn't wrap our `Command` Component around a `Popover` or `CommandDialog` (like we did in [`Fancy Box`](https://craft.mxkaske.dev/post/fancy-box)). The Components would focus automatically and we would lose the ability to continue writing in the textarea.
 
 - The supported `people` are statically written inside of the code (see [data.ts]()). A re-iteration of that **Fancy Area** Component could include dynamic data fetching via API resulting in using the `Command.Loading` Component.
 
-- To replace a word, we are using the deprecated, but still heavily used and supported function:
+- To replace a word, we are using the deprecated, but still heavily used and yet supported function:
 
   ```js
   document.execCommand("insertText", false, value);
   ```
 
-  The reason for its usage: it **easily supports undo**. Please [contact me](https://twitter.com/mxkaske) if you have simple _non-deprecated_ way to do the same.
+  The reason: it **easily supports undo**. Please [contact me](https://twitter.com/mxkaske) if you know a simple _non-deprecated_ way to do the same.
 
 ## Transform Markdown into React
 
@@ -223,7 +224,9 @@ export function useProcessor(md: string) {
 }
 ```
 
-We are using a Regex `/@(\w+)/g` to wrap all the words, starting with "@", inside of a custom `<mention>` element. This also means that we need to tell `rehype-sanitize` that this specific html-tag and its corresponding attribute `handle` is safe as well as extending the `rehype-react` object that maps tag names to components. In our case `{ mention: Mention }`.
+We are using a regular expression (`/@(\w+)/g`) to wrap all the words, starting with "@", inside of a custom `<mention>` element. This also means that we need to tell `rehype-sanitize` that this specific html-tag and its corresponding attribute `handle` is safe as well as extending the `rehype-react` object that maps tag names to components. In our case `{ mention: Mention }`.
+
+> The logic can be used for any custom Component!
 
 We now can safely import the users content with:
 
@@ -239,11 +242,13 @@ The `Mention` Component that is being used in the preview is a _copy cat_ of sha
 
 In total, 6 files have been created:
 
-1. `fancy-area.tsx` sticks everything together
-2. `write.tsx` includes the textarea and combobox logic
-3. `preview.tsx` displays the content
-4. `use-processor.ts` generates jsx out of md
-5. `utils.ts` includes the utility functions
-6. `mention.tsx` keeps the hover card separate from the preview
+1. [`fancy-area.tsx`](https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/fancy-area/fancy-area.tsx) brings everything together
+2. [`write.tsx`](https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/fancy-area/write.tsx) includes the logic for the textarea and combobox
+3. [`preview.tsx`](https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/fancy-area/preview.tsx) displays the content
+4. [`use-processor.ts`](https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/fancy-area/use-processor.ts) generates JSX out of Markdown
+5. [`utils.ts`](https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/fancy-area/utils.ts) includes utility functions for writing
+6. [`mention.tsx`](https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/fancy-area/mention.tsx) keeps the hover card separate from the preview
+
+> If it finds interest, I'll will update the Components to make it more reusable.
 
 The source code is available on [GitHub](https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/fancy-area).

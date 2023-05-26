@@ -24,4 +24,9 @@ export const people = [{
 	profileImg: "https://pbs.twimg.com/profile_images/1506792347840888834/dS-r50Je_400x400.jpg",
 	description: "building the future of the web ▲ @vercel | @dubdotsh | http://oneword.domains",
 	joined: "July 2011"
+},{
+	username: "@raunofreiberg",
+	profileImg: "https://pbs.twimg.com/profile_images/1525606643794427905/17-x8e9o_400x400.jpg",
+	description: "Devoured by details.",
+	joined: "December 2018"
 }]

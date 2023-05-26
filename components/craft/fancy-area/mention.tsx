@@ -21,8 +21,7 @@ export function Mention({ children, handle }: Props) {
     return children;
   }
 
-  // REMINDER: name does not include prefix '@', children[0] does
-  const user = people.find(({ username }) => username == children[0]);
+  const user = people.find(({ username }) => username === children[0]);
   // REMINDER: only allowed users are rendered with HoverCard
   if (!user) {
     return children;
@@ -37,7 +36,7 @@ export function Mention({ children, handle }: Props) {
         <a href={twitterUrl} target="_blank">{children}</a>
       </HoverCardTrigger>
       <HoverPortal>
-        <HoverCardContent className="w-80">
+        <HoverCardContent className="max-w-xs w-auto">
           <div className="flex justify-between space-x-4">
             <Avatar>
               <AvatarImage src={user.profileImg} />

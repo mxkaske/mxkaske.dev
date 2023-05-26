@@ -2,7 +2,6 @@
 
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { Textarea } from "@/components/ui/textarea";
-import { getCaretCoordinates, getCurrentWord, replaceWord } from "./utils";
 import {
   Command,
   CommandGroup,
@@ -11,6 +10,7 @@ import {
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { people } from "./data";
+import { getCaretCoordinates, getCurrentWord, replaceWord } from "./utils";
 
 interface Props {
   textValue: string;
@@ -129,7 +129,7 @@ export function Write({ textValue, setTextValue }: Props) {
         ref={textareaRef}
         autoComplete="off"
         autoCorrect="off"
-        className="resize-none h-auto" // REMINDER: font-[sans-serif]
+        className="resize-none h-auto"
         value={textValue}
         onChange={onTextValueChange}
         rows={5}
@@ -142,8 +142,7 @@ export function Write({ textValue, setTextValue }: Props) {
         className={cn("max-w-min absolute hidden h-auto max-h-32 border border-popover shadow overflow-y-scroll")}
       >
         <div className="hidden">
-          {/* REMINDER: className="hidden" won't hide the SearchIcon and border-top */}
-          {/* FIXME: maybe just use the default Command.Input Component */}
+          {/* REMINDER: className="hidden" won't hide the SearchIcon and border */}
           <CommandInput ref={inputRef} value={commandValue} />
         </div>
         <CommandGroup className="overflow-auto max-w-min">
