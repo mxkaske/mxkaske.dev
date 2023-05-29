@@ -4,14 +4,16 @@ import remarkRehype from "remark-rehype";
 import rehypeRaw from "rehype-raw";
 import rehypeReact from 'rehype-react';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
-import { createElement, Fragment, useEffect, useState } from 'react'
+import { createElement, useEffect, useState } from 'react'
 import { Mention } from "./mention";
 
 export function useProcessor(md: string) {
   const [content, setContent] = useState<React.ReactNode>(null)
-
+  console.log(md)
   const mentionRegex = /@(\w+)/g;
   const text = md.replace(mentionRegex, '<mention handle="$1">@$1</mention>');
+
+  console.log(text)
 
   useEffect(() => {
     unified()
@@ -39,5 +41,5 @@ export function useProcessor(md: string) {
       })
   }, [text])
 
-  return content || Fragment
+  return content
 }

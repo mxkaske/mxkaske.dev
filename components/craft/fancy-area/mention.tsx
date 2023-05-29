@@ -21,7 +21,7 @@ export function Mention({ children, handle }: Props) {
     return children;
   }
 
-  const user = people.find(({ username }) => username === children[0]);
+  const user = people.find(({ username }) => username === `@${handle}`); // or `username === children[0]`
   // REMINDER: only allowed users are rendered with HoverCard
   if (!user) {
     return children;

@@ -183,7 +183,7 @@ import remarkRehype from "remark-rehype";
 import rehypeRaw from "rehype-raw";
 import rehypeReact from "rehype-react";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
-import { createElement, Fragment, useEffect, useState } from "react";
+import { createElement, useEffect, useState } from "react";
 import { Mention } from "./mention";
 
 export function useProcessor(md: string) {
@@ -220,7 +220,7 @@ export function useProcessor(md: string) {
       });
   }, [text]);
 
-  return content || Fragment;
+  return content;
 }
 ```
 
