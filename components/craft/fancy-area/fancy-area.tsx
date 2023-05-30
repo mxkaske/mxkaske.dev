@@ -6,7 +6,7 @@ import { Write } from "./write";
 import { Preview } from "./preview";
 // TODO: TabsList has an interesting tab focus. Need to investigate on it
 
-const defaultText = `Build by @mxkaske, _powered by_ @shadcn **ui**.`
+const defaultText = `Build by @mxkaske, _powered by_ @shadcn **ui**.\n\nSupports raw <code>html</code>.`
 
 export function FancyArea() {
   const [textValue, setTextValue] = React.useState(defaultText);
