@@ -1,5 +1,6 @@
 import { BGGrid } from "@/components/craft/bg-grid";
 import { ThemeProvider } from "@/components/theme/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
 import "@/styles/globals.css";
 import { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -40,6 +41,7 @@ export default function RootLayout({
       <body className={`${inter.className} ${calSans.variable}`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <BGGrid>{children}</BGGrid>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

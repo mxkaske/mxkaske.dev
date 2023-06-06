@@ -1,0 +1,132 @@
+---
+date: 2023-06-06
+title: Server Actions and the experimental useFormStatus hook
+githubUrl: https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/server-action-experimental-hook
+component: ServerActionForm
+description: A dead simple waitlist form with pending state. Powered by Server Actions.
+---
+
+<CraftWrapper>
+  <ServerActionForm />
+</CraftWrapper>
+
+Today, we experiment with the newly released [Server Actions](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions) and the `experimental_useFormStatus` hook.
+
+Because our `Form` is a Client Component, we'll need to move the action into a separate `actions.ts` file with the "use server" directive. This is totally fine and I might use it even in Server Components to keep make it easier to switch a file from RSC to RCC and to separate the concerns.
+
+> For testing purposes, we set a `timeout` of 2000ms to display a loading state and simulate a database connection.
+
+```ts
+// actions.ts
+"use server";
+import { redirect } from "next/navigation";
+
+export async function submitEmail(data: FormData) {
+  const email = data.get("email");
+  if (email) {
+    // connect to database and store email
+    redirect(`/?form=success&email=${email}`);
+  }
+  return;
+}
+```
+
+Let's have a closer look to the form component. You will quickly notice that we are using a Client Component with the main purpose of detecting and mutating the incoming `searchParams`.
+All the non-rendering part is optional but makes the form feel interactive.
+
+You might have noticed that we redirect the form action to `/?form=success&email=${email}` which allows us to create a toast to notify the user on the form status, which in our case always _succeeded_. Once done, we are reseting the search parameters. In case the user accidentally refreshes the page, we won't show him again the toast notification.
+
+```tsx
+// form.tsx
+"use client";
+
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/use-toast";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { submitEmail } from "./actions";
+import { SubmitButton } from "./submit-button";
+import { useCallback, useEffect } from "react";
+
+export function Form() {
+  const { toast } = useToast();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const resetSearchParams = useCallback(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    console.log({ params });
+    params.delete("email");
+    params.delete("form");
+    router.replace(`${pathname}?${params.toString()}`);
+  }, [searchParams, router, pathname]);
+
+  useEffect(() => {
+    const form = searchParams.has("form") && searchParams.get("form");
+    const email = searchParams.has("email") && searchParams.get("email");
+
+    if (form === "success" && email) {
+      toast({
+        title: "Joined Waitlist",
+        description: `Added ${email} to the fake waitlist.`,
+      });
+      resetSearchParams();
+    }
+  }, [toast, searchParams, resetSearchParams]);
+
+  return (
+    <form
+      action={submitEmail}
+      className="not-prose grid w-full max-w-sm gap-1.5"
+    >
+      <div className="grid w-full gap-1.5">
+        <div className="flex w-full items-end gap-1.5">
+          <div className="grid w-full gap-1.5">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              required
+              name="email"
+              id="email"
+              type="email"
+              placeholder="me@domain.com"
+            />
+          </div>
+          <SubmitButton />
+        </div>
+        <p className="text-muted-foreground text-xs">
+          Enter any fake email schema.
+        </p>
+      </div>
+    </form>
+  );
+}
+```
+
+Now you might wonder why we need a separate `SubmitButton`. This is because the current [`useFormStatus`](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions#experimental-useformstatus) seems to not work in the same file as the `Form`. As simple as that. And I couldn't figure out the specific reason, as both components are Client Components.
+
+```tsx
+// submit-button.tsx
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { experimental_useFormStatus as useFormStatus } from "react-dom";
+import { LoadingAnimation } from "./loading-animation";
+
+export function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button
+      type="submit"
+      disabled={pending}
+      className="w-20 disabled:opacity-100"
+    >
+      {pending ? <LoadingAnimation /> : "Join"}
+    </Button>
+  );
+}
+```
+
+The loading animation is inspired by the vercel's one. It's build with [`tailwind-animate`](https://github.com/jamiebuilds/tailwindcss-animate) which is added to [ui.shadcn](https://ui.shadcn.com) by default. Otherwise we could easily extend the [`tailwind.config.js`](https://tailwindcss.com/docs/plugins#adding-utilities) with utilities. [Let me know](https://twitter.com/mxkaske) if you have any questions. I won't go deeper into it!
+
+The source code is available on [GitHub](https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/server-action-experimental-hook).
