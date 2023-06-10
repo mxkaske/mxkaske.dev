@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/command";
 import { Command as CommandPrimitive } from "cmdk";
 
-
 type Framework = Record<"value" | "label", string>;
 
 const FRAMEWORKS = [
@@ -97,6 +96,10 @@ export function FancyMultiSelect() {
                       handleUnselect(framework);
                     }
                   }}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
                   onClick={() => handleUnselect(framework)}
                 >
                   <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
@@ -141,6 +144,6 @@ export function FancyMultiSelect() {
           </div>
           : null}
       </div>
-    </Command>
+    </Command >
   )
 }
