@@ -1,5 +1,6 @@
 import React from "react";
 import { allPosts } from "@/.contentlayer/generated";
+import { Footer } from "@/app/components/footer";
 export function generateMetadata({ params }: { params: { slug: string } }) {
   const post = allPosts.find((c) => c.url === `/post/${params.slug}`);
   return {
@@ -36,6 +37,7 @@ export default function BaseLayout({
       <div className="backdrop-blur-[2px] flex-1 flex flex-col rounded-lg bg-background/50 p-4 sm:p-8 border border-border/50">
         {children}
       </div>
+      <Footer />
     </main>
   );
 }
