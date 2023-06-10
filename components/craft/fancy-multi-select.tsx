@@ -8,9 +8,8 @@ import {
   Command,
   CommandGroup,
   CommandItem,
-  CommandInput
 } from "@/components/ui/command";
-// import { Command as CommandPrimitive } from "cmdk";
+import { Command as CommandPrimitive } from "cmdk";
 
 
 type Framework = Record<"value" | "label", string>;
@@ -106,7 +105,7 @@ export function FancyMultiSelect() {
             )
           })}
           {/* Avoid having the "Search" Icon */}
-          <CommandInput
+          <CommandPrimitive.Input
             ref={inputRef}
             value={inputValue}
             onValueChange={setInputValue}
