@@ -1,9 +1,8 @@
 import React from "react";
 import { Post, allPosts } from "@/.contentlayer/generated";
-import { ModeToggle } from "@/components/theme/toggle-mode";
 import { components } from "@/lib/mdx";
-import { Github, Twitter } from "lucide-react";
 import Link from "next/link";
+import { Footer } from "./components/footer";
 
 const allPostsByMonth = allPosts.reduce((acc, curr) => {
   const month = new Date(curr.date).toLocaleString('default', { month: 'long', year: "numeric" });
@@ -65,30 +64,8 @@ export default function Home() {
             }
           </div>
         </main>
-        <footer className="w-full flex justify-between items-center">
-          <div className="flex space-x-2">
-            <a
-              href="https://twitter.com/mxkaske"
-              target="_blank"
-              rel="noreferrer"
-              className="p-2 text-foreground bg-background rounded-md hover:bg-muted"
-            >
-              <Twitter className="h-5 w-5" />
-            </a>
-            <a
-              href="https://github.com/mxkaske/mxkaske.dev"
-              target="_blank"
-              rel="noreferrer"
-              className="p-2 text-foreground bg-background rounded-md hover:bg-muted"
-            >
-              <Github className="h-5 w-5" />
-            </a>
-          </div>
-          <div>
-            <ModeToggle />
-          </div>
-        </footer>
       </div>
+      <Footer />
     </div>
   );
 }
