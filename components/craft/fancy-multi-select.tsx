@@ -39,6 +39,14 @@ const FRAMEWORKS = [
     value: "wordpress",
     label: "WordPress",
   },
+  {
+    value: "express.js",
+    label: "Express.js",
+  },
+  {
+    value: "nest.js",
+    label: "Nest.js",
+  }
 ] satisfies Framework[];
 
 export function FancyMultiSelect() {
@@ -47,12 +55,8 @@ export function FancyMultiSelect() {
   const [selected, setSelected] = React.useState<Framework[]>([FRAMEWORKS[4]]);
   const [inputValue, setInputValue] = React.useState("");
 
-  const handleFocus = React.useCallback((e: FocusEvent) => {
-    setOpen(true);
-  }, []);
-
-  const handleBlur = React.useCallback((e: FocusEvent) => {
-    setOpen(false);
+  const handleUnselect = React.useCallback((framework: Framework) => {
+    setSelected(prev => prev.filter(s => s.value !== framework.value));
   }, []);
 
   const handleKeyDown = React.useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -67,25 +71,19 @@ export function FancyMultiSelect() {
           })
         }
       }
+      // This is not a default behaviour of the <input /> field
+      if (e.key === "Escape") {
+        input.blur();
+      }
     }
   }, []);
-
-  React.useEffect(() => {
-    const input = inputRef.current;
-    input?.addEventListener("focus", handleFocus);
-    input?.addEventListener("blur", handleBlur);
-    return () => {
-      input?.removeEventListener("focus", handleFocus);
-      input?.removeEventListener("blur", handleBlur);
-    };
-  }, [handleFocus, handleBlur]);
 
   const selectables = FRAMEWORKS.filter(framework => !selected.includes(framework));
 
   return (
-    <Command onKeyDown={handleKeyDown}>
+    <Command onKeyDown={handleKeyDown} className="overflow-visible bg-transparent">
       <div
-        className="group border border-input px-3 py-2 m-1 text-sm ring-offset-background rounded-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
+        className="group border border-input px-3 py-2 text-sm ring-offset-background rounded-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
       >
         <div className="flex gap-1 flex-wrap">
           {selected.map((framework) => {
@@ -93,9 +91,15 @@ export function FancyMultiSelect() {
               <Badge key={framework.value} variant="secondary">
                 {framework.label}
                 <button
-                  onClick={() => setSelected(prev => prev.filter(s => s.value !== framework.value))}
+                  className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleUnselect(framework);
+                    }
+                  }}
+                  onClick={() => handleUnselect(framework)}
                 >
-                  <X className="h-3 w-3 ml-1 text-muted-foreground hover:text-foreground" />
+                  <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
                 </button>
               </Badge>
             )
@@ -105,34 +109,38 @@ export function FancyMultiSelect() {
             ref={inputRef}
             value={inputValue}
             onValueChange={setInputValue}
+            onBlur={() => setOpen(false)}
+            onFocus={() => setOpen(true)}
             placeholder="Select frameworks..."
             className="ml-2 bg-transparent outline-none placeholder:text-muted-foreground flex-1"
           />
         </div>
       </div>
-      {open && selectables.length > 0 ?
-        <div className="rounded-md border bg-popover mt-1 text-popover-foreground shadow-md outline-none animate-in">
-          <CommandGroup className="max-h-[145px] overflow-auto">
-            {selectables.map((framework) => {
-              return (
-                <CommandItem
-                  key={framework.value}
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                  onSelect={(value) => {
-                    setInputValue("")
-                    setSelected(prev => [...prev, framework])
-                  }}
-                >
-                  {framework.label}
-                </CommandItem>
-              );
-            })}
-          </CommandGroup>
-        </div>
-        : null}
+      <div className="relative mt-2">
+        {open && selectables.length > 0 ?
+          <div className="absolute w-full top-0 rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
+            <CommandGroup className="h-full overflow-auto">
+              {selectables.map((framework) => {
+                return (
+                  <CommandItem
+                    key={framework.value}
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    onSelect={(value) => {
+                      setInputValue("")
+                      setSelected(prev => [...prev, framework])
+                    }}
+                  >
+                    {framework.label}
+                  </CommandItem>
+                );
+              })}
+            </CommandGroup>
+          </div>
+          : null}
+      </div>
     </Command>
   )
 }
