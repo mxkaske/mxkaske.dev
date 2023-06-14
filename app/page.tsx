@@ -23,13 +23,13 @@ export default function Home() {
           <h1 className="font-cal font-bold tracking-tight text-lg text-foreground mb-8">
             mx<span className="text-muted-foreground">kaske</span>
           </h1>
-          <div className="grid gap-4 sm:gap-8 sm:grid-cols-[auto_1fr]">
+          <div className="grid gap-6 sm:gap-8 sm:grid-cols-[auto_1fr]">
             {Object.keys(allPostsByMonth)
               .sort((a, b) => new Date(a).getTime() > new Date(b).getTime() ? -1 : 1)
               .map((month => {
                 return <React.Fragment key={month}>
-                  <div><p className="mb-4 text-sm text-muted-foreground font-light font-mono">{month}</p></div>
-                  <div className="grid gap-6">
+                  <div><p className="text-sm text-muted-foreground font-light font-mono">{month}</p></div>
+                  <div className="grid sm:gap-4 gap-6">
                     {allPostsByMonth[month].sort((a, b) => (a.date > b.date ? -1 : 1))
                       .map((post) => {
                         const Component =
