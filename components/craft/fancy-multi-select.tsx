@@ -121,7 +121,7 @@ export function FancyMultiSelect() {
       </div>
       <div className="relative mt-2">
         {open && selectables.length > 0 ?
-          <div className="absolute w-full top-0 rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
+          <div className="absolute w-full z-10 top-0 rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
             <CommandGroup className="h-full overflow-auto">
               {selectables.map((framework) => {
                 return (
@@ -135,6 +135,7 @@ export function FancyMultiSelect() {
                       setInputValue("")
                       setSelected(prev => [...prev, framework])
                     }}
+                    className={"cursor-pointer"}
                   >
                     {framework.label}
                   </CommandItem>
