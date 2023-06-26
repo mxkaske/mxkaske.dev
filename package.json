@@ -53,9 +53,9 @@
     "rehype-stringify": "^9.0.3",
     "remark-parse": "^10.0.2",
     "remark-rehype": "^10.1.0",
-    "tailwind-merge": "^1.12.0",
+    "tailwind-merge": "^1.13.2",
     "tailwindcss": "3.3.2",
-    "tailwindcss-animate": "^1.0.5",
+    "tailwindcss-animate": "^1.0.6",
     "typescript": "5.0.4",
     "unified": "^10.1.2",
     "zod": "^3.21.4"
