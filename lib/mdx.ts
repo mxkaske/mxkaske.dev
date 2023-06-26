@@ -5,6 +5,7 @@ import { CraftWrapper } from "@/components/mdx/craft-wrapper";
 import { Link } from "@/components/mdx/link";
 import { FancyArea } from "@/components/craft/fancy-area/fancy-area";
 import { FancyMultiSelect } from "@/components/craft/fancy-multi-select";
+import { FancyInputSearch } from "@/components/craft/fancy-input-search";
 import { Form as ServerActionForm } from "@/components/craft/server-action-experimental-hook/form";
 
 export const components = {
@@ -15,5 +16,6 @@ export const components = {
   FancyArea,
   FancyBox,
   FancyMultiSelect,
-  ServerActionForm
+  FancyInputSearch,
+  ServerActionForm,
 };
