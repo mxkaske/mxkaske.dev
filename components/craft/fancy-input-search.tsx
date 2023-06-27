@@ -1,10 +1,16 @@
 "use client";
 
 import * as React from "react";
-import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+} from "@/components/ui/command";
 import { Command as CommandPrimitive, useCommandState } from "cmdk";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-const FILTERS = ["host", "method", "status"] as const;
+const FILTERS = ["host", "method", "status", "sort"] as const;
 
 type Filter = (typeof FILTERS)[number];
 
@@ -12,17 +18,24 @@ const OPTIONS: Record<Filter, (string | number)[]> = {
   host: ["mxkaske.dev", "craft.mxkaske.dev"],
   method: ["GET", "POST"],
   status: [200, 404, 500],
+  sort: ["ASC", "DESC"],
+  // limit: number
 };
 
 // type literal with `${Filters}:${Filters[string]}`
 
-// TODO: rename to FancyInputSearch
 export function FancyInputSearch() {
+  // const router = useRouter();
+  // const pathname = usePathname();
+  // const searchParams = useSearchParams();
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [open, setOpen] = React.useState<boolean>(false);
   const [inputValue, setInputValue] = React.useState<string>("");
   const [currentWord, setCurrentWord] = React.useState("");
-  const [caretPosition, setCaretPosition] = React.useState(-1);
+  const [caretPosition, setCaretPosition] = React.useState({
+    start: -1,
+    end: -1,
+  });
 
   /**
    * 1. get current string where cursor is
@@ -31,11 +44,45 @@ export function FancyInputSearch() {
    * 4. FEATURE: split options by ","
    */
 
+  // Get a new searchParams string by merging the current
+  // searchParams with a provided key/value pair
+  // const createQueryString = React.useCallback(
+  //   (name: string, value: string) => {
+  //     // @ts-ignore
+  //     const params = new URLSearchParams(searchParams);
+  //     console.log({ params });
+  //     params.set(name, value);
+
+  //     return params.toString();
+  //   },
+  //   [searchParams]
+  // );
+
+  const options = React.useMemo(() => {
+    return inputValue
+      .trim()
+      .split(" ")
+      .reduce((prev, curr) => {
+        const [name, value] = curr.split(":");
+        // TODO: check if curr !== currentWord is necessary
+        if (value && name && curr !== currentWord) {
+          if (value.includes(",")) {
+            // const values = value.split(",") // TODO: support multiple value
+          }
+          prev[name] = value;
+          // change searchParams?!?
+        }
+        return prev;
+      }, {} as Record<string, string>);
+  }, [inputValue, currentWord]);
+
+  // console.log(options);
+
   return (
     <Command
       className="overflow-visible bg-transparent"
       filter={(value, search) => {
-        console.log({ value, search, currentWord });
+        // console.log({ value, search, currentWord });
         if (value.includes(currentWord.toLowerCase())) return 1;
         return 0;
       }}
@@ -47,11 +94,12 @@ export function FancyInputSearch() {
         onBlur={() => setOpen(false)}
         onFocus={() => setOpen(true)}
         onInput={(e) => {
-          const caretPosition = e.currentTarget?.selectionStart || -1;
+          const caretPositionStart = e.currentTarget?.selectionStart || -1;
+          const caretPositionEnd = e.currentTarget.selectionEnd || -1;
           const inputValue = e.currentTarget?.value || "";
 
-          let start = caretPosition;
-          let end = caretPosition;
+          let start = caretPositionStart;
+          let end = caretPositionStart;
 
           while (start > 0 && inputValue[start - 1] !== " ") {
             start--;
@@ -63,7 +111,10 @@ export function FancyInputSearch() {
           const word = inputValue.substring(start, end);
           // setWords?
           setCurrentWord(word);
-          setCaretPosition(caretPosition);
+          setCaretPosition({
+            start: caretPositionStart,
+            end: caretPositionEnd,
+          });
         }}
         placeholder="28 total logs found..."
         className="flex-1 rounded-md border border-input bg-transparent px-3 py-2 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2"
@@ -87,17 +138,24 @@ export function FancyInputSearch() {
                         e.stopPropagation();
                       }}
                       onSelect={(value) => {
-                        // WRONG: if changing word in the middle of the input!
                         setInputValue((prev) => {
                           console.log({ prev, currentWord, value });
-                          const input = prev.replace(currentWord, value);
+                          if (currentWord.trim() === "") {
+                            const input = `${prev}${value}`;
+                            return `${input}:`;
+                          }
+                          const input = prev.replace(
+                            ` ${currentWord}`,
+                            ` ${value}`
+                          );
                           return `${input}:`;
                         });
                         setCurrentWord(`${value}:`);
                       }}
+                      className="group"
                     >
                       {key}
-                      <span className="ml-1 text-sm text-muted-foreground/60">
+                      <span className="ml-1 hidden truncate text-muted-foreground/80 group-aria-[selected=true]:block">
                         [{OPTIONS[key as Filter].join(", ")}]
                       </span>
                     </CommandItem>
@@ -112,9 +170,8 @@ export function FancyInputSearch() {
                           }}
                           onSelect={(value) => {
                             setInputValue((prev) => {
-                              // WRONG: if changing word in the middle of the input!
                               const input = prev.replace(currentWord, value);
-                              return `${input} `;
+                              return `${input.trim()} `;
                             });
                             setCurrentWord("");
                           }}
@@ -128,6 +185,7 @@ export function FancyInputSearch() {
                 );
               })}
             </CommandGroup>
+            <CommandEmpty>No results found.</CommandEmpty>
           </div>
         ) : null}
       </div>
@@ -142,9 +200,10 @@ interface SubItemProps
 
 const SubItem = ({ currentWord, ...props }: SubItemProps) => {
   const search = useCommandState((state) => {
+    // console.log(state)
     return state.search;
   });
-  console.log({ search, currentWord });
+  // console.log({ search, currentWord });
   if (!search.includes(":") || !currentWord.includes(":")) return null;
   return <CommandItem {...props} />;
 };
