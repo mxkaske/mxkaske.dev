@@ -77,12 +77,12 @@ export function FancyMultiSelect() {
     }
   }, []);
 
-  const selectables = FRAMEWORKS.filter(framework => !selected.includes(framework));
+  const selectables = FRAMEWORKS.filter(framework => !selected.find(s => s.value === framework.value));
 
   return (
     <Command onKeyDown={handleKeyDown} className="overflow-visible bg-transparent">
       <div
-        className="group border border-input px-3 py-2 text-sm ring-offset-background rounded-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
+        className="min-h-10 group max-h-32 overflow-auto border border-input px-3 py-2 text-sm ring-offset-background rounded-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
       >
         <div className="flex gap-1 flex-wrap">
           {selected.map((framework) => {
@@ -119,32 +119,32 @@ export function FancyMultiSelect() {
           />
         </div>
       </div>
-      <div className="relative mt-2">
         {open && selectables.length > 0 ?
-          <div className="absolute w-full z-10 top-0 rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
-            <CommandGroup className="h-full overflow-auto">
-              {selectables.map((framework) => {
-                return (
-                  <CommandItem
-                    key={framework.value}
-                    onMouseDown={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }}
-                    onSelect={(value) => {
-                      setInputValue("")
-                      setSelected(prev => [...prev, framework])
-                    }}
-                    className={"cursor-pointer"}
-                  >
-                    {framework.label}
-                  </CommandItem>
-                );
-              })}
-            </CommandGroup>
+          <div className="relative z-50 translate-y-1">
+              <div className="absolute w-full top-0 rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
+                <CommandGroup className="h-full max-h-80 overflow-auto">
+                  {selectables.map((framework) => {
+                    return (
+                      <CommandItem
+                        key={framework.value}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }}
+                        onSelect={() => {
+                          setInputValue("")
+                          setSelected(prev => [...prev, framework])
+                        }}
+                        className={"cursor-pointer"}
+                      >
+                        {framework.label}
+                      </CommandItem>
+                    );
+                  })}
+                </CommandGroup>
+              </div>
           </div>
           : null}
-      </div>
     </Command >
   )
 }
