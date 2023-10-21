@@ -1,0 +1,26 @@
+---
+date: 2023-10-23
+title: Fancy Date Time Picker
+githubUrl: https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/fancy-date-time-picker.tsx
+component: FancyDateTimePicker
+description: An accessible, zero configuration extendable DateTime Picker for your shadcn/ui projects.
+---
+
+<CraftWrapper>
+  <FancyDateTimePicker />
+</CraftWrapper>
+
+Requested by the community and essential for Shadcn UI, we have developed a copy-and-pasteable date-time picker.
+
+This time picker emulates the default behavior of the native, non-customizable `<input type="time" />` element.
+
+It listens for onKeyDown events before input and enables arrow keys for time navigation. Key features include:
+
+- Arrow key navigation between hours and minutes.
+- Increment and decrement of hours and minutes using arrow keys.
+- Automatic input validation.
+- After input, it waits for 2000ms for a second input value; otherwise, it resets and user starts with first input value.
+- Automatic focus on minutes after hours input.
+- Support for the "Tab" key to switch between inputs.
+
+We utilize an `<input type="number">` to trigger the native number keyboard on mobile devices
