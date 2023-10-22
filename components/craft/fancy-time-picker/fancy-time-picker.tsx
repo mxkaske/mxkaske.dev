@@ -165,7 +165,7 @@ export function FancyTimePicker({
   return (
     <div className="flex items-end gap-2">
       {config.hours ? (
-        <div className="text-center">
+        <div className="grid gap-1 text-center">
           <Label htmlFor="hours" className="text-xs">
             Hours
           </Label>
@@ -173,7 +173,7 @@ export function FancyTimePicker({
             ref={hourRef}
             id="hours"
             name="hours"
-            className="w-[44px] font-mono tabular-nums caret-transparent focus:bg-accent focus:text-accent-foreground [&::-webkit-inner-spin-button]:appearance-none"
+            className="w-[46px] font-mono text-base tabular-nums caret-transparent focus:bg-accent focus:text-accent-foreground [&::-webkit-inner-spin-button]:appearance-none"
             value={hours}
             onChange={(e) => e.preventDefault()}
             type="number"
@@ -183,7 +183,7 @@ export function FancyTimePicker({
         </div>
       ) : null}
       {config.minutes ? (
-        <div className="text-center">
+        <div className="grid gap-1 text-center">
           <Label htmlFor="minutes" className="text-xs">
             Minutes
           </Label>
@@ -191,7 +191,7 @@ export function FancyTimePicker({
             ref={minuteRef}
             id="minutes"
             name="minutes"
-            className="w-[44px] font-mono tabular-nums caret-transparent focus:bg-accent focus:text-accent-foreground [&::-webkit-inner-spin-button]:appearance-none"
+            className="w-[46px] font-mono text-base tabular-nums caret-transparent focus:bg-accent focus:text-accent-foreground [&::-webkit-inner-spin-button]:appearance-none"
             value={minutes}
             type="number"
             inputMode="decimal"
@@ -201,7 +201,7 @@ export function FancyTimePicker({
         </div>
       ) : null}
       {config.seconds ? (
-        <div className="text-center">
+        <div className="grid gap-1 text-center">
           <Label htmlFor="seconds" className="text-xs">
             Seconds
           </Label>
@@ -209,7 +209,7 @@ export function FancyTimePicker({
             ref={secondRef}
             id="seconds"
             name="seconds"
-            className="w-[44px] font-mono tabular-nums caret-transparent focus:bg-accent focus:text-accent-foreground [&::-webkit-inner-spin-button]:appearance-none"
+            className="w-[46px] font-mono text-base tabular-nums caret-transparent focus:bg-accent focus:text-accent-foreground [&::-webkit-inner-spin-button]:appearance-none"
             value={seconds}
             type="number"
             inputMode="decimal"
