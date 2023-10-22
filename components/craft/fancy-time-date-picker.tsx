@@ -61,7 +61,7 @@ export function FancyDateTimePicker() {
         />
         <Separator />
         <div className="flex gap-4 p-3">
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <Input
               ref={hourRef}
               className="w-[44px] font-mono tabular-nums caret-transparent focus:bg-accent focus:text-accent-foreground [&::-webkit-inner-spin-button]:appearance-none"
@@ -110,6 +110,7 @@ export function FancyDateTimePicker() {
                 }
               }}
             />
+            <span className="text-muted-foreground">:</span>
             <Input
               ref={minuteRef}
               className="w-[44px] font-mono tabular-nums caret-transparent focus:bg-accent focus:text-accent-foreground [&::-webkit-inner-spin-button]:appearance-none"
