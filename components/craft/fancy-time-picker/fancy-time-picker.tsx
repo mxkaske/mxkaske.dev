@@ -20,15 +20,18 @@ export interface FancyTimePickerProps {
     hours?: boolean;
     minutes?: boolean;
     seconds?: boolean;
-    // is12Hour?: boolean;
+    is12Hour?: boolean;
   };
 }
 
+/**
+ * FIXME: ref.focus are wrong when selecting different configs
+ */
 const defaultConfig = {
   hours: true,
   minutes: true,
   seconds: true,
-  // is12Hour: false,
+  is12Hour: false,
 };
 
 export function FancyTimePicker({
@@ -55,10 +58,14 @@ export function FancyTimePicker({
     }
   }, [flag]);
 
+  const _12Hours = (date?.getHours() || 12) % 13;
+
   /**
    * calculated hours, minutes and seconds from date
    */
-  const hours = getValidHour(String(date?.getHours()));
+  const hours = getValidHour(
+    String(config.is12Hour ? _12Hours : date?.getHours())
+  );
   const minutes = getValidMinuteOrSecond(String(date?.getMinutes()));
   const seconds = getValidMinuteOrSecond(String(date?.getSeconds()));
 
@@ -77,18 +84,29 @@ export function FancyTimePicker({
     if (["ArrowUp", "ArrowDown"].includes(e.key)) {
       const newValue = getValidArrow({
         value: hours,
-        min: 0, // is12Hour ? 1 : 0,
-        max: 23, // is12Hour ? 12 : 23,
+        min: config.is12Hour ? 1 : 0,
+        max: config.is12Hour ? 12 : 23,
         step: e.key === "ArrowUp" ? 1 : -1,
       });
+      console.log({ newValue });
       if (flag) setFlag(false);
-      setDate(setHours(date || new Date(), Number(getValidHour(newValue))));
+      setDate(
+        setHours(
+          date || new Date(),
+          Number(getValidHour(newValue, config.is12Hour))
+        )
+      );
     }
     if (e.key >= "0" && e.key <= "9") {
       const newValue = !flag ? "0" + e.key : hours.slice(1, 2) + e.key;
       if (flag) minuteRef?.current?.focus();
       setFlag((prev) => !prev);
-      setDate(setHours(date || new Date(), Number(getValidHour(newValue))));
+      setDate(
+        setHours(
+          date || new Date(),
+          Number(getValidHour(newValue, config.is12Hour))
+        )
+      );
     }
   }
 
@@ -218,6 +236,19 @@ export function FancyTimePicker({
           />
         </div>
       ) : null}
+      {config.is12Hour ? (
+        <div className="flex h-10 items-center">
+          <Select defaultValue={date && date?.getHours() > 12 ? "pm" : "am"}>
+            <SelectTrigger className="w-[65px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="am">AM</SelectItem>
+              <SelectItem value="pm">PM</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      ) : null}
       <div className="flex h-10 items-center">
         <Clock className="ml-2 h-4 w-4" />
       </div>
@@ -227,8 +258,10 @@ export function FancyTimePicker({
 
 /**
  * regular expression to check for valid hour format (01-23)
+ * or (01-12) if is12Hour is true
  */
-function isValidHour(value: string) {
+function isValidHour(value: string, is12Hour = false) {
+  if (is12Hour) return /^(0[1-9]|1[0-2])$/.test(value);
   return /^(0[0-9]|1[0-9]|2[0-3])$/.test(value);
 }
 
@@ -239,15 +272,16 @@ function isValidMinuteOrSecond(value: string) {
   return /^[0-5][0-9]$/.test(value);
 }
 
-function getValidHour(value: string) {
-  if (isValidHour(value)) return value;
+function getValidHour(value: string, is12Hour = false) {
+  if (isValidHour(value, is12Hour)) return value;
 
+  const max = is12Hour ? 12 : 23;
   let numericValue = parseInt(value, 10);
 
   if (!isNaN(numericValue)) {
     // Ensure the value stays within the valid hour range (0 to 23)
-    if (numericValue > 23) {
-      numericValue = 23;
+    if (numericValue > max) {
+      numericValue = max;
     }
 
     // Convert the numeric value back to a string with leading zeros
