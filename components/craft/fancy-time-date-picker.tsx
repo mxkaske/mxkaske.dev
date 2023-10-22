@@ -64,10 +64,11 @@ export function FancyDateTimePicker() {
           <div className="flex gap-2">
             <Input
               ref={hourRef}
-              className="w-[44px] font-mono tabular-nums caret-transparent [&::-webkit-inner-spin-button]:appearance-none"
+              className="w-[44px] font-mono tabular-nums caret-transparent focus:bg-accent focus:text-accent-foreground [&::-webkit-inner-spin-button]:appearance-none"
               value={hours}
               onChange={(e) => e.preventDefault()}
               type="number"
+              inputMode="decimal"
               onKeyDown={(e) => {
                 if (e.key !== "Tab") {
                   e.preventDefault();
@@ -111,9 +112,10 @@ export function FancyDateTimePicker() {
             />
             <Input
               ref={minuteRef}
-              className="w-[44px] font-mono tabular-nums caret-transparent [&::-webkit-inner-spin-button]:appearance-none"
+              className="w-[44px] font-mono tabular-nums caret-transparent focus:bg-accent focus:text-accent-foreground [&::-webkit-inner-spin-button]:appearance-none"
               value={minutes}
               type="number"
+              inputMode="decimal"
               onChange={(e) => e.preventDefault()}
               onKeyDown={(e) => {
                 if (e.key !== "Tab") {
