@@ -4,7 +4,6 @@ import autolinkHeadings from "./contentlayer/plugins/autolink-headings";
 import prettyCode from "./contentlayer/plugins/rehype-pretty-code";
 import slug from "rehype-slug";
 
-
 // FIXME: Post != Craft
 
 export const Post = defineDocumentType(() => ({
@@ -45,12 +44,12 @@ export const Post = defineDocumentType(() => ({
     },
     url: {
       type: "string",
-      resolve: (post) => `/post/${post._raw.flattenedPath}`,
+      resolve: (post) => `/craft/${post._raw.flattenedPath}`,
     },
     readingTime: {
       type: "string",
-      resolve: (post) => readingTime(post.body.raw).text
-    }
+      resolve: (post) => readingTime(post.body.raw).text,
+    },
   },
 }));
 

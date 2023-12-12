@@ -53,9 +53,10 @@ module.exports = {
         md: `calc(var(--radius) - 2px)`,
         sm: "calc(var(--radius) - 4px)",
       },
+      // FIXME: local development doesnt work with this
       fontFamily: {
-        sans: ["var(--font-sans)", ...fontFamily.sans],
-        cal: ["var(--font-calsans)"],
+        sans: ['var(--font-geist-sans)', ...fontFamily.sans],
+        mono: ['var(--font-geist-mono)', ...fontFamily.mono],
       },
       keyframes: {
         "accordion-down": {
@@ -73,5 +74,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography"), require('@tailwindcss/container-queries')],
 };

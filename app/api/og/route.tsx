@@ -3,6 +3,8 @@ import "@/styles/globals.css"; // FIXME: check if possible to import custom var(
 
 export const runtime = "edge";
 
+// TODO: vercel font
+
 const fontCal = fetch(
   new URL("../../../public/fonts/CalSans-SemiBold.ttf", import.meta.url)
 ).then((res) => res.arrayBuffer());

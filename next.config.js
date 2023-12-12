@@ -5,6 +5,7 @@ const nextConfig = {
   experimental: {
     serverActions: true,
   },
+  // rewrites: https://craft.mxkaske.dev => https://mxkaske.dev/craft
 };
 
 module.exports = withContentlayer(nextConfig);

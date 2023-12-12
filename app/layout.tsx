@@ -3,15 +3,8 @@ import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import "@/styles/globals.css";
 import { Metadata } from "next";
-import { Inter } from "next/font/google";
-import LocalFont from "next/font/local";
-
-const inter = Inter({ subsets: ["latin"] });
-
-const calSans = LocalFont({
-  src: "../public/fonts/CalSans-SemiBold.ttf",
-  variable: "--font-calsans",
-});
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 
 export const metadata: Metadata = {
   title: "craft.mxkaske.dev",
@@ -38,7 +31,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" style={{ colorScheme: "system" }}>
-      <body className={`${inter.className} ${calSans.variable}`}>
+      <body className={`${GeistSans.variable} ${GeistMono.variable}`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <BGGrid>{children}</BGGrid>
           <Toaster />
