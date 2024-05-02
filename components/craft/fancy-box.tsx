@@ -28,6 +28,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
 import {
@@ -169,28 +170,30 @@ export function FancyBox() {
               onValueChange={setInputValue}
             />
             <CommandGroup className="max-h-[145px] overflow-auto">
-              {frameworks.map((framework) => {
-                const isActive = selectedValues.includes(framework);
-                return (
-                  <CommandItem
-                    key={framework.value}
-                    value={framework.value}
-                    onSelect={() => toggleFramework(framework)}
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        isActive ? "opacity-100" : "opacity-0"
-                      )}
-                    />
-                    <div className="flex-1">{framework.label}</div>
-                    <div
-                      className="h-4 w-4 rounded-full"
-                      style={{ backgroundColor: framework.color }}
-                    />
-                  </CommandItem>
-                );
-              })}
+              <CommandList>
+                {frameworks.map((framework) => {
+                  const isActive = selectedValues.includes(framework);
+                  return (
+                    <CommandItem
+                      key={framework.value}
+                      value={framework.value}
+                      onSelect={() => toggleFramework(framework)}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          isActive ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                      <div className="flex-1">{framework.label}</div>
+                      <div
+                        className="h-4 w-4 rounded-full"
+                        style={{ backgroundColor: framework.color }}
+                      />
+                    </CommandItem>
+                  );
+                })}
+              </CommandList>
               <CommandItemCreate
                 onSelect={() => createFramework(inputValue)}
                 {...{ inputValue, frameworks }}
