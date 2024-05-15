@@ -53,11 +53,10 @@ module.exports = {
         md: `calc(var(--radius) - 2px)`,
         sm: "calc(var(--radius) - 4px)",
       },
-      // FIXME: local development doesnt work with this
-      fontFamily: {
-        sans: ['var(--font-geist-sans)', ...fontFamily.sans],
-        mono: ['var(--font-geist-mono)', ...fontFamily.mono],
-      },
+      // fontFamily: {
+      //   sans: ['var(--font-geist-sans)', ...fontFamily.sans],
+      //   mono: ['var(--font-geist-mono)', ...fontFamily.mono],
+      // },
       keyframes: {
         "accordion-down": {
           from: { height: 0 },

@@ -15,7 +15,7 @@ export default function Home() {
           <h2 className="text-2xl font-semibold text-foreground">
             Building. Learning. Sharing.
           </h2>
-          <h3 className="text-lg font-light text-muted-foreground">
+          <h3 className="text-lg text-muted-foreground">
             Just call me Max.{" "}
             <Link href="https://twitter.com/mxkaske">Follow me</Link> for more
             updates.

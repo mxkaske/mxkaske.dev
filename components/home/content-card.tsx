@@ -36,7 +36,7 @@ export function ContentCard({ className, ...props }: ContentCard) {
     >
       <SpotlightCard className="flex h-full w-full flex-col">
         <div className="flex flex-col gap-1.5 p-4">
-          <p className="text-sm font-light text-muted-foreground">
+          <p className="font-mono text-sm text-muted-foreground">
             {isDateInProps(props) ? formatter.format(props.date) : null}
             {isIconInProps(props) && props.icon ? (
               <props.icon className="my-0.5 h-4 w-4" />

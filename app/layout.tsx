@@ -3,8 +3,14 @@ import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import "@/styles/globals.css";
 import { Metadata } from "next";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
+import { Inter } from "next/font/google";
+// import { GeistSans } from "geist/font/sans";
+// import { GeistMono } from "geist/font/mono";
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "craft.mxkaske.dev",
@@ -30,8 +36,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" style={{ colorScheme: "system" }}>
-      <body className={`${GeistSans.variable} ${GeistMono.variable}`}>
+    <html
+      lang="en"
+      style={{ colorScheme: "system" }}
+      // className={`${GeistSans.variable} ${GeistMono.variable}`}
+      className={inter.className}
+    >
+      <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <BGGrid>{children}</BGGrid>
           <Toaster />
