@@ -48,6 +48,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from "@/components/ui/command";
 import { getCaretCoordinates, getCurrentWord, replaceWord } from "./utils";
 import { people } from "./data";
@@ -119,19 +120,21 @@ export function Write() {
           {/* REMINDER: className="hidden" won't hide the SearchIcon and border */}
           <CommandInput ref={inputRef} value={commandValue} />
         </div>
-        <CommandGroup className="max-w-min overflow-auto">
-          {people.map((p) => {
-            return (
-              <CommandItem
-                key={p.username}
-                value={p.username}
-                onSelect={onCommandSelect}
-              >
-                {p.username}
-              </CommandItem>
-            );
-          })}
-        </CommandGroup>
+        <CommandList>
+          <CommandGroup className="max-w-min overflow-auto">
+            {people.map((p) => {
+              return (
+                <CommandItem
+                  key={p.username}
+                  value={p.username}
+                  onSelect={onCommandSelect}
+                >
+                  {p.username}
+                </CommandItem>
+              );
+            })}
+          </CommandGroup>
+        </CommandList>
       </Command>
     </div>
   );
