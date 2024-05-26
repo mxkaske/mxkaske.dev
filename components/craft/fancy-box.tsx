@@ -28,6 +28,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
 import {
@@ -97,7 +98,9 @@ export function FancyBox() {
   const [openCombobox, setOpenCombobox] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
   const [inputValue, setInputValue] = React.useState<string>("");
-  const [selectedValues, setSelectedValues] = React.useState<Framework[]>([FRAMEWORKS[0]]);
+  const [selectedValues, setSelectedValues] = React.useState<Framework[]>([
+    FRAMEWORKS[0],
+  ]);
 
   const createFramework = (name: string) => {
     const newFramework = {
@@ -168,46 +171,48 @@ export function FancyBox() {
               value={inputValue}
               onValueChange={setInputValue}
             />
-            <CommandGroup className="max-h-[145px] overflow-auto">
-              {frameworks.map((framework) => {
-                const isActive = selectedValues.includes(framework);
-                return (
-                  <CommandItem
-                    key={framework.value}
-                    value={framework.value}
-                    onSelect={() => toggleFramework(framework)}
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        isActive ? "opacity-100" : "opacity-0"
-                      )}
-                    />
-                    <div className="flex-1">{framework.label}</div>
-                    <div
-                      className="h-4 w-4 rounded-full"
-                      style={{ backgroundColor: framework.color }}
-                    />
-                  </CommandItem>
-                );
-              })}
-              <CommandItemCreate
-                onSelect={() => createFramework(inputValue)}
-                {...{ inputValue, frameworks }}
-              />
-            </CommandGroup>
-            <CommandSeparator alwaysRender />
-            <CommandGroup>
-              <CommandItem
-                value={`:${inputValue}:`} // HACK: that way, the edit button will always be shown
-                className="text-xs text-muted-foreground"
-                onSelect={() => setOpenDialog(true)}
-              >
-                <div className={cn("mr-2 h-4 w-4")} />
-                <Edit2 className="mr-2 h-2.5 w-2.5" />
-                Edit Labels
-              </CommandItem>
-            </CommandGroup>
+            <CommandList>
+              <CommandGroup className="max-h-[145px] overflow-auto">
+                {frameworks.map((framework) => {
+                  const isActive = selectedValues.includes(framework);
+                  return (
+                    <CommandItem
+                      key={framework.value}
+                      value={framework.value}
+                      onSelect={() => toggleFramework(framework)}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          isActive ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                      <div className="flex-1">{framework.label}</div>
+                      <div
+                        className="h-4 w-4 rounded-full"
+                        style={{ backgroundColor: framework.color }}
+                      />
+                    </CommandItem>
+                  );
+                })}
+                <CommandItemCreate
+                  onSelect={() => createFramework(inputValue)}
+                  {...{ inputValue, frameworks }}
+                />
+              </CommandGroup>
+              <CommandSeparator alwaysRender />
+              <CommandGroup>
+                <CommandItem
+                  value={`:${inputValue}:`} // HACK: that way, the edit button will always be shown
+                  className="text-xs text-muted-foreground"
+                  onSelect={() => setOpenDialog(true)}
+                >
+                  <div className={cn("mr-2 h-4 w-4")} />
+                  <Edit2 className="mr-2 h-2.5 w-2.5" />
+                  Edit Labels
+                </CommandItem>
+              </CommandGroup>
+            </CommandList>
           </Command>
         </PopoverContent>
       </Popover>
@@ -220,7 +225,7 @@ export function FancyBox() {
           setOpenDialog(open);
         }}
       >
-        <DialogContent className="max-h-[90vh] flex flex-col">
+        <DialogContent className="flex max-h-[90vh] flex-col">
           <DialogHeader>
             <DialogTitle>Edit Labels</DialogTitle>
             <DialogDescription>
@@ -228,7 +233,7 @@ export function FancyBox() {
               through the combobox though.
             </DialogDescription>
           </DialogHeader>
-          <div className="overflow-scroll -mx-6 px-6 flex-1 py-2">
+          <div className="-mx-6 flex-1 overflow-scroll px-6 py-2">
             {frameworks.map((framework) => {
               return (
                 <DialogListItem
@@ -257,13 +262,13 @@ export function FancyBox() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      <div className="relative mt-3 h-24 -mb-24 overflow-y-auto">
+      <div className="relative -mb-24 mt-3 h-24 overflow-y-auto">
         {selectedValues.map(({ label, value, color }) => (
           <Badge
             key={value}
             variant="outline"
             style={badgeStyle(color)}
-            className="mr-2 mb-2"
+            className="mb-2 mr-2"
           >
             {label}
           </Badge>
@@ -335,7 +340,7 @@ const DialogListItem = ({
       onValueChange={setAccordionValue}
     >
       <AccordionItem value={value}>
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <div>
             <Badge variant="outline" style={badgeStyle(color)}>
               {label}
@@ -379,7 +384,7 @@ const DialogListItem = ({
               setAccordionValue("");
             }}
           >
-            <div className="w-full gap-3 grid">
+            <div className="grid w-full gap-3">
               <Label htmlFor="name">Label name</Label>
               <Input
                 ref={inputRef}
@@ -389,7 +394,7 @@ const DialogListItem = ({
                 className="h-8"
               />
             </div>
-            <div className="gap-3 grid">
+            <div className="grid gap-3">
               <Label htmlFor="color">Color</Label>
               <Input
                 id="color"
