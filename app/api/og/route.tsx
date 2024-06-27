@@ -1,4 +1,4 @@
-import { ImageResponse } from "@vercel/og";
+import { ImageResponse } from "next/server";
 import "@/styles/globals.css"; // FIXME: check if possible to import custom var(--) or utility classes
 
 export const runtime = "edge";
