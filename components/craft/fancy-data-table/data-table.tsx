@@ -75,7 +75,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row">
-      <div className="w-full sm:max-w-56">
+      <div className="w-full sm:max-w-64">
         <DataTableFilterBar
           table={table}
           columns={columns}

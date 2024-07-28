@@ -5,6 +5,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Check, Minus } from "lucide-react";
 import { tagsColor } from "./constants";
 import type { Schema } from "./schema";
+import { isArrayOfNumbers } from "./utils";
 
 export const columns: ColumnDef<Schema>[] = [
   {
@@ -38,7 +39,9 @@ export const columns: ColumnDef<Schema>[] = [
         return (
           <div className="flex flex-wrap gap-1">
             {value.map((v) => (
-              <Badge key={v} className={tagsColor[v].badge}>{v}</Badge>
+              <Badge key={v} className={tagsColor[v].badge}>
+                {v}
+              </Badge>
             ))}
           </div>
         );
@@ -50,6 +53,23 @@ export const columns: ColumnDef<Schema>[] = [
       if (typeof value === "string") return array.includes(value);
       // up to the user to define either `.some` or `.every`
       if (Array.isArray(value)) return value.some((i) => array.includes(i));
+      return false;
+    },
+  },
+  {
+    accessorKey: "p95",
+    header: "P95 (ms)",
+    cell: ({ row }) => {
+      const value = row.getValue("p95");
+      return <div className="text-muted-foreground">{`${value}`}</div>;
+    },
+    filterFn: (row, id, value) => {
+      const rowValue = row.getValue(id) as number;
+      if (typeof value === "number") return value === Number(rowValue);
+      if (Array.isArray(value) && isArrayOfNumbers(value)) {
+        const sorted = value.sort((a, b) => a - b);
+        return sorted[0] <= rowValue && rowValue <= sorted[1]
+      }
       return false;
     },
   },

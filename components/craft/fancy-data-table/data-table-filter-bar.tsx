@@ -15,6 +15,7 @@ import { DataTableFilterCheckobox } from "./data-table-filter-checkbox";
 import useUpdateSearchParams from "@/hooks/use-update-search-params";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { DataTableFilterSlider } from "./data-table-filter-slider";
 
 // TODO: only pass the columns to generate the filters!
 // https://tanstack.com/table/v8/docs/framework/react/examples/filters
@@ -85,7 +86,16 @@ export function DataTableFilterBar<TData, TValue>({
                 </div>
               </AccordionTrigger>
               <AccordionContent className="-m-4 p-4">
-                <DataTableFilterCheckobox table={table} {...field} />
+                {(() => {
+                  switch (field.type) {
+                    case "checkbox": {
+                      return <DataTableFilterCheckobox table={table} {...field} />
+                    }
+                    case "slider": {
+                      return <DataTableFilterSlider table={table} {...field} />
+                    }
+                  }
+                })()}
               </AccordionContent>
             </AccordionItem>
           );

@@ -4,24 +4,24 @@ import useUpdateSearchParams from "@/hooks/use-update-search-params";
 import type { Table } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import type { DataTableFilterField } from "./types";
+import type { DataTableCheckboxFilterField } from "./types";
 import { cn } from "@/lib/utils";
 import { Search } from "lucide-react";
 import { InputWithAddons } from "@/components/ui/input-with-addons";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 
-interface DataTableFilterCheckoboxProps<TData>
-  extends DataTableFilterField<TData> {
-  table: Table<TData>;
-}
+type DataTableFilterCheckboxProps<TData> =
+  DataTableCheckboxFilterField<TData> & {
+    table: Table<TData>;
+  };
 
 export function DataTableFilterCheckobox<TData>({
   table,
   value: _value,
   options,
   component,
-}: DataTableFilterCheckoboxProps<TData>) {
+}: DataTableFilterCheckboxProps<TData>) {
   const value = _value as string;
   const [inputValue, setInputValue] = useState("");
   const updateSearchParams = useUpdateSearchParams();
@@ -38,7 +38,7 @@ export function DataTableFilterCheckobox<TData>({
   };
 
   const filterOptions = options.filter(
-    (option) => inputValue === "" || option.label.includes(inputValue),
+    (option) => inputValue === "" || option.label.includes(inputValue)
   );
 
   // TODO: check if we could useMemo
@@ -51,17 +51,17 @@ export function DataTableFilterCheckobox<TData>({
   const Component = component;
 
   return (
-    <>
+    <div className="grid gap-2">
       {options.length > 4 ? (
         <InputWithAddons
           placeholder="Search"
           leading={<Search className="mt-0.5 h-4 w-4" />}
-          containerClassName="mb-2 h-9 rounded-lg"
+          containerClassName="h-9 rounded-lg"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
         />
       ) : null}
-      <div className="rounded-lg border border-border overflow-hidden empty:border-none">
+      <div className="overflow-hidden rounded-lg border border-border empty:border-none">
         <div className="max-h-40 overflow-y-scroll">
           {filterOptions.map((option, index) => {
             const checked = filters.includes(option.value);
@@ -71,7 +71,7 @@ export function DataTableFilterCheckobox<TData>({
                 key={String(option.value)}
                 className={cn(
                   "group flex items-center space-x-2 px-2 py-2.5 hover:bg-accent",
-                  index !== filterOptions.length - 1 ? "border-b" : undefined,
+                  index !== filterOptions.length - 1 ? "border-b" : undefined
                 )}
               >
                 <Checkbox
@@ -82,7 +82,7 @@ export function DataTableFilterCheckobox<TData>({
                       ? [...(filters || []), option.value]
                       : filters?.filter((value) => option.value !== value);
                     column?.setFilterValue(
-                      newValue?.length ? newValue : undefined,
+                      newValue?.length ? newValue : undefined
                     );
                     // @ts-expect-error FIXME: can have primary values or array
                     // FIXME: make it nullable!
@@ -107,6 +107,6 @@ export function DataTableFilterCheckobox<TData>({
           })}
         </div>
       </div>
-    </>
+    </div>
   );
 }
