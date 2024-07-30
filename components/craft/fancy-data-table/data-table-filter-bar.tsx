@@ -55,7 +55,7 @@ export function DataTableFilterBar<TData, TValue>({
                     prev[curr.id] = null;
                     return prev;
                   },
-                  {},
+                  {}
                 );
                 updatePageSearchParams(resetValues);
               }}
@@ -79,7 +79,7 @@ export function DataTableFilterBar<TData, TValue>({
             >
               <AccordionTrigger className="p-2 hover:no-underline">
                 <div className="flex items-center gap-2">
-                  <p className="font-medium text-foreground text-sm">
+                  <p className="text-sm font-medium text-foreground">
                     {field.label}
                   </p>
                   <DataTableFilterResetButton table={table} {...field} />
@@ -89,10 +89,12 @@ export function DataTableFilterBar<TData, TValue>({
                 {(() => {
                   switch (field.type) {
                     case "checkbox": {
-                      return <DataTableFilterCheckobox table={table} {...field} />
+                      return (
+                        <DataTableFilterCheckobox table={table} {...field} />
+                      );
                     }
                     case "slider": {
-                      return <DataTableFilterSlider table={table} {...field} />
+                      return <DataTableFilterSlider table={table} {...field} />;
                     }
                   }
                 })()}
