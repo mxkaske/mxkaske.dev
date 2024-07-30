@@ -71,7 +71,7 @@ export function DataTableFilterCheckobox<TData>({
               <div
                 key={String(option.value)}
                 className={cn(
-                  "group flex items-center space-x-2 px-2 py-2.5 hover:bg-accent",
+                  "group relative flex items-center space-x-2 px-2 py-2.5 hover:bg-accent",
                   index !== filterOptions.length - 1 ? "border-b" : undefined
                 )}
               >
@@ -104,6 +104,17 @@ export function DataTableFilterCheckobox<TData>({
                   <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
                     {facetedValue?.get(option.value)}
                   </span>
+                  <button
+                    onClick={() => {
+                      column?.setFilterValue(option.value);
+                      updatePageSearchParams({
+                        [value]: `${option.value}`,
+                      });
+                    }}
+                    className="absolute inset-y-0 right-0 hidden font-normal text-muted-foreground backdrop-blur-sm hover:text-foreground group-hover:block"
+                  >
+                    <span className="px-2">only</span>
+                  </button>
                 </Label>
               </div>
             );
