@@ -9,6 +9,7 @@ import { InputWithAddons } from "@/components/ui/input-with-addons";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { isArrayOfNumbers } from "./utils";
+import { SLIDER_DELIMITER } from "./schema";
 
 type DataTableFilterCheckboxProps<TData> = DataTableSliderFilterField<TData> & {
   table: Table<TData>;
@@ -71,9 +72,8 @@ export function DataTableFilterSlider<TData>({
                   ? [val, filters[1]]
                   : [val, max];
               column?.setFilterValue(newValue);
-              // @ts-expect-error FIXME:
               updatePageSearchParams({
-                [value]: newValue,
+                [value]: newValue.join(SLIDER_DELIMITER),
               });
             }}
           />
@@ -102,9 +102,8 @@ export function DataTableFilterSlider<TData>({
                   ? [filters[0], val]
                   : [min, val];
               column?.setFilterValue(newValue);
-              // @ts-expect-error FIXME:
               updatePageSearchParams({
-                [value]: newValue,
+                [value]: newValue.join(SLIDER_DELIMITER),
               });
             }}
           />
@@ -116,9 +115,8 @@ export function DataTableFilterSlider<TData>({
         value={filters || [min, max]}
         onValueChange={(values) => {
           column?.setFilterValue(values);
-          // @ts-expect-error FIXME:
           updatePageSearchParams({
-            [value]: values,
+            [value]: values.join(SLIDER_DELIMITER),
           });
         }}
       />

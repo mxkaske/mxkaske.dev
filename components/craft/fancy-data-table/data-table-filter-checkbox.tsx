@@ -10,6 +10,7 @@ import { Search } from "lucide-react";
 import { InputWithAddons } from "@/components/ui/input-with-addons";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ARRAY_DELIMITER } from "./schema";
 
 type DataTableFilterCheckboxProps<TData> =
   DataTableCheckboxFilterField<TData> & {
@@ -84,9 +85,11 @@ export function DataTableFilterCheckobox<TData>({
                     column?.setFilterValue(
                       newValue?.length ? newValue : undefined
                     );
-                    // @ts-expect-error FIXME: can have primary values or array
-                    // FIXME: make it nullable!
-                    updatePageSearchParams({ [value]: newValue });
+                    updatePageSearchParams({
+                      [value]: newValue?.length
+                        ? newValue.join(ARRAY_DELIMITER)
+                        : null,
+                    });
                   }}
                 />
                 <Label

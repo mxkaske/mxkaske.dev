@@ -23,6 +23,7 @@ import { deserialize, serializeColumFilters } from "./utils";
 import useUpdateSearchParams from "@/hooks/use-update-search-params";
 import { useRouter } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
+import { ARRAY_DELIMITER, SLIDER_DELIMITER } from "./schema";
 
 interface DataTableFilterCommandProps<TData, TSchema extends z.AnyZodObject> {
   table: Table<TData>;
@@ -54,19 +55,42 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
     if (currentWord !== "" && open) return;
     // reset
     if (currentWord !== "" && !open) setCurrentWord("");
-    const searchparams = deserialize(schema)(inputValue);
-    if (searchparams.success) {
+
+    const searchParams = deserialize(schema)(inputValue);
+    if (searchParams.success) {
       table.resetColumnFilters();
 
-      for (const key of Object.keys(searchparams.data)) {
+      for (const key of Object.keys(searchParams.data)) {
         table
           .getColumn(key)
           ?.setFilterValue(
-            searchparams.data[key as keyof typeof searchparams.data]
+            searchParams.data[key as keyof typeof searchParams.data]
           );
       }
-
-      updatePageSearchParams(searchparams.data);
+      if (typeof searchParams.data === "object") {
+        // TODO: extract?!?
+        const search: Record<string, unknown> = {};
+        Object.entries(searchParams.data).map(([key, value]) => {
+          const field = filterFields?.find((field) => field.value === key);
+          if (field) {
+            if (field.type === "slider") {
+              if (Array.isArray(value)) {
+                search[key] = value.join(SLIDER_DELIMITER);
+              } else {
+                search[key] = value;
+              }
+            }
+            if (field.type === "checkbox") {
+              if (Array.isArray(value)) {
+                search[key] = value.join(ARRAY_DELIMITER);
+              } else {
+                search[key] = value;
+              }
+            }
+          }
+          updatePageSearchParams(search);
+        });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputValue, open, currentWord]);
@@ -134,12 +158,12 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
            */
           const [filter, query] = currentWord.toLowerCase().split(":");
           if (query && value.startsWith(`${filter}:`)) {
-            if (query.includes(",")) {
+            if (query.includes(ARRAY_DELIMITER)) {
               /**
                * array of n elements
                * @example queries = ["ams", "gru", "fra"]
                */
-              const queries = query.split(",");
+              const queries = query.split(ARRAY_DELIMITER);
               const extendedQueries = queries?.map(
                 (item) => `${filter}:${item}`
               );
@@ -147,24 +171,24 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
               if (extendedQueries.some((item) => value.includes(item)))
                 return 1;
             }
-            if (query.includes("-")) {
+            if (query.includes(SLIDER_DELIMITER)) {
               /**
                * range between 2 elements
                * @example queries = ["0", "3000"]
                */
-              const queries = query.split("-");
+              const queries = query.split(SLIDER_DELIMITER);
               const extendedQueries = queries?.map(
                 (item) => `${filter}:${item}`
               );
 
               const valueAsNumber = parseInt(value.replace(`${filter}:`, ""));
               const queryAsNumber = parseInt(queries[0]);
-              
+
               if (queryAsNumber < valueAsNumber) {
                 if (value.includes(extendedQueries[1])) return 1;
-                else return 0
+                else return 0;
               } else {
-                return 0
+                return 0;
               }
             }
           }
@@ -279,12 +303,13 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
                           }}
                           onSelect={(value) => {
                             setInputValue((prev) => {
-                              if (currentWord.includes("-")) {
-                                const words = currentWord.split("-");
+                              if (currentWord.includes(SLIDER_DELIMITER)) {
+                                const words =
+                                  currentWord.split(SLIDER_DELIMITER);
                                 words[words.length - 1] = `${v}`;
                                 const input = prev.replace(
                                   currentWord,
-                                  words.join("-")
+                                  words.join(SLIDER_DELIMITER)
                                 );
                                 return `${input.trim()} `;
                               }
@@ -311,12 +336,12 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
                         }}
                         onSelect={(value) => {
                           setInputValue((prev) => {
-                            if (currentWord.includes(",")) {
-                              const words = currentWord.split(",");
+                            if (currentWord.includes(ARRAY_DELIMITER)) {
+                              const words = currentWord.split(ARRAY_DELIMITER);
                               words[words.length - 1] = `${optionValue}`;
                               const input = prev.replace(
                                 currentWord,
-                                words.join(",")
+                                words.join(ARRAY_DELIMITER)
                               );
                               return `${input.trim()} `;
                             }

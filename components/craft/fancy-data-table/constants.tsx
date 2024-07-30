@@ -150,7 +150,9 @@ export const filterFields = [
     value: "p95",
     type: "slider",
     min: 0,
-    max: 3000
+    max: 3000,
+    // TODO: we should have options here as well to guide the user
+    // + performance improvements as we will render 3000 divs
   },
   {
     label: "Regions",

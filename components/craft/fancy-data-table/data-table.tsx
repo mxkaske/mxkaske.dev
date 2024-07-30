@@ -15,7 +15,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import * as React from "react";
-import { z } from "zod";
 
 import {
   Table,
@@ -28,7 +27,7 @@ import {
 import { DataTableFilterBar } from "./data-table-filter-bar";
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableFilterCommand } from "./data-table-filter-command";
-import { schema } from "./schema";
+import { columnFilterSchema } from "./schema";
 import type { DataTableFilterField } from "./types";
 
 interface DataTableProps<TData, TValue> {
@@ -85,7 +84,7 @@ export function DataTable<TData, TValue>({
       <div className="flex flex-1 flex-col gap-4">
         <DataTableFilterCommand
           table={table}
-          schema={schema} // needs input validation - mostly zod schema from filterFields
+          schema={columnFilterSchema} // needs input validation - mostly zod schema from filterFields
           filterFields={filterFields}
         />
         <div className="rounded-md border">
@@ -100,7 +99,7 @@ export function DataTable<TData, TValue>({
                           ? null
                           : flexRender(
                               header.column.columnDef.header,
-                              header.getContext(),
+                              header.getContext()
                             )}
                       </TableHead>
                     );
@@ -119,7 +118,7 @@ export function DataTable<TData, TValue>({
                       <TableCell key={cell.id}>
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext(),
+                          cell.getContext()
                         )}
                       </TableCell>
                     ))}

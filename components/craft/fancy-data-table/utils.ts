@@ -1,6 +1,7 @@
 import type { ColumnFiltersState } from "@tanstack/react-table";
 import { z } from "zod";
 import { DataTableFilterField } from "./types";
+import { ARRAY_DELIMITER, SLIDER_DELIMITER } from "./schema";
 
 export function deserialize<T extends z.AnyZodObject>(schema: T) {
   const castToSchema = z.preprocess((val) => {
@@ -12,18 +13,7 @@ export function deserialize<T extends z.AnyZodObject>(schema: T) {
         (prev, curr) => {
           const [name, value] = curr.split(":");
           if (!value || !name) return prev;
-
-          if (value.includes(",")) {
-            const values = value.split(",");
-            prev[name] = values;
-            return prev;
-          }
-          if (value.includes("-")) {
-            const values = value.split("-");
-            prev[name] = values;
-            return prev;
-          }
-          prev[name] = [value];
+          prev[name] = value
           return prev;
         },
         {} as Record<string, unknown>,
@@ -49,10 +39,12 @@ export function deserialize<T extends z.AnyZodObject>(schema: T) {
 export function serializeColumFilters<TData>(columnFilters: ColumnFiltersState, filterFields?: DataTableFilterField<TData>[]) {
   return columnFilters.reduce((prev, curr) => {
     if (Array.isArray(curr.value)) {
-      if (filterFields?.find(field => curr.id === field.value)?.type === "slider") {
-        return `${prev}${curr.id}:${curr.value.join("-")} `;
-      } else {
-        return `${prev}${curr.id}:${curr.value.join(",")} `;
+      const type = filterFields?.find(field => curr.id === field.value)?.type
+      if (type === "slider") {
+        return `${prev}${curr.id}:${curr.value.join(SLIDER_DELIMITER)} `;
+      } 
+      if (type === "checkbox") {
+        return `${prev}${curr.id}:${curr.value.join(ARRAY_DELIMITER)} `;
       }
     }
     return `${prev}${curr.id}:${curr.value} `;
@@ -62,3 +54,11 @@ export function serializeColumFilters<TData>(columnFilters: ColumnFiltersState, 
 export function isArrayOfNumbers(arr: any[]): arr is number[] {
   return arr.every((item) => typeof item === "number");
 }
+
+/**
+ * TODO: We could have a utility function that wraps both:
+ * - the update page params search URL
+ * - column filter value
+ * Both will have slightly different values based on the value
+ * but are closely connected and used together.
+ */
