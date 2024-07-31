@@ -20,6 +20,8 @@ export default function Page({
     return null;
   }
 
+  console.log(search);
+
   return (
     <DataTable
       columns={columns}

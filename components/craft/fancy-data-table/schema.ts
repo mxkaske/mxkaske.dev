@@ -4,8 +4,8 @@ import { z } from "zod";
 export const ARRAY_DELIMITER = ",";
 export const SLIDER_DELIMITER = "-";
 
-const REGIONS = ["ams", "gru", "syd", "hkg", "fra", "iad"] as const;
-const TAGS = ["web", "api", "enterprise", "app"] as const;
+export const REGIONS = ["ams", "gru", "syd", "hkg", "fra", "iad"] as const;
+export const TAGS = ["web", "api", "enterprise", "app"] as const;
 
 // https://github.com/colinhacks/zod/issues/2985#issue-2008642190
 const stringToBoolean = z
@@ -35,6 +35,7 @@ export type ColumnSchema = z.infer<typeof columnSchema>;
 
 // or could rename to `urlParamsSchema`
 export const columnFilterSchema = z.object({
+  name: z.string().optional(),
   p95: z.coerce
     .number()
     .or(

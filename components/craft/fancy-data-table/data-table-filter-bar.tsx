@@ -16,6 +16,7 @@ import useUpdateSearchParams from "@/hooks/use-update-search-params";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { DataTableFilterSlider } from "./data-table-filter-slider";
+import { DataTableFilterInput } from "./data-table-filter-input";
 
 // TODO: only pass the columns to generate the filters!
 // https://tanstack.com/table/v8/docs/framework/react/examples/filters
@@ -95,6 +96,9 @@ export function DataTableFilterBar<TData, TValue>({
                     }
                     case "slider": {
                       return <DataTableFilterSlider table={table} {...field} />;
+                    }
+                    case "input": {
+                      return <DataTableFilterInput table={table} {...field} />;
                     }
                   }
                 })()}

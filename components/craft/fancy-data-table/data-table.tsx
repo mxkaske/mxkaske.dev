@@ -84,7 +84,7 @@ export function DataTable<TData, TValue>({
       <div className="flex flex-1 flex-col gap-4">
         <DataTableFilterCommand
           table={table}
-          schema={columnFilterSchema} // needs input validation - mostly zod schema from filterFields
+          schema={columnFilterSchema}
           filterFields={filterFields}
         />
         <div className="rounded-md border">

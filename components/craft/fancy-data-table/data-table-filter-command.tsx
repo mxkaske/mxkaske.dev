@@ -87,6 +87,9 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
                 search[key] = value;
               }
             }
+            if (field.type === "input") {
+              search[key] = value;
+            }
           }
           updatePageSearchParams(search);
         });
@@ -151,10 +154,11 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
           open ? "visible" : "hidden"
         )}
         filter={(value, _search, keywords) => {
-          if (value.includes(currentWord.toLowerCase())) return 1;
+          if (value.toLowerCase().includes(currentWord.toLowerCase())) return 1;
           /**
-           * @example [filter, query] = ["regions", "ams,gru,fra"]
-           * @example [filter, query] = ["p95", "0-3000"]
+           * @example checkbox [filter, query] = ["regions", "ams,gru,fra"]
+           * @example slider [filter, query] = ["p95", "0-3000"]
+           * @example input [filter, query] = ["name", "api"]
            */
           const [filter, query] = currentWord.toLowerCase().split(":");
           if (query && value.startsWith(`${filter}:`)) {
@@ -191,6 +195,8 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
                 return 0;
               }
             }
+            const rawValue = value.toLowerCase().replace(`${filter}:`, "");
+            if (rawValue.includes(query)) return 1;
           }
           return 0;
         }}
@@ -274,7 +280,16 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
                               </span>
                             );
                           }
-                          // TODO: add exhaustive check?
+                          case "input": {
+                            return (
+                              <span className="ml-1 hidden truncate text-muted-foreground/80 group-aria-[selected=true]:block">
+                                [{field.value} input]
+                              </span>
+                            );
+                          }
+                          default: {
+                            return null;
+                          }
                         }
                       })()}
                     </CommandItem>
@@ -363,6 +378,29 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
                           <span className="ml-auto font-mono text-muted-foreground">
                             {facetedValue?.get(optionValue)}
                           </span>
+                        </CommandItem>
+                      );
+                    });
+                  }
+                  if (field.type === "input") {
+                    return field.options?.map(({ value: optionValue }) => {
+                      return (
+                        <CommandItem
+                          key={`${String(field.value)}:${optionValue}`}
+                          value={`${String(field.value)}:${optionValue}`}
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }}
+                          onSelect={(value) => {
+                            setInputValue((prev) => {
+                              const input = prev.replace(currentWord, value);
+                              return `${input.trim()} `;
+                            });
+                            setCurrentWord("");
+                          }}
+                        >
+                          {`${optionValue}`}
                         </CommandItem>
                       );
                     });

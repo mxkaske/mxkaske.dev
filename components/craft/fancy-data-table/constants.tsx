@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import type { ColumnSchema } from "./schema";
+import { REGIONS, TAGS, type ColumnSchema } from "./schema";
 import type { DataTableFilterField, Option } from "./types";
 
 export const tagsColor = {
@@ -128,22 +128,22 @@ export const data = [
 
 export const filterFields = [
   {
+    label: "Name",
+    value: "name",
+    type: "input",
+    options: data.map(({ name }) => ({ label: name, value: name })),
+  },
+  {
     label: "Public",
     value: "public",
     type: "checkbox",
-    options: [
-      { label: "true", value: true },
-      { label: "false", value: false },
-    ],
+    options: [true, false].map((bool) => ({ label: `${bool}`, value: bool })),
   },
   {
     label: "Active",
     value: "active",
     type: "checkbox",
-    options: [
-      { label: "true", value: true },
-      { label: "false", value: false },
-    ],
+    options: [true, false].map((bool) => ({ label: `${bool}`, value: bool })),
   },
   {
     label: "P95",
@@ -151,33 +151,13 @@ export const filterFields = [
     type: "slider",
     min: 0,
     max: 3000,
-    options: [
-      { label: "140", value: 140 },
-      { label: "203", value: 203 },
-      { label: "891", value: 891 },
-      { label: "1252", value: 1252 },
-      { label: "659", value: 659 },
-      { label: "1301", value: 1301 },
-      { label: "2420", value: 2420 },
-      { label: "943", value: 943 },
-      { label: "1569", value: 1569 },
-      { label: "967", value: 967 },
-      { label: "1954", value: 1954 },
-      { label: "1043", value: 1043 },
-    ],
+    options: data.map(({ p95 }) => ({ label: `${p95}`, value: 95 })),
   },
   {
     label: "Regions",
     value: "regions",
     type: "checkbox",
-    options: [
-      { label: "ams", value: "ams" },
-      { label: "fra", value: "fra" },
-      { label: "hkg", value: "hkg" },
-      { label: "iad", value: "iad" },
-      { label: "gru", value: "gru" },
-      { label: "syd", value: "syd" },
-    ],
+    options: REGIONS.map((region) => ({ label: region, value: region })),
   },
   {
     label: "Tags",
@@ -195,12 +175,6 @@ export const filterFields = [
         </div>
       );
     },
-    options: [
-      // TODO: we could include some more descriptions (like the full name "Amsterdam") maybe with text-popover-muted
-      { label: "web", value: "web" },
-      { label: "api", value: "api" },
-      { label: "enterprise", value: "enterprise" },
-      { label: "app", value: "app" },
-    ],
+    options: TAGS.map((tag) => ({ label: tag, value: tag })),
   },
 ] satisfies DataTableFilterField<ColumnSchema>[];
