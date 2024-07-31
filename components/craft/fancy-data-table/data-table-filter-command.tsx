@@ -25,6 +25,8 @@ import { useRouter } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import { ARRAY_DELIMITER, SLIDER_DELIMITER } from "./schema";
 
+// FIXME: try to select a `name` that includes a white space like "Edge API" (SPACE_DELIMITER)
+
 interface DataTableFilterCommandProps<TData, TSchema extends z.AnyZodObject> {
   table: Table<TData>;
   schema: TSchema;
@@ -386,8 +388,12 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
                     return field.options?.map(({ value: optionValue }) => {
                       return (
                         <CommandItem
-                          key={`${String(field.value)}:${optionValue}`}
-                          value={`${String(field.value)}:${optionValue}`}
+                          key={`${String(field.value)}:${String(
+                            optionValue
+                          ).replace(" ", "_")}`}
+                          value={`${String(field.value)}:${String(
+                            optionValue
+                          ).replace(" ", "_")}`}
                           onMouseDown={(e) => {
                             e.preventDefault();
                             e.stopPropagation();

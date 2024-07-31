@@ -3,6 +3,7 @@ import { z } from "zod";
 /** Strings used to separate the URL params */
 export const ARRAY_DELIMITER = ",";
 export const SLIDER_DELIMITER = "-";
+export const SPACE_DELIMITER = "_";
 
 export const REGIONS = ["ams", "gru", "syd", "hkg", "fra", "iad"] as const;
 export const TAGS = ["web", "api", "enterprise", "app"] as const;

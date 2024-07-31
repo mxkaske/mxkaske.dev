@@ -28,7 +28,6 @@ export function DataTableFilterInput<TData>({
   const updatePageSearchParams = useCallback(
     (values: Record<string, string | null>) => {
       const newSearchParams = updateSearchParams(values);
-      console.log(newSearchParams);
       router.replace(`?${newSearchParams}`, { scroll: false });
     },
     [router, updateSearchParams]
