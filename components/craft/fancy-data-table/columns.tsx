@@ -4,10 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Check, Minus } from "lucide-react";
 import { tagsColor } from "./constants";
-import type { Schema } from "./schema";
+import type { ColumnSchema } from "./schema";
 import { isArrayOfNumbers } from "./utils";
 
-export const columns: ColumnDef<Schema>[] = [
+export const columns: ColumnDef<ColumnSchema>[] = [
   {
     accessorKey: "name",
     header: "Name",
@@ -68,7 +68,7 @@ export const columns: ColumnDef<Schema>[] = [
       if (typeof value === "number") return value === Number(rowValue);
       if (Array.isArray(value) && isArrayOfNumbers(value)) {
         const sorted = value.sort((a, b) => a - b);
-        return sorted[0] <= rowValue && rowValue <= sorted[1]
+        return sorted[0] <= rowValue && rowValue <= sorted[1];
       }
       return false;
     },

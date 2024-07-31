@@ -286,13 +286,20 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
                 {filterFields?.map((field) => {
                   if (typeof field.value !== "string") return null;
                   if (!currentWord.includes(`${field.value}:`)) return null;
+
                   const column = table.getColumn(field.value);
                   const facetedValue = column?.getFacetedUniqueValues();
+
                   if (field.type === "slider") {
-                    return Array.from(
-                      { length: field.max - field.min + 1 },
-                      (_, i) => field.min + i
-                    ).map((v) => {
+                    const options = field.options?.length
+                      ? field.options
+                          .map(({ value }) => value)
+                          .sort((a, b) => Number(a) - Number(b))
+                      : Array.from(
+                          { length: field.max - field.min + 1 },
+                          (_, i) => field.min + i
+                        );
+                    return options.map((v) => {
                       return (
                         <CommandItem
                           key={`${String(field.value)}:${v}`}
@@ -324,40 +331,43 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
                       );
                     });
                   }
-
-                  return field.options?.map(({ value: optionValue }) => {
-                    return (
-                      <CommandItem
-                        key={`${String(field.value)}:${optionValue}`}
-                        value={`${String(field.value)}:${optionValue}`}
-                        onMouseDown={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                        }}
-                        onSelect={(value) => {
-                          setInputValue((prev) => {
-                            if (currentWord.includes(ARRAY_DELIMITER)) {
-                              const words = currentWord.split(ARRAY_DELIMITER);
-                              words[words.length - 1] = `${optionValue}`;
-                              const input = prev.replace(
-                                currentWord,
-                                words.join(ARRAY_DELIMITER)
-                              );
+                  if (field.type === "checkbox") {
+                    return field.options?.map(({ value: optionValue }) => {
+                      return (
+                        <CommandItem
+                          key={`${String(field.value)}:${optionValue}`}
+                          value={`${String(field.value)}:${optionValue}`}
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }}
+                          onSelect={(value) => {
+                            setInputValue((prev) => {
+                              if (currentWord.includes(ARRAY_DELIMITER)) {
+                                const words =
+                                  currentWord.split(ARRAY_DELIMITER);
+                                words[words.length - 1] = `${optionValue}`;
+                                const input = prev.replace(
+                                  currentWord,
+                                  words.join(ARRAY_DELIMITER)
+                                );
+                                return `${input.trim()} `;
+                              }
+                              const input = prev.replace(currentWord, value);
                               return `${input.trim()} `;
-                            }
-                            const input = prev.replace(currentWord, value);
-                            return `${input.trim()} `;
-                          });
-                          setCurrentWord("");
-                        }}
-                      >
-                        {`${optionValue}`}
-                        <span className="ml-auto font-mono text-muted-foreground">
-                          {facetedValue?.get(optionValue)}
-                        </span>
-                      </CommandItem>
-                    );
-                  });
+                            });
+                            setCurrentWord("");
+                          }}
+                        >
+                          {`${optionValue}`}
+                          <span className="ml-auto font-mono text-muted-foreground">
+                            {facetedValue?.get(optionValue)}
+                          </span>
+                        </CommandItem>
+                      );
+                    });
+                  }
+                  return null;
                 })}
               </CommandGroup>
               <CommandEmpty>No results found.</CommandEmpty>

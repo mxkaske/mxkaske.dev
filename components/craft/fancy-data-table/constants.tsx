@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import type { Schema } from "./schema";
+import type { ColumnSchema } from "./schema";
 import type { DataTableFilterField, Option } from "./types";
 
 export const tagsColor = {
@@ -22,8 +22,8 @@ export const tagsColor = {
   },
   app: {
     badge:
-      "text-[#eab308] bg-[#eab308]/10 border-[#eab308]/20 hover:bg-[#eab308]/10",
-    dot: "bg-[#eab308]",
+      "text-[#f97316] bg-[#f97316]/10 border-[#f97316]/20 hover:bg-[#f97316]/10",
+    dot: "bg-[#f97316]",
   },
 } as Record<string, Record<"badge" | "dot", string>>;
 
@@ -124,7 +124,7 @@ export const data = [
     regions: ["iad"],
     tags: ["web"],
   },
-] satisfies Schema[];
+] satisfies ColumnSchema[];
 
 export const filterFields = [
   {
@@ -151,8 +151,20 @@ export const filterFields = [
     type: "slider",
     min: 0,
     max: 3000,
-    // TODO: we should have options here as well to guide the user
-    // + performance improvements as we will render 3000 divs
+    options: [
+      { label: "140", value: 140 },
+      { label: "203", value: 203 },
+      { label: "891", value: 891 },
+      { label: "1252", value: 1252 },
+      { label: "659", value: 659 },
+      { label: "1301", value: 1301 },
+      { label: "2420", value: 2420 },
+      { label: "943", value: 943 },
+      { label: "1569", value: 1569 },
+      { label: "967", value: 967 },
+      { label: "1954", value: 1954 },
+      { label: "1043", value: 1043 },
+    ],
   },
   {
     label: "Regions",
@@ -191,4 +203,4 @@ export const filterFields = [
       { label: "app", value: "app" },
     ],
   },
-] satisfies DataTableFilterField<Schema>[];
+] satisfies DataTableFilterField<ColumnSchema>[];

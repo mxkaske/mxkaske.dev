@@ -4,7 +4,7 @@ export type SearchParams = {
 
 export type Option = {
   label: string;
-  value: string | boolean;
+  value: string | boolean | number;
 }
 
 export type Checkbox = {
@@ -17,6 +17,8 @@ export type Slider = {
   type: "slider";
   min: number;
   max: number;
+  // if options is undefined, we will provide all the steps between min and max (increases )
+  options?: Option[];
 }
 
 export type Base<TData>  =  {
