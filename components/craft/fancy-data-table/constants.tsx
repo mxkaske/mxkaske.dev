@@ -30,6 +30,7 @@ export const tagsColor = {
 export const data = [
   {
     name: "Edge Api",
+    url: "edge-api.acme.com/health",
     p95: 140,
     public: true,
     active: true,
@@ -38,6 +39,7 @@ export const data = [
   },
   {
     name: "Lambda Api",
+    url: "lambda-api.acme.com/health",
     p95: 203,
     public: true,
     active: true,
@@ -45,15 +47,8 @@ export const data = [
     tags: ["api"],
   },
   {
-    name: "OpenStatus",
-    p95: 891,
-    public: false,
-    active: false,
-    regions: ["iad", "fra"],
-    tags: ["enterprise"],
-  },
-  {
     name: "Storybook",
+    url: "storybook.acme.com",
     p95: 1252,
     public: false,
     active: true,
@@ -61,7 +56,8 @@ export const data = [
     tags: ["web"],
   },
   {
-    name: "Marketing Site",
+    name: "Marketing",
+    url: "acme.com",
     p95: 659,
     public: true,
     active: true,
@@ -70,6 +66,7 @@ export const data = [
   },
   {
     name: "App",
+    url: "app.acme.com",
     p95: 1301,
     public: false,
     active: true,
@@ -78,14 +75,16 @@ export const data = [
   },
   {
     name: "Demo",
+    url: "demo.acme.com",
     p95: 2420,
     public: true,
     active: true,
     regions: ["iad"],
-    tags: ["web"],
+    tags: ["web", "enterprise"],
   },
   {
     name: "Documentation",
+    url: "docs.acme.com",
     p95: 943,
     public: true,
     active: true,
@@ -94,6 +93,7 @@ export const data = [
   },
   {
     name: "Boilerplate",
+    url: "boilerplate.acme.com",
     p95: 1569,
     public: true,
     active: false,
@@ -102,6 +102,7 @@ export const data = [
   },
   {
     name: "Dashboard",
+    url: "app.acme.com/dashboard",
     p95: 967,
     public: false,
     active: true,
@@ -110,6 +111,7 @@ export const data = [
   },
   {
     name: "E2E Testing",
+    url: "staging-cypress-e2e.acme.com",
     p95: 1954,
     public: false,
     active: true,
@@ -118,6 +120,7 @@ export const data = [
   },
   {
     name: "Web App",
+    url: "web-app.acme.com",
     p95: 1043,
     public: true,
     active: true,
@@ -128,10 +131,10 @@ export const data = [
 
 export const filterFields = [
   {
-    label: "Name",
-    value: "name",
+    label: "URL",
+    value: "url",
     type: "input",
-    options: data.map(({ name }) => ({ label: name, value: name })),
+    options: data.map(({ url }) => ({ label: url, value: url })),
   },
   {
     label: "Public",

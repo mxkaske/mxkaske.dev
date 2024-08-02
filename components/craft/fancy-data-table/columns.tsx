@@ -13,6 +13,14 @@ export const columns: ColumnDef<ColumnSchema>[] = [
     header: "Name",
   },
   {
+    accessorKey: "url",
+    header: "URL",
+    cell: ({ row }) => {
+      const value = row.getValue("url");
+      return <div className="max-w-[200px] truncate">{`${value}`}</div>;
+    },
+  },
+  {
     accessorKey: "regions",
     header: "Regions",
     cell: ({ row }) => {
