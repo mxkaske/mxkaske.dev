@@ -94,7 +94,7 @@ export const data = [
   {
     name: "Boilerplate",
     url: "boilerplate.acme.com",
-    p95: 1569,
+    p95: undefined,
     public: true,
     active: false,
     regions: ["gru", "fra"],

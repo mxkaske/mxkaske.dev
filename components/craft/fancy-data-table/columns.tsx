@@ -6,11 +6,13 @@ import { Check, Minus } from "lucide-react";
 import { tagsColor } from "./constants";
 import type { ColumnSchema } from "./schema";
 import { isArrayOfNumbers } from "./utils";
+import { DataTableColumnHeader } from "./data-table-column-header";
 
 export const columns: ColumnDef<ColumnSchema>[] = [
   {
     accessorKey: "name",
     header: "Name",
+    enableHiding: false,
   },
   {
     accessorKey: "url",
@@ -66,10 +68,19 @@ export const columns: ColumnDef<ColumnSchema>[] = [
   },
   {
     accessorKey: "p95",
-    header: "P95 (ms)",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="P95" />
+    ),
     cell: ({ row }) => {
       const value = row.getValue("p95");
-      return <div className="text-muted-foreground">{`${value}`}</div>;
+      if (typeof value === "undefined") {
+        return <Minus className="h-4 w-4 text-muted-foreground/50" />;
+      }
+      return (
+        <div>
+          <span className="font-mono">{`${value}`}</span> ms
+        </div>
+      );
     },
     filterFn: (row, id, value) => {
       const rowValue = row.getValue(id) as number;

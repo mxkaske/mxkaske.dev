@@ -26,7 +26,9 @@ const stringToBoolean = z
 export const columnSchema = z.object({
   name: z.string(),
   url: z.string(),
-  p95: z.number(),
+  // p75
+  p95: z.number().optional(),
+  // p99
   public: z.boolean(),
   active: z.boolean(),
   regions: z.enum(REGIONS).array(),
