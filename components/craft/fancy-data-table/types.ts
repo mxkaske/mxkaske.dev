@@ -4,7 +4,7 @@ export type SearchParams = {
 
 export type Option = {
   label: string;
-  value: string | boolean | number;
+  value: string | boolean | number | undefined;
 };
 
 export type Input = {

@@ -154,7 +154,7 @@ export const filterFields = [
     type: "slider",
     min: 0,
     max: 3000,
-    options: data.map(({ p95 }) => ({ label: `${p95}`, value: 95 })),
+    options: data.map(({ p95 }) => ({ label: `${p95}`, value: p95 })),
   },
   {
     label: "Regions",
@@ -169,6 +169,7 @@ export const filterFields = [
     // REMINDER: "use client" needs to be declared in the file - otherwise getting serialization error from Server Component
     component: (props: Option) => {
       if (typeof props.value === "boolean") return null;
+      if (typeof props.value === "undefined") return null;
       return (
         <div className="flex w-full items-center justify-between gap-2">
           <span className="truncate font-normal">{props.value}</span>
