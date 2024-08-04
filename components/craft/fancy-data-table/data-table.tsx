@@ -79,6 +79,13 @@ export function DataTable<TData, TValue>({
           }
         }
       }
+      // TODO:
+      // if (["p95"].includes(columnId)) {
+      //   const rowValues = table
+      //     .getGlobalFacetedRowModel()
+      //     .flatRows.map((row) => row.getValue(columnId) as number);
+      //   console.log({ rowValues });
+      // }
       return map;
     },
   });
