@@ -41,7 +41,7 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
   const columnFilters = table.getState().columnFilters;
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState<boolean>(false);
-  const [currentWord, setCurrentWord] = useState("");
+  const [currentWord, setCurrentWord] = useState<string>("");
   const [inputValue, setInputValue] = useState<string>(
     serializeColumFilters(columnFilters, filterFields)
   );
@@ -170,12 +170,14 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
                * @example queries = ["ams", "gru", "fra"]
                */
               const queries = query.split(ARRAY_DELIMITER);
-              const extendedQueries = queries?.map(
-                (item) => `${filter}:${item}`
-              );
-              if (extendedQueries.some((item) => item === value)) return 0;
-              if (extendedQueries.some((item) => value.includes(item)))
-                return 1;
+              const rawValue = value.toLowerCase().replace(`${filter}:`, "");
+              if (
+                queries.some(
+                  (item, i) => item === rawValue && i !== queries.length - 1
+                )
+              )
+                return 0;
+              if (queries.some((item) => rawValue.includes(item))) return 1;
             }
             if (query.includes(SLIDER_DELIMITER)) {
               /**
@@ -183,19 +185,16 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
                * @example queries = ["0", "3000"]
                */
               const queries = query.split(SLIDER_DELIMITER);
-              const extendedQueries = queries?.map(
-                (item) => `${filter}:${item}`
-              );
+              const rawValue = value.toLowerCase().replace(`${filter}:`, "");
 
-              const valueAsNumber = parseInt(value.replace(`${filter}:`, ""));
-              const queryAsNumber = parseInt(queries[0]);
+              const rawValueAsNumber = Number.parseInt(rawValue);
+              const queryAsNumber = Number.parseInt(queries[0]);
 
-              if (queryAsNumber < valueAsNumber) {
-                if (value.includes(extendedQueries[1])) return 1;
-                else return 0;
-              } else {
+              if (queryAsNumber < rawValueAsNumber) {
+                if (rawValue.includes(queries[1])) return 1;
                 return 0;
               }
+              return 0;
             }
             const rawValue = value.toLowerCase().replace(`${filter}:`, "");
             if (rawValue.includes(query)) return 1;

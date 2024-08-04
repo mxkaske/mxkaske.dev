@@ -17,10 +17,10 @@ const stringToBoolean = z
       return JSON.parse(val);
     } catch (e) {
       console.log(e);
-      return false;
+      return undefined;
     }
   })
-  .pipe(z.boolean());
+  .pipe(z.boolean().optional());
 
 
 export const columnSchema = z.object({
