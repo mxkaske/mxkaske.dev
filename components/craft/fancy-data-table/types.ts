@@ -1,27 +1,41 @@
-import type * as React from "react";
-
-export interface SearchParams {
+export type SearchParams = {
   [key: string]: string | string[] | undefined;
-}
+};
 
-export interface Option {
+export type Option = {
   label: string;
-  value: string | boolean;
-}
+  value: string | boolean | number | undefined;
+};
 
-export interface DataTableFilterField<TData> {
-  label: string;
-  value: keyof TData;
+export type Input = {
+  type: "input";
+  options?: Option[];
+};
+
+export type Checkbox = {
+  type: "checkbox";
   component?: (props: Option) => JSX.Element | null;
   options?: Option[];
-}
+};
 
-export interface DataTableFilterOption<TData> {
-  id: string;
+export type Slider = {
+  type: "slider";
+  min: number;
+  max: number;
+  // if options is undefined, we will provide all the steps between min and max (increases )
+  options?: Option[];
+};
+
+export type Base<TData> = {
   label: string;
   value: keyof TData;
-  options: Option[];
-  filterValues?: string[];
-  filterOperator?: string;
-  isMulti?: boolean;
-}
+};
+
+export type DataTableCheckboxFilterField<TData> = Base<TData> & Checkbox;
+export type DataTableSliderFilterField<TData> = Base<TData> & Slider;
+export type DataTableInputFilterField<TData> = Base<TData> & Input;
+
+export type DataTableFilterField<TData> =
+  | DataTableCheckboxFilterField<TData>
+  | DataTableSliderFilterField<TData>
+  | DataTableInputFilterField<TData>;

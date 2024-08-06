@@ -3,7 +3,9 @@
 import type {
   ColumnDef,
   ColumnFiltersState,
+  SortingState,
   Table as TTable,
+  VisibilityState,
 } from "@tanstack/react-table";
 import {
   flexRender,
@@ -12,10 +14,10 @@ import {
   getFacetedUniqueValues,
   getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import * as React from "react";
-import { z } from "zod";
 
 import {
   Table,
@@ -28,8 +30,9 @@ import {
 import { DataTableFilterBar } from "./data-table-filter-bar";
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableFilterCommand } from "./data-table-filter-command";
-import { schema } from "./schema";
+import { columnFilterSchema } from "./schema";
 import type { DataTableFilterField } from "./types";
+import { DataTableToolbar } from "./data-table-toolbar"; // TODO: check where to put this
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -46,11 +49,18 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] =
     React.useState<ColumnFiltersState>(defaultColumnFilters);
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
+
   const table = useReactTable({
     data,
     columns,
-    state: { columnFilters },
+    state: { columnFilters, sorting, columnVisibility },
+    onColumnVisibilityChange: setColumnVisibility,
     onColumnFiltersChange: setColumnFilters,
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
@@ -69,13 +79,20 @@ export function DataTable<TData, TValue>({
           }
         }
       }
+      // TODO:
+      // if (["p95"].includes(columnId)) {
+      //   const rowValues = table
+      //     .getGlobalFacetedRowModel()
+      //     .flatRows.map((row) => row.getValue(columnId) as number);
+      //   console.log({ rowValues });
+      // }
       return map;
     },
   });
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row">
-      <div className="w-full sm:max-w-56">
+      <div className="w-full sm:max-w-64">
         <DataTableFilterBar
           table={table}
           columns={columns}
@@ -85,7 +102,7 @@ export function DataTable<TData, TValue>({
       <div className="flex flex-1 flex-col gap-4">
         <DataTableFilterCommand
           table={table}
-          schema={schema} // needs input validation - mostly zod schema from filterFields
+          schema={columnFilterSchema}
           filterFields={filterFields}
         />
         <div className="rounded-md border">
@@ -100,7 +117,7 @@ export function DataTable<TData, TValue>({
                           ? null
                           : flexRender(
                               header.column.columnDef.header,
-                              header.getContext(),
+                              header.getContext()
                             )}
                       </TableHead>
                     );
@@ -119,7 +136,7 @@ export function DataTable<TData, TValue>({
                       <TableCell key={cell.id}>
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext(),
+                          cell.getContext()
                         )}
                       </TableCell>
                     ))}

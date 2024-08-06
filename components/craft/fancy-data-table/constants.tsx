@@ -1,31 +1,37 @@
-"use client"
+"use client";
 
 import { cn } from "@/lib/utils";
-import type { Schema } from "./schema";
+import { REGIONS, TAGS, type ColumnSchema } from "./schema";
 import type { DataTableFilterField, Option } from "./types";
 
 export const tagsColor = {
   api: {
-    badge: "text-[#10b981] bg-[#10b981]/10 border-[#10b981]/20 hover:bg-[#10b981]/10",
-    dot: "bg-[#10b981]"
+    badge:
+      "text-[#10b981] bg-[#10b981]/10 border-[#10b981]/20 hover:bg-[#10b981]/10",
+    dot: "bg-[#10b981]",
   },
   web: {
-    badge: "text-[#0ea5e9] bg-[#0ea5e9]/10 border-[#0ea5e9]/20 hover:bg-[#0ea5e9]/10",
-    dot: "bg-[#0ea5e9]"
+    badge:
+      "text-[#0ea5e9] bg-[#0ea5e9]/10 border-[#0ea5e9]/20 hover:bg-[#0ea5e9]/10",
+    dot: "bg-[#0ea5e9]",
   },
   enterprise: {
-    badge: "text-[#ec4899] bg-[#ec4899]/10 border-[#ec4899]/20 hover:bg-[#ec4899]/10",
-    dot: "bg-[#ec4899]"
+    badge:
+      "text-[#ec4899] bg-[#ec4899]/10 border-[#ec4899]/20 hover:bg-[#ec4899]/10",
+    dot: "bg-[#ec4899]",
   },
   app: {
-    badge: "text-[#eab308] bg-[#eab308]/10 border-[#eab308]/20 hover:bg-[#eab308]/10",
-    dot: "bg-[#eab308]"
+    badge:
+      "text-[#f97316] bg-[#f97316]/10 border-[#f97316]/20 hover:bg-[#f97316]/10",
+    dot: "bg-[#f97316]",
   },
 } as Record<string, Record<"badge" | "dot", string>>;
 
 export const data = [
   {
     name: "Edge Api",
+    url: "edge-api.acme.com/health",
+    p95: 140,
     public: true,
     active: true,
     regions: ["ams", "gru", "syd"],
@@ -33,27 +39,26 @@ export const data = [
   },
   {
     name: "Lambda Api",
+    url: "lambda-api.acme.com/health",
+    p95: 203,
     public: true,
     active: true,
     regions: ["ams", "gru", "syd"],
     tags: ["api"],
   },
   {
-    name: "OpenStatus",
-    public: false,
-    active: false,
-    regions: ["iad", "fra"],
-    tags: ["enterprise"],
-  },
-  {
     name: "Storybook",
+    url: "storybook.acme.com",
+    p95: 1252,
     public: false,
     active: true,
     regions: ["iad"],
     tags: ["web"],
   },
   {
-    name: "Marketing Site",
+    name: "Marketing",
+    url: "acme.com",
+    p95: 659,
     public: true,
     active: true,
     regions: ["hkg", "fra", "iad"],
@@ -61,6 +66,8 @@ export const data = [
   },
   {
     name: "App",
+    url: "app.acme.com",
+    p95: 1301,
     public: false,
     active: true,
     regions: ["iad", "fra"],
@@ -68,13 +75,17 @@ export const data = [
   },
   {
     name: "Demo",
+    url: "demo.acme.com",
+    p95: 2420,
     public: true,
     active: true,
     regions: ["iad"],
-    tags: ["web"],
+    tags: ["web", "enterprise"],
   },
   {
     name: "Documentation",
+    url: "docs.acme.com",
+    p95: 943,
     public: true,
     active: true,
     regions: ["ams"],
@@ -82,6 +93,8 @@ export const data = [
   },
   {
     name: "Boilerplate",
+    url: "boilerplate.acme.com",
+    p95: undefined,
     public: true,
     active: false,
     regions: ["gru", "fra"],
@@ -89,6 +102,8 @@ export const data = [
   },
   {
     name: "Dashboard",
+    url: "app.acme.com/dashboard",
+    p95: 967,
     public: false,
     active: true,
     regions: ["iad", "fra"],
@@ -96,6 +111,8 @@ export const data = [
   },
   {
     name: "E2E Testing",
+    url: "staging-cypress-e2e.acme.com",
+    p95: 1954,
     public: false,
     active: true,
     regions: ["iad"],
@@ -103,48 +120,56 @@ export const data = [
   },
   {
     name: "Web App",
+    url: "web-app.acme.com",
+    p95: 1043,
     public: true,
     active: true,
     regions: ["iad"],
     tags: ["web"],
   },
-] satisfies Schema[];
+] satisfies ColumnSchema[];
 
 export const filterFields = [
   {
+    label: "URL",
+    value: "url",
+    type: "input",
+    options: data.map(({ url }) => ({ label: url, value: url })),
+  },
+  {
     label: "Public",
     value: "public",
-    options: [
-      { label: "true", value: true },
-      { label: "false", value: false },
-    ],
+    type: "checkbox",
+    options: [true, false].map((bool) => ({ label: `${bool}`, value: bool })),
   },
   {
     label: "Active",
     value: "active",
-    options: [
-      { label: "true", value: true },
-      { label: "false", value: false },
-    ],
+    type: "checkbox",
+    options: [true, false].map((bool) => ({ label: `${bool}`, value: bool })),
+  },
+  {
+    label: "P95",
+    value: "p95",
+    type: "slider",
+    min: 0,
+    max: 3000,
+    options: data.map(({ p95 }) => ({ label: `${p95}`, value: p95 })),
   },
   {
     label: "Regions",
     value: "regions",
-    options: [
-      { label: "ams", value: "ams" },
-      { label: "fra", value: "fra" },
-      { label: "hkg", value: "hkg" },
-      { label: "iad", value: "iad" },
-      { label: "gru", value: "gru" },
-      { label: "syd", value: "syd" },
-    ],
+    type: "checkbox",
+    options: REGIONS.map((region) => ({ label: region, value: region })),
   },
   {
     label: "Tags",
     value: "tags",
+    type: "checkbox",
     // REMINDER: "use client" needs to be declared in the file - otherwise getting serialization error from Server Component
     component: (props: Option) => {
       if (typeof props.value === "boolean") return null;
+      if (typeof props.value === "undefined") return null;
       return (
         <div className="flex w-full items-center justify-between gap-2">
           <span className="truncate font-normal">{props.value}</span>
@@ -154,12 +179,6 @@ export const filterFields = [
         </div>
       );
     },
-    options: [
-      // TODO: we could include some more descriptions (like the full name "Amsterdam") maybe with text-popover-muted
-      { label: "web", value: "web" },
-      { label: "api", value: "api" },
-      { label: "enterprise", value: "enterprise" },
-      { label: "app", value: "app" },
-    ],
+    options: TAGS.map((tag) => ({ label: tag, value: tag })),
   },
-] satisfies DataTableFilterField<Schema>[];
+] satisfies DataTableFilterField<ColumnSchema>[];
