@@ -83,12 +83,26 @@ export function getFieldOptions<TData>({
 
 export function getFilterValue({
   value,
+  search,
   currentWord,
 }: {
   value: string;
+  search: string;
+  keywords?: string[] | undefined;
   currentWord: string;
 }): number {
+  /**
+   * @example value "suggestion:public:true regions,ams,gru,fra"
+   */
+  if (value.startsWith("suggestion:")) {
+    const rawValue = value.toLowerCase().replace("suggestion:", "");
+    if (rawValue.includes(search)) return 1;
+    return 0;
+  }
+
+  /** */
   if (value.toLowerCase().includes(currentWord.toLowerCase())) return 1;
+
   /**
    * @example checkbox [filter, query] = ["regions", "ams,gru,fra"]
    * @example slider [filter, query] = ["p95", "0-3000"]

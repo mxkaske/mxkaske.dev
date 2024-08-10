@@ -11,7 +11,7 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -23,7 +23,6 @@ import { deserialize, serializeColumFilters } from "../utils";
 import useUpdateSearchParams from "@/hooks/use-update-search-params";
 import { useRouter } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
-import { ARRAY_DELIMITER, SLIDER_DELIMITER } from "../schema";
 import {
   getFieldOptions,
   getFieldValueByType,
@@ -31,6 +30,10 @@ import {
   getWordByCaretPosition,
   replaceInputByFieldType,
 } from "./utils";
+import { formatDistanceToNow } from "date-fns";
+import { usePersistedState } from "./use-persisted-state";
+
+// FIXME: too many updates
 
 interface DataTableFilterCommandProps<TData, TSchema extends z.AnyZodObject> {
   table: Table<TData>;
@@ -52,7 +55,12 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
   );
   const updateSearchParams = useUpdateSearchParams();
   const router = useRouter();
-
+  const [lastSearches, setLastSearches] = usePersistedState<
+    {
+      search: string;
+      timestamp: number;
+    }[]
+  >([], "data-table-command");
   const updatePageSearchParams = (values: Record<string, unknown>) => {
     const newSearchParams = updateSearchParams(values, { override: true });
     router.replace(`?${newSearchParams}`, { scroll: false });
@@ -142,7 +150,10 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
           "overflow-visible rounded-lg border shadow-md [&>div]:border-none",
           open ? "visible" : "hidden"
         )}
-        filter={(value) => getFilterValue({ value, currentWord })}
+        filter={(value, search, keywords) =>
+          getFilterValue({ value, search, keywords, currentWord })
+        }
+        // loop
       >
         <CommandInput
           ref={inputRef}
@@ -151,7 +162,23 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
           onKeyDown={(e) => {
             if (e.key === "Escape") inputRef?.current?.blur();
           }}
-          onBlur={() => setOpen(false)}
+          onBlur={() => {
+            setOpen(false);
+            // FIXME: doesnt reflect the jumps
+            setLastSearches((val) => {
+              const search = inputValue.trim();
+              if (!search) return val;
+              const timestamp = Date.now();
+              const searchIndex = val.findIndex(
+                (item) => item.search === search
+              );
+              if (searchIndex !== -1) {
+                val[searchIndex].timestamp = timestamp;
+                return val;
+              }
+              return [...val, { search, timestamp }];
+            });
+          }}
           onInput={(e) => {
             const caretPosition = e.currentTarget?.selectionStart || -1;
             const value = e.currentTarget?.value || "";
@@ -163,7 +190,8 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
         />
         <div className="relative">
           <div className="absolute top-2 z-10 w-full overflow-hidden rounded-lg border border-accent-foreground/30 bg-popover text-popover-foreground shadow-md outline-none animate-in">
-            <CommandList>
+            {/* default height is 300px but in case of more, we'd like to tease the user */}
+            <CommandList className="max-h-[310px]">
               <CommandGroup heading="Filter">
                 {filterFields?.map((field) => {
                   if (typeof field.value !== "string") return null;
@@ -244,6 +272,54 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
                     );
                   });
                 })}
+              </CommandGroup>
+              <CommandSeparator />
+              <CommandGroup heading="Suggestions">
+                {lastSearches
+                  ?.sort((a, b) => b.timestamp - a.timestamp)
+                  .slice(0, 5)
+                  .map((item) => {
+                    return (
+                      <CommandItem
+                        key={`suggestion:${item.search}`}
+                        value={`suggestion:${item.search}`}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }}
+                        onSelect={(value) => {
+                          const search = value.replace("suggestion:", "");
+                          setInputValue(search);
+                          setCurrentWord("");
+                        }}
+                        className="group"
+                      >
+                        {item.search}
+                        <span className="ml-auto truncate text-muted-foreground/80 group-aria-[selected=true]:block">
+                          {formatDistanceToNow(item.timestamp, {
+                            addSuffix: true,
+                          })}
+                        </span>
+                        <button
+                          type="button"
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setLastSearches((val) =>
+                              val.filter((i) => i.search !== item.search)
+                            );
+                          }}
+                          className="ml-1 hidden rounded-md p-0.5 hover:bg-background group-aria-[selected=true]:block"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </CommandItem>
+                    );
+                  })}
               </CommandGroup>
               <CommandEmpty>No results found.</CommandEmpty>
             </CommandList>
