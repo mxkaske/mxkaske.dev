@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import { REGIONS, TAGS, type ColumnSchema } from "./schema";
 import type { DataTableFilterField, Option } from "./types";
+import { subDays, subHours, subMinutes } from "date-fns";
 
 export const tagsColor = {
   api: {
@@ -36,6 +37,7 @@ export const data = [
     active: true,
     regions: ["ams", "gru", "syd"],
     tags: ["api", "enterprise"],
+    date: subHours(new Date(), 1),
   },
   {
     name: "Lambda Api",
@@ -45,6 +47,7 @@ export const data = [
     active: true,
     regions: ["ams", "gru", "syd"],
     tags: ["api"],
+    date: subHours(new Date(), 10),
   },
   {
     name: "Storybook",
@@ -54,6 +57,7 @@ export const data = [
     active: true,
     regions: ["iad"],
     tags: ["web"],
+    date: subMinutes(new Date(), 10),
   },
   {
     name: "Marketing",
@@ -63,6 +67,7 @@ export const data = [
     active: true,
     regions: ["hkg", "fra", "iad"],
     tags: ["web"],
+    date: subDays(new Date(), 1),
   },
   {
     name: "App",
@@ -72,6 +77,7 @@ export const data = [
     active: true,
     regions: ["iad", "fra"],
     tags: ["app"],
+    date: subHours(new Date(), 13),
   },
   {
     name: "Demo",
@@ -81,6 +87,7 @@ export const data = [
     active: true,
     regions: ["iad"],
     tags: ["web", "enterprise"],
+    date: subDays(new Date(), 4),
   },
   {
     name: "Documentation",
@@ -90,6 +97,7 @@ export const data = [
     active: true,
     regions: ["ams"],
     tags: ["api", "web"],
+    date: subDays(new Date(), 6),
   },
   {
     name: "Boilerplate",
@@ -99,6 +107,7 @@ export const data = [
     active: false,
     regions: ["gru", "fra"],
     tags: ["web"],
+    date: subDays(new Date(), 10),
   },
   {
     name: "Dashboard",
@@ -108,6 +117,7 @@ export const data = [
     active: true,
     regions: ["iad", "fra"],
     tags: ["web"],
+    date: subHours(new Date(), 28),
   },
   {
     name: "E2E Testing",
@@ -117,6 +127,7 @@ export const data = [
     active: true,
     regions: ["iad"],
     tags: ["web"],
+    date: subDays(new Date(), 12),
   },
   {
     name: "Web App",
@@ -126,10 +137,18 @@ export const data = [
     active: true,
     regions: ["iad"],
     tags: ["web"],
+    date: subDays(new Date(), 15),
   },
 ] satisfies ColumnSchema[];
 
 export const filterFields = [
+  {
+    label: "Time Range",
+    value: "date",
+    type: "timerange",
+    defaultOpen: true,
+    commandDisabled: true,
+  },
   {
     label: "URL",
     value: "url",
@@ -155,6 +174,7 @@ export const filterFields = [
     min: 0,
     max: 3000,
     options: data.map(({ p95 }) => ({ label: `${p95}`, value: p95 })),
+    defaultOpen: true,
   },
   {
     label: "Regions",
@@ -166,6 +186,7 @@ export const filterFields = [
     label: "Tags",
     value: "tags",
     type: "checkbox",
+    defaultOpen: true,
     // REMINDER: "use client" needs to be declared in the file - otherwise getting serialization error from Server Component
     component: (props: Option) => {
       if (typeof props.value === "boolean") return null;

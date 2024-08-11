@@ -5,8 +5,9 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Check, Minus } from "lucide-react";
 import { tagsColor } from "./constants";
 import type { ColumnSchema } from "./schema";
-import { isArrayOfNumbers } from "./utils";
+import { isArrayOfDates, isArrayOfNumbers } from "./utils";
 import { DataTableColumnHeader } from "./data-table-column-header";
+import { isSameDay } from "date-fns";
 
 export const columns: ColumnDef<ColumnSchema>[] = [
   {
@@ -121,6 +122,36 @@ export const columns: ColumnDef<ColumnSchema>[] = [
       if (typeof value === "string") return value === String(rowValue);
       if (typeof value === "boolean") return value === rowValue;
       if (Array.isArray(value)) return value.includes(rowValue);
+      return false;
+    },
+  },
+  {
+    accessorKey: "date",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Date" />
+    ),
+    cell: ({ row }) => {
+      const value = row.getValue("date");
+      return (
+        <div className="text-xs text-muted-foreground">
+          {new Date(`${value}`).toLocaleString()}
+        </div>
+      );
+    },
+    filterFn: (row, id, value) => {
+      const rowValue = row.getValue(id);
+      if (value instanceof Date && rowValue instanceof Date) {
+        return isSameDay(value, rowValue);
+      }
+      if (Array.isArray(value)) {
+        if (isArrayOfDates(value) && rowValue instanceof Date) {
+          const sorted = value.sort((a, b) => a.getTime() - b.getTime());
+          return (
+            sorted[0].getTime() <= rowValue.getTime() &&
+            rowValue.getTime() <= sorted[1].getTime()
+          );
+        }
+      }
       return false;
     },
   },

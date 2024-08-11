@@ -4,6 +4,7 @@ import { z } from "zod";
 export const ARRAY_DELIMITER = ",";
 export const SLIDER_DELIMITER = "-";
 export const SPACE_DELIMITER = "_";
+export const RANGE_DELIMITER = "-";
 
 export const REGIONS = ["ams", "gru", "syd", "hkg", "fra", "iad"] as const;
 export const TAGS = ["web", "api", "enterprise", "app"] as const;
@@ -22,7 +23,6 @@ const stringToBoolean = z
   })
   .pipe(z.boolean().optional());
 
-
 export const columnSchema = z.object({
   name: z.string(),
   url: z.string(),
@@ -33,6 +33,7 @@ export const columnSchema = z.object({
   active: z.boolean(),
   regions: z.enum(REGIONS).array(),
   tags: z.enum(TAGS).array(),
+  date: z.date(),
 });
 
 export type ColumnSchema = z.infer<typeof columnSchema>;
@@ -77,6 +78,17 @@ export const columnFilterSchema = z.object({
         .pipe(z.enum(TAGS).array())
     )
     .optional(),
+  date: z.coerce
+    .number()
+    .pipe(z.coerce.date())
+    .or(
+      z
+        .string()
+        .transform((val) => val.split(RANGE_DELIMITER).map(Number))
+        .pipe(z.coerce.date().array())
+    )
+    .optional(),
+  // .default([subDays(new Date(), -7), new Date()]),
 });
 
 export type ColumnFilterSchema = z.infer<typeof columnFilterSchema>;

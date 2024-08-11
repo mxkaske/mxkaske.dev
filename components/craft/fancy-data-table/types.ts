@@ -26,16 +26,41 @@ export type Slider = {
   options?: Option[];
 };
 
+export type Timerange = {
+  type: "timerange";
+  options?: Option[]; // required for TS
+};
+// SHOULD BE DONE WITHIN THE FILTER
+// & (
+//   | {
+//       from: number;
+//       to: number;
+//     }
+//   | {
+//       preset: "today" | "yesterday" | "last7days" | "last30days";
+//     }
+// );
+
 export type Base<TData> = {
   label: string;
   value: keyof TData;
+  /**
+   * Defines if the accordion in the filter bar is open by default
+   */
+  defaultOpen?: boolean;
+  /**
+   * Defines if the command input is disabled for this field
+   */
+  commandDisabled?: boolean;
 };
 
 export type DataTableCheckboxFilterField<TData> = Base<TData> & Checkbox;
 export type DataTableSliderFilterField<TData> = Base<TData> & Slider;
 export type DataTableInputFilterField<TData> = Base<TData> & Input;
+export type DataTableTimerangeFilterField<TData> = Base<TData> & Timerange;
 
 export type DataTableFilterField<TData> =
   | DataTableCheckboxFilterField<TData>
   | DataTableSliderFilterField<TData>
-  | DataTableInputFilterField<TData>;
+  | DataTableInputFilterField<TData>
+  | DataTableTimerangeFilterField<TData>;

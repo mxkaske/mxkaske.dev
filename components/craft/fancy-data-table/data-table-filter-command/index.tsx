@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import {
   Command,
@@ -44,12 +44,16 @@ interface DataTableFilterCommandProps<TData, TSchema extends z.AnyZodObject> {
 export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
   schema,
   table,
-  filterFields,
+  filterFields: _filterFields,
 }: DataTableFilterCommandProps<TData, TSchema>) {
   const columnFilters = table.getState().columnFilters;
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState<boolean>(false);
   const [currentWord, setCurrentWord] = useState<string>("");
+  const filterFields = useMemo(
+    () => _filterFields?.filter((i) => !i.commandDisabled),
+    [_filterFields]
+  );
   const [inputValue, setInputValue] = useState<string>(
     serializeColumFilters(columnFilters, filterFields)
   );
@@ -72,23 +76,46 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
     // reset
     if (currentWord !== "" && !open) setCurrentWord("");
 
+    // FIXME: that stuff is BAD!
     const searchParams = deserialize(schema)(inputValue);
-    if (searchParams.success) {
-      table.resetColumnFilters();
+    const currentFilters = table.getState().columnFilters;
+    const currentEnabledFilters = currentFilters.filter((filter) => {
+      const field = _filterFields?.find((field) => field.value === filter.id);
+      return !field?.commandDisabled;
+    });
+    const currentDisabledFilters = currentFilters.filter((filter) => {
+      const field = _filterFields?.find((field) => field.value === filter.id);
+      return field?.commandDisabled;
+    });
 
+    const commandDisabledFilterKeys = currentDisabledFilters.reduce(
+      (prev, curr) => {
+        prev[curr.id] = curr.value;
+        return prev;
+      },
+      {} as Record<string, unknown>
+    );
+
+    if (searchParams.success) {
       for (const key of Object.keys(searchParams.data)) {
-        table
-          .getColumn(key)
-          ?.setFilterValue(
-            searchParams.data[key as keyof typeof searchParams.data]
-          );
+        const value = searchParams.data[key as keyof typeof searchParams.data];
+        table.getColumn(key)?.setFilterValue(value);
       }
+
+      const currentFiltersToReset = currentEnabledFilters.filter((filter) => {
+        return !(filter.id in searchParams.data);
+      });
+
+      for (const filter of currentFiltersToReset) {
+        table.getColumn(filter.id)?.setFilterValue(undefined);
+      }
+
       if (typeof searchParams.data === "object") {
         const search: Record<string, unknown> = {};
-        Object.entries(searchParams.data).map(([key, value]) => {
-          const field = filterFields?.find((field) => field.value === key);
-          const searchValue = getFieldValueByType({ field, value });
-          search[key] = searchValue;
+        const values = { ...commandDisabledFilterKeys, ...searchParams.data };
+        Object.entries(values).map(([key, value]) => {
+          const field = _filterFields?.find((field) => field.value === key);
+          search[key] = getFieldValueByType({ field, value });
         });
         updatePageSearchParams(search);
       }
@@ -165,6 +192,7 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
           onBlur={() => {
             setOpen(false);
             // FIXME: doesnt reflect the jumps
+            // FIXME: will save non-existing searches
             setLastSearches((val) => {
               const search = inputValue.trim();
               if (!search) return val;

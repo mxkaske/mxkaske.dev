@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { DataTableFilterSlider } from "./data-table-filter-slider";
 import { DataTableFilterInput } from "./data-table-filter-input";
+import { DataTableFilterTimerange } from "./data-table-filter-timerange";
 
 // TODO: only pass the columns to generate the filters!
 // https://tanstack.com/table/v8/docs/framework/react/examples/filters
@@ -69,7 +70,9 @@ export function DataTableFilterBar<TData, TValue>({
       <Accordion
         type="multiple"
         // REMINDER: open all filters by default
-        defaultValue={filterFields?.map(({ value }) => value as string)}
+        defaultValue={filterFields
+          ?.filter(({ defaultOpen }) => defaultOpen)
+          ?.map(({ value }) => value as string)}
       >
         {filterFields?.map((field) => {
           return (
@@ -99,6 +102,11 @@ export function DataTableFilterBar<TData, TValue>({
                     }
                     case "input": {
                       return <DataTableFilterInput table={table} {...field} />;
+                    }
+                    case "timerange": {
+                      return (
+                        <DataTableFilterTimerange table={table} {...field} />
+                      );
                     }
                   }
                 })()}

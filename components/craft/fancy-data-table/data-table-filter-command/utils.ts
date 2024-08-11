@@ -1,5 +1,6 @@
-import { ARRAY_DELIMITER, SLIDER_DELIMITER } from "../schema";
+import { ARRAY_DELIMITER, RANGE_DELIMITER, SLIDER_DELIMITER } from "../schema";
 import type { DataTableFilterField } from "../types";
+import { isArrayOfDates } from "../utils";
 
 /**
  * Extracts the word from the given string at the specified caret position.
@@ -48,6 +49,14 @@ export function replaceInputByFieldType<TData>({
         const words = currentWord.split(SLIDER_DELIMITER);
         words[words.length - 1] = `${optionValue}`;
         const input = prev.replace(currentWord, words.join(SLIDER_DELIMITER));
+        return `${input.trim()} `;
+      }
+    }
+    case "timerange": {
+      if (currentWord.includes(RANGE_DELIMITER)) {
+        const words = currentWord.split(RANGE_DELIMITER);
+        words[words.length - 1] = `${optionValue}`;
+        const input = prev.replace(currentWord, words.join(RANGE_DELIMITER));
         return `${input.trim()} `;
       }
     }
@@ -165,6 +174,18 @@ export function getFieldValueByType<TData>({
     case "checkbox": {
       if (Array.isArray(value)) {
         return value.join(ARRAY_DELIMITER);
+      }
+      return value;
+    }
+    case "timerange": {
+      if (Array.isArray(value)) {
+        if (isArrayOfDates(value)) {
+          return value.map((date) => date.getTime()).join(RANGE_DELIMITER);
+        }
+        return value.join(RANGE_DELIMITER);
+      }
+      if (value instanceof Date) {
+        return value.getTime();
       }
       return value;
     }

@@ -11,7 +11,7 @@ import { Slider } from "@/components/ui/slider";
 import { isArrayOfNumbers } from "./utils";
 import { SLIDER_DELIMITER } from "./schema";
 
-type DataTableFilterCheckboxProps<TData> = DataTableSliderFilterField<TData> & {
+type DataTableFilterSliderProps<TData> = DataTableSliderFilterField<TData> & {
   table: Table<TData>;
 };
 
@@ -23,7 +23,7 @@ export function DataTableFilterSlider<TData>({
   value: _value,
   min,
   max,
-}: DataTableFilterCheckboxProps<TData>) {
+}: DataTableFilterSliderProps<TData>) {
   const value = _value as string;
   const updateSearchParams = useUpdateSearchParams();
   const router = useRouter();
@@ -66,7 +66,7 @@ export function DataTableFilterSlider<TData>({
             min={min}
             max={max}
             onChange={(e) => {
-              const val = parseInt(e.target.value) || 0;
+              const val = Number.parseInt(e.target.value) || 0;
               const newValue =
                 Array.isArray(filters) && val < filters[1]
                   ? [val, filters[1]]
@@ -96,7 +96,7 @@ export function DataTableFilterSlider<TData>({
             min={min}
             max={max}
             onChange={(e) => {
-              const val = parseInt(e.target.value) || 0;
+              const val = Number.parseInt(e.target.value) || 0;
               const newValue =
                 Array.isArray(filters) && val > filters[0]
                   ? [filters[0], val]

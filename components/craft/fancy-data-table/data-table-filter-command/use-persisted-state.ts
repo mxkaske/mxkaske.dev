@@ -7,7 +7,9 @@ export function usePersistedState<T>(
   key: string
 ): PersistedState<T> {
   const [value, setValue] = useState<T>(() => {
-    const value = window.localStorage.getItem(key);
+    // FIXME: issue with Hydration
+    // if (typeof window === "undefined") return defaultValue;
+    const value = window?.localStorage.getItem(key);
 
     return value ? (JSON.parse(value) as T) : defaultValue;
   });
