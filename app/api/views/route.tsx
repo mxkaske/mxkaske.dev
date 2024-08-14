@@ -1,5 +1,5 @@
 import { Redis } from "@upstash/redis";
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 const redis = Redis.fromEnv();
 

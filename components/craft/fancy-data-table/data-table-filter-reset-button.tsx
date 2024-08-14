@@ -7,10 +7,9 @@ import type { DataTableFilterField } from "./types";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
-interface DataTableFilterResetButtonProps<TData>
-  extends DataTableFilterField<TData> {
+type DataTableFilterResetButtonProps<TData> = DataTableFilterField<TData> & {
   table: Table<TData>;
-}
+};
 
 export function DataTableFilterResetButton<TData>({
   table,

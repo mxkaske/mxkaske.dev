@@ -6,14 +6,19 @@ import {
   filterFields,
 } from "@/components/craft/fancy-data-table/constants";
 import { DataTable } from "@/components/craft/fancy-data-table/data-table";
-import { schema } from "@/components/craft/fancy-data-table/schema";
+import { columnFilterSchema } from "@/components/craft/fancy-data-table/schema";
+import { useEffect } from "react";
 
 export default function Page({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const search = schema.safeParse(searchParams);
+  const search = columnFilterSchema.safeParse(searchParams);
+
+  useEffect(() => {
+    fetch(`/api/views?slug=${"data-table"}`, { method: "POST" });
+  }, []);
 
   if (!search.success) {
     console.log(search.error);

@@ -1,5 +1,8 @@
+// TODO: check if we can move to /data-table-filter-command/utils.ts
 import type { ColumnFiltersState } from "@tanstack/react-table";
 import { z } from "zod";
+import type { DataTableFilterField } from "./types";
+import { ARRAY_DELIMITER, RANGE_DELIMITER, SLIDER_DELIMITER } from "./schema";
 
 export function deserialize<T extends z.AnyZodObject>(schema: T) {
   const castToSchema = z.preprocess((val) => {
@@ -7,21 +10,12 @@ export function deserialize<T extends z.AnyZodObject>(schema: T) {
     return val
       .trim()
       .split(" ")
-      .reduce(
-        (prev, curr) => {
-          const [name, value] = curr.split(":");
-          if (!value || !name) return prev;
-
-          if (!value.includes(",")) {
-            prev[name] = [value];
-            return prev;
-          }
-          const values = value.split(",");
-          prev[name] = values;
-          return prev;
-        },
-        {} as Record<string, unknown>,
-      );
+      .reduce((prev, curr) => {
+        const [name, value] = curr.split(":");
+        if (!value || !name) return prev;
+        prev[name] = value;
+        return prev;
+      }, {} as Record<string, unknown>);
   }, schema);
   return (value: string) => castToSchema.safeParse(value);
 }
@@ -40,11 +34,45 @@ export function deserialize<T extends z.AnyZodObject>(schema: T) {
 //       .safeParse(value);
 // }
 
-export function serializeColumFilters(columnFilters: ColumnFiltersState) {
+export function serializeColumFilters<TData>(
+  columnFilters: ColumnFiltersState,
+  filterFields?: DataTableFilterField<TData>[]
+) {
   return columnFilters.reduce((prev, curr) => {
+    const { type, commandDisabled } = filterFields?.find(
+      (field) => curr.id === field.value
+    ) || { commandDisabled: true }; // if column filter is not found, disable the command by default
+
+    if (commandDisabled) return prev;
+
     if (Array.isArray(curr.value)) {
-      return `${prev}${curr.id}:${curr.value.join(",")} `;
+      if (type === "slider") {
+        return `${prev}${curr.id}:${curr.value.join(SLIDER_DELIMITER)} `;
+      }
+      if (type === "checkbox") {
+        return `${prev}${curr.id}:${curr.value.join(ARRAY_DELIMITER)} `;
+      }
+      if (type === "timerange") {
+        return `${prev}${curr.id}:${curr.value.join(RANGE_DELIMITER)} `;
+      }
     }
+
     return `${prev}${curr.id}:${curr.value} `;
   }, "");
 }
+
+export function isArrayOfNumbers(arr: any[]): arr is number[] {
+  return arr.every((item) => typeof item === "number");
+}
+
+export function isArrayOfDates(arr: any[]): arr is Date[] {
+  return arr.every((item) => item instanceof Date);
+}
+
+/**
+ * TODO: We could have a utility function that wraps both:
+ * - the update page params search URL
+ * - column filter value
+ * Both will have slightly different values based on the value
+ * but are closely connected and used together.
+ */

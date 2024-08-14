@@ -9,9 +9,11 @@ export function Footer() {
       <Link href="https://twitter.com/mxkaske">Twitter</Link>
       <span className="mx-2">·</span>
       <Link href="https://github.com/mxkaske/mxkaske.dev">GitHub</Link>
+      <span className="mx-2">·</span>
+      <Link href="https://openstatus.dev">OpenStatus</Link>
       <div className="absolute right-0">
         <ModeToggle />
       </div>
     </footer>
-  )
+  );
 }
