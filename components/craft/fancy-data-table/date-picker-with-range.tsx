@@ -17,6 +17,7 @@ import { Separator } from "@/components/ui/separator";
 import { kbdVariants } from "@/components/ui/kbd";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useDebounce } from "@/hooks/use-debounce";
 
 interface DatePickerWithRangeProps
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -71,7 +72,7 @@ export function DatePickerWithRange({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
-          <div className="flex">
+          <div className="flex justify-between">
             <DatePresets onSelect={setDate} selected={date} />
             <Separator orientation="vertical" className="h-auto w-[px]" />
             <Calendar
@@ -173,11 +174,24 @@ function CustomDateRange({
   selected: DateRange | undefined;
   onSelect: (date: DateRange | undefined) => void;
 }) {
+  const [dateFrom, setDateFrom] = React.useState<Date | undefined>(
+    selected?.from
+  );
+  const [dateTo, setDateTo] = React.useState<Date | undefined>(selected?.to);
+  const debounceDateFrom = useDebounce(dateFrom, 1000);
+  const debounceDateTo = useDebounce(dateTo, 1000);
+
   const formatDateForInput = (date: Date | undefined): string => {
     if (!date) return "";
     const utcDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
     return utcDate.toISOString().slice(0, 16);
   };
+
+  React.useEffect(() => {
+    onSelect({ from: debounceDateFrom, to: debounceDateTo });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debounceDateFrom, debounceDateTo]);
+
   return (
     <div className="flex flex-col gap-2 p-3">
       <p className="text-xs uppercase text-muted-foreground">Custom Range</p>
@@ -185,12 +199,16 @@ function CustomDateRange({
         <div className="grid w-full gap-1.5">
           <Label htmlFor="from">Start</Label>
           <Input
+            key={formatDateForInput(selected?.from)}
             type="datetime-local"
             id="from"
             name="from"
-            value={formatDateForInput(selected?.from)}
+            defaultValue={formatDateForInput(selected?.from)}
             onChange={(e) => {
-              onSelect({ from: new Date(e.target.value), to: selected?.to });
+              const newDate = new Date(e.target.value);
+              if (!Number.isNaN(newDate.getTime())) {
+                setDateFrom(newDate);
+              }
             }}
             disabled={!selected?.from}
           />
@@ -198,12 +216,16 @@ function CustomDateRange({
         <div className="grid w-full gap-1.5">
           <Label htmlFor="to">End</Label>
           <Input
+            key={formatDateForInput(selected?.to)}
             type="datetime-local"
             id="to"
             name="to"
-            value={formatDateForInput(selected?.to)}
+            defaultValue={formatDateForInput(selected?.to)}
             onChange={(e) => {
-              onSelect({ from: selected?.from, to: new Date(e.target.value) });
+              const newDate = new Date(e.target.value);
+              if (!Number.isNaN(newDate.getTime())) {
+                setDateTo(newDate);
+              }
             }}
             disabled={!selected?.to}
           />
