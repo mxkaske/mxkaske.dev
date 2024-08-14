@@ -316,7 +316,7 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
                         }}
                         onSelect={(value) => {
                           const search = value.replace("suggestion:", "");
-                          setInputValue(search);
+                          setInputValue(`${search} `);
                           setCurrentWord("");
                         }}
                         className="group"
