@@ -22,7 +22,7 @@ export type Slider = {
   type: "slider";
   min: number;
   max: number;
-  // if options is undefined, we will provide all the steps between min and max (increases )
+  // if options is undefined, we will provide all the steps between min and max
   options?: Option[];
 };
 
@@ -30,16 +30,6 @@ export type Timerange = {
   type: "timerange";
   options?: Option[]; // required for TS
 };
-// SHOULD BE DONE WITHIN THE FILTER
-// & (
-//   | {
-//       from: number;
-//       to: number;
-//     }
-//   | {
-//       preset: "today" | "yesterday" | "last7days" | "last30days";
-//     }
-// );
 
 export type Base<TData> = {
   label: string;

@@ -68,11 +68,3 @@ export function isArrayOfNumbers(arr: any[]): arr is number[] {
 export function isArrayOfDates(arr: any[]): arr is Date[] {
   return arr.every((item) => item instanceof Date);
 }
-
-/**
- * TODO: We could have a utility function that wraps both:
- * - the update page params search URL
- * - column filter value
- * Both will have slightly different values based on the value
- * but are closely connected and used together.
- */
