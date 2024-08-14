@@ -7,7 +7,7 @@ import { tagsColor } from "./constants";
 import type { ColumnSchema } from "./schema";
 import { isArrayOfDates, isArrayOfNumbers } from "./utils";
 import { DataTableColumnHeader } from "./data-table-column-header";
-import { isSameDay } from "date-fns";
+import { format, isSameDay } from "date-fns";
 
 export const columns: ColumnDef<ColumnSchema>[] = [
   {
@@ -134,7 +134,7 @@ export const columns: ColumnDef<ColumnSchema>[] = [
       const value = row.getValue("date");
       return (
         <div className="text-xs text-muted-foreground">
-          {new Date(`${value}`).toLocaleString()}
+          {format(new Date(`${value}`), "LLL dd, y HH:mm")}
         </div>
       );
     },

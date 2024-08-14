@@ -30,24 +30,22 @@ export function DataTablePagination<TData>({
   const updateSearchParams = useUpdateSearchParams();
   const router = useRouter();
 
-  const updatePageSearchParams = (
-    values: Record<string, unknown>,
-  ) => {
+  const updatePageSearchParams = (values: Record<string, unknown>) => {
     const newSearchParams = updateSearchParams(values);
     router.replace(`?${newSearchParams}`, { scroll: false });
   };
 
   return (
-    <div className="flex items-center justify-between px-2">
+    <div className="flex flex-wrap items-center justify-between gap-4 px-2 py-0.5">
       <div>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-sm text-muted-foreground">
           {table.getFilteredRowModel().rows.length} of{" "}
           {table.getCoreRowModel().rows.length} row(s) filtered
         </p>
       </div>
-      <div className="flex items-center space-x-6 lg:space-x-8">
+      <div className="flex items-center space-x-4 md:space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">
-          <p className="font-medium text-sm">Rows per page</p>
+          <p className="text-sm font-medium">Rows per page</p>
           <Select
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value) => {
@@ -67,7 +65,7 @@ export function DataTablePagination<TData>({
             </SelectContent>
           </Select>
         </div>
-        <div className="flex w-[100px] items-center justify-center font-medium text-sm">
+        <div className="flex items-center justify-center text-sm font-medium">
           Page {table.getState().pagination.pageIndex + 1} of{" "}
           {table.getPageCount()}
         </div>

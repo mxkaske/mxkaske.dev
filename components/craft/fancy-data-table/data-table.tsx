@@ -93,15 +93,15 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="flex flex-col gap-4 sm:flex-row">
-      <div className="w-full sm:max-w-64">
+    <div className="flex w-full flex-col gap-4 sm:flex-row">
+      <div className="w-full sm:min-w-48 sm:max-w-48 md:min-w-64 md:max-w-64">
         <DataTableFilterBar
           table={table}
           columns={columns}
           filterFields={filterFields}
         />
       </div>
-      <div className="flex flex-1 flex-col gap-4">
+      <div className="flex max-w-full flex-1 flex-col gap-4 overflow-hidden">
         <DataTableFilterCommand
           table={table}
           schema={columnFilterSchema}

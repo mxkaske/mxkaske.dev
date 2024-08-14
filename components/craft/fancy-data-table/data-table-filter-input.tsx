@@ -36,7 +36,7 @@ export function DataTableFilterInput<TData>({
   return (
     <div className="grid w-full gap-1.5">
       <Label htmlFor={value} className="sr-only px-2 text-muted-foreground">
-        Min.
+        {value}
       </Label>
       <InputWithAddons
         placeholder="Search"
@@ -54,6 +54,9 @@ export function DataTableFilterInput<TData>({
           });
         }}
       />
+      <p className="text-xs text-muted-foreground">
+        Spaces are not allowed in this field.
+      </p>
     </div>
   );
 }

@@ -39,7 +39,9 @@ export function DataTableFilterCheckobox<TData>({
   };
 
   const filterOptions = options.filter(
-    (option) => inputValue === "" || option.label.includes(inputValue)
+    (option) =>
+      inputValue === "" ||
+      option.label.toLowerCase().includes(inputValue.toLowerCase())
   );
 
   // TODO: check if we could useMemo
@@ -62,64 +64,63 @@ export function DataTableFilterCheckobox<TData>({
           onChange={(e) => setInputValue(e.target.value)}
         />
       ) : null}
-      <div className="overflow-hidden rounded-lg border border-border empty:border-none">
-        <div className="max-h-40 overflow-y-scroll">
-          {filterOptions.map((option, index) => {
-            const checked = filters.includes(option.value);
+      <div className="max-h-40 overflow-x-hidden overflow-y-scroll rounded-lg border border-border empty:border-none">
+        {filterOptions.map((option, index) => {
+          const checked = filters.includes(option.value);
 
-            return (
-              <div
-                key={String(option.value)}
-                className={cn(
-                  "group relative flex items-center space-x-2 px-2 py-2.5 hover:bg-accent",
-                  index !== filterOptions.length - 1 ? "border-b" : undefined
-                )}
+          return (
+            <div
+              key={String(option.value)}
+              className={cn(
+                "group relative flex items-center space-x-2 px-2 py-2.5 hover:bg-accent",
+                index !== filterOptions.length - 1 ? "border-b" : undefined
+              )}
+            >
+              <Checkbox
+                id={`${value}-${option.value}`}
+                checked={checked}
+                onCheckedChange={(checked) => {
+                  const newValue = checked
+                    ? [...(filters || []), option.value]
+                    : filters?.filter((value) => option.value !== value);
+                  column?.setFilterValue(
+                    newValue?.length ? newValue : undefined
+                  );
+                  updatePageSearchParams({
+                    [value]: newValue?.length
+                      ? newValue.join(ARRAY_DELIMITER)
+                      : null,
+                  });
+                }}
+              />
+              <Label
+                htmlFor={`${value}-${option.value}`}
+                className="flex w-full items-center justify-center gap-1 truncate text-muted-foreground group-hover:text-accent-foreground"
               >
-                <Checkbox
-                  id={`${value}-${option.value}`}
-                  checked={checked}
-                  onCheckedChange={(checked) => {
-                    const newValue = checked
-                      ? [...(filters || []), option.value]
-                      : filters?.filter((value) => option.value !== value);
-                    column?.setFilterValue(
-                      newValue?.length ? newValue : undefined
-                    );
+                {Component ? (
+                  <Component {...option} />
+                ) : (
+                  <span className="truncate font-normal">{option.label}</span>
+                )}
+                <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
+                  {facetedValue?.get(option.value)}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    column?.setFilterValue(option.value);
                     updatePageSearchParams({
-                      [value]: newValue?.length
-                        ? newValue.join(ARRAY_DELIMITER)
-                        : null,
+                      [value]: `${option.value}`,
                     });
                   }}
-                />
-                <Label
-                  htmlFor={`${value}-${option.value}`}
-                  className="flex w-full items-center justify-center gap-1 truncate text-muted-foreground group-hover:text-accent-foreground"
+                  className="absolute inset-y-0 right-0 hidden font-normal text-muted-foreground backdrop-blur-sm hover:text-foreground group-hover:block"
                 >
-                  {Component ? (
-                    <Component {...option} />
-                  ) : (
-                    <span className="truncate font-normal">{option.label}</span>
-                  )}
-                  <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
-                    {facetedValue?.get(option.value)}
-                  </span>
-                  <button
-                    onClick={() => {
-                      column?.setFilterValue(option.value);
-                      updatePageSearchParams({
-                        [value]: `${option.value}`,
-                      });
-                    }}
-                    className="absolute inset-y-0 right-0 hidden font-normal text-muted-foreground backdrop-blur-sm hover:text-foreground group-hover:block"
-                  >
-                    <span className="px-2">only</span>
-                  </button>
-                </Label>
-              </div>
-            );
-          })}
-        </div>
+                  <span className="px-2">only</span>
+                </button>
+              </Label>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

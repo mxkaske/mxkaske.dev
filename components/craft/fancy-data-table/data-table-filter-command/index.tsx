@@ -352,26 +352,41 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
               <CommandEmpty>No results found.</CommandEmpty>
             </CommandList>
             <div
-              className="flex flex-wrap gap-3 border-t bg-accent/50 px-2 py-1.5 text-sm text-accent-foreground"
+              className="flex flex-wrap justify-between gap-3 border-t bg-accent/50 px-2 py-1.5 text-sm text-accent-foreground"
               cmdk-footer=""
             >
-              <span>
-                Use <Kbd className="bg-background">↑</Kbd>{" "}
-                <Kbd className="bg-background">↓</Kbd> to navigate
-              </span>
-              <span>
-                <Kbd className="bg-background">Enter</Kbd> to query
-              </span>
-              <span>
-                <Kbd className="bg-background">Esc</Kbd> to close
-              </span>
-              <Separator orientation="vertical" className="my-auto h-3" />
-              <span>
-                Union: <Kbd className="bg-background">regions:a,b</Kbd>
-              </span>
-              <span>
-                Range: <Kbd className="bg-background">p95:59-340</Kbd>
-              </span>
+              <div className="flex flex-wrap gap-3">
+                <span>
+                  Use <Kbd className="bg-background">↑</Kbd>{" "}
+                  <Kbd className="bg-background">↓</Kbd> to navigate
+                </span>
+                <span>
+                  <Kbd className="bg-background">Enter</Kbd> to query
+                </span>
+                <span>
+                  <Kbd className="bg-background">Esc</Kbd> to close
+                </span>
+                <Separator orientation="vertical" className="my-auto h-3" />
+                <span>
+                  Union: <Kbd className="bg-background">regions:a,b</Kbd>
+                </span>
+                <span>
+                  Range: <Kbd className="bg-background">p95:59-340</Kbd>
+                </span>
+              </div>
+              {lastSearches.length ? (
+                <button
+                  type="button"
+                  className="text-muted-foreground hover:text-accent-foreground"
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                  onClick={() => setLastSearches([])}
+                >
+                  Clear suggestions
+                </button>
+              ) : null}
             </div>
           </div>
         </div>

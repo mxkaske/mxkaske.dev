@@ -51,7 +51,7 @@ export function DatePickerWithRange({
             variant="outline"
             size="sm"
             className={cn(
-              "justify-start text-left font-normal",
+              "max-w-full justify-start text-left font-normal",
               !date && "text-muted-foreground"
             )}
           >
@@ -96,7 +96,7 @@ const presets = [
   {
     label: "Today",
     from: startOfDay(new Date()),
-    to: new Date(),
+    to: endOfDay(new Date()),
     shortcut: "d", // day
   },
   {
@@ -114,19 +114,19 @@ const presets = [
   {
     label: "Last 7 days",
     from: startOfDay(addDays(new Date(), -7)),
-    to: new Date(),
+    to: endOfDay(new Date()),
     shortcut: "w",
   },
   {
     label: "Last 14 days",
     from: startOfDay(addDays(new Date(), -14)),
-    to: new Date(),
+    to: endOfDay(new Date()),
     shortcut: "b", // bi-weekly
   },
   {
     label: "Last 30 days",
     from: startOfDay(addDays(new Date(), -30)),
-    to: new Date(),
+    to: endOfDay(new Date()),
     shortcut: "m",
   },
 ];

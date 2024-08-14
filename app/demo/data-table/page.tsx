@@ -7,6 +7,7 @@ import {
 } from "@/components/craft/fancy-data-table/constants";
 import { DataTable } from "@/components/craft/fancy-data-table/data-table";
 import { columnFilterSchema } from "@/components/craft/fancy-data-table/schema";
+import { useEffect } from "react";
 
 export default function Page({
   searchParams,
@@ -15,12 +16,14 @@ export default function Page({
 }) {
   const search = columnFilterSchema.safeParse(searchParams);
 
+  useEffect(() => {
+    fetch(`/api/views?slug=${"data-table"}`, { method: "POST" });
+  }, []);
+
   if (!search.success) {
     console.log(search.error);
     return null;
   }
-
-  console.log(search);
 
   return (
     <DataTable
