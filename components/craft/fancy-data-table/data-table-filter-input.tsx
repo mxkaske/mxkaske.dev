@@ -54,7 +54,7 @@ export function DataTableFilterInput<TData>({
           });
         }}
       />
-      <p className="text-xs text-muted-foreground">
+      <p className="px-2 text-xs text-muted-foreground">
         Spaces are not allowed in this field.
       </p>
     </div>
