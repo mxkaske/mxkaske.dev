@@ -18,20 +18,21 @@ import { Button } from "@/components/ui/button";
 import { DataTableFilterSlider } from "./data-table-filter-slider";
 import { DataTableFilterInput } from "./data-table-filter-input";
 import { DataTableFilterTimerange } from "./data-table-filter-timerange";
+import { X } from "lucide-react";
 
 // TODO: only pass the columns to generate the filters!
 // https://tanstack.com/table/v8/docs/framework/react/examples/filters
-interface DataTableFilterBarProps<TData, TValue> {
+interface DataTableFilterControlsProps<TData, TValue> {
   table: Table<TData>;
   columns: ColumnDef<TData, TValue>[];
   filterFields?: DataTableFilterField<TData>[];
 }
 
-export function DataTableFilterBar<TData, TValue>({
+export function DataTableFilterControls<TData, TValue>({
   table,
   columns,
   filterFields,
-}: DataTableFilterBarProps<TData, TValue>) {
+}: DataTableFilterControlsProps<TData, TValue>) {
   const filters = table.getState().columnFilters;
   const updateSearchParams = useUpdateSearchParams();
   const router = useRouter();
@@ -48,7 +49,7 @@ export function DataTableFilterBar<TData, TValue>({
         <div>
           {filters.length ? (
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={() => {
                 table.resetColumnFilters();
@@ -62,6 +63,7 @@ export function DataTableFilterBar<TData, TValue>({
                 updatePageSearchParams(resetValues);
               }}
             >
+              <X className="mr-2 h-4 w-4" />
               Reset
             </Button>
           ) : null}

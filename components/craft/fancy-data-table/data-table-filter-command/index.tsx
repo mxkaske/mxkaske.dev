@@ -31,7 +31,7 @@ import {
   replaceInputByFieldType,
 } from "./utils";
 import { formatDistanceToNow } from "date-fns";
-import { usePersistedState } from "./use-persisted-state";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 // FIXME: too many updates
 
@@ -59,12 +59,12 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
   );
   const updateSearchParams = useUpdateSearchParams();
   const router = useRouter();
-  const [lastSearches, setLastSearches] = usePersistedState<
+  const [lastSearches, setLastSearches] = useLocalStorage<
     {
       search: string;
       timestamp: number;
     }[]
-  >([], "data-table-command");
+  >("data-table-command", []);
   const updatePageSearchParams = (values: Record<string, unknown>) => {
     const newSearchParams = updateSearchParams(values, { override: true });
     router.replace(`?${newSearchParams}`, { scroll: false });
@@ -149,29 +149,27 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
 
   return (
     <div>
-      <div
+      <button
+        type="button"
         className={cn(
           "group flex w-full items-center rounded-lg border border-input bg-background px-3 text-muted-foreground ring-offset-background focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 hover:bg-accent hover:text-accent-foreground",
           open ? "hidden" : "visible"
         )}
+        onClick={() => setOpen(true)}
       >
         <Search className="mr-2 h-4 w-4 shrink-0 text-muted-foreground opacity-50 group-hover:text-popover-foreground" />
-        <button
-          type="button"
-          className="h-11 w-full max-w-sm truncate py-3 text-left text-sm outline-none disabled:cursor-not-allowed disabled:opacity-50 md:max-w-xl lg:max-w-4xl xl:max-w-5xl"
-          onClick={() => setOpen(true)}
-        >
+        <span className="h-11 w-full max-w-sm truncate py-3 text-left text-sm outline-none disabled:cursor-not-allowed disabled:opacity-50 md:max-w-xl lg:max-w-4xl xl:max-w-5xl">
           {inputValue.trim() ? (
             <span className="text-foreground">{inputValue}</span>
           ) : (
             <span>Search data table...</span>
           )}
-        </button>
+        </span>
         <Kbd className="ml-auto text-muted-foreground group-hover:text-accent-foreground">
           <span className="mr-0.5">⌘</span>
           <span>K</span>
         </Kbd>
-      </div>
+      </button>
       <Command
         className={cn(
           "overflow-visible rounded-lg border shadow-md [&>div]:border-none",
@@ -193,19 +191,20 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
             setOpen(false);
             // FIXME: doesnt reflect the jumps
             // FIXME: will save non-existing searches
-            setLastSearches((val) => {
-              const search = inputValue.trim();
-              if (!search) return val;
-              const timestamp = Date.now();
-              const searchIndex = val.findIndex(
-                (item) => item.search === search
-              );
-              if (searchIndex !== -1) {
-                val[searchIndex].timestamp = timestamp;
-                return val;
-              }
-              return [...val, { search, timestamp }];
-            });
+            // TODO: extract into function
+            const search = inputValue.trim();
+            if (!search) return;
+            const timestamp = Date.now();
+            const searchIndex = lastSearches.findIndex(
+              (item) => item.search === search
+            );
+            if (searchIndex !== -1) {
+              lastSearches[searchIndex].timestamp = timestamp;
+              setLastSearches(lastSearches);
+              return;
+            }
+            setLastSearches([...lastSearches, { search, timestamp }]);
+            return;
           }}
           onInput={(e) => {
             const caretPosition = e.currentTarget?.selectionStart || -1;
@@ -337,8 +336,11 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            setLastSearches((val) =>
-                              val.filter((i) => i.search !== item.search)
+                            // TODO: extract into function
+                            setLastSearches(
+                              lastSearches.filter(
+                                (i) => i.search !== item.search
+                              )
                             );
                           }}
                           className="ml-1 hidden rounded-md p-0.5 hover:bg-background group-aria-[selected=true]:block"

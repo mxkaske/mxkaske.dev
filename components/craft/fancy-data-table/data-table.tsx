@@ -27,12 +27,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DataTableFilterBar } from "./data-table-filter-bar";
+import { DataTableFilterControls } from "./data-table-filter-controls";
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableFilterCommand } from "./data-table-filter-command";
 import { columnFilterSchema } from "./schema";
 import type { DataTableFilterField } from "./types";
 import { DataTableToolbar } from "./data-table-toolbar"; // TODO: check where to put this
+import { cn } from "@/lib/utils";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -51,9 +53,11 @@ export function DataTable<TData, TValue>({
     React.useState<ColumnFiltersState>(defaultColumnFilters);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({
-      // date: false,
-    });
+    useLocalStorage<VisibilityState>("data-table-visibility", {});
+  const [controlsOpen, setControlsOpen] = useLocalStorage(
+    "data-table-controls",
+    true
+  );
 
   const table = useReactTable({
     data,
@@ -81,31 +85,34 @@ export function DataTable<TData, TValue>({
           }
         }
       }
-      // TODO:
-      // if (["p95"].includes(columnId)) {
-      //   const rowValues = table
-      //     .getGlobalFacetedRowModel()
-      //     .flatRows.map((row) => row.getValue(columnId) as number);
-      //   console.log({ rowValues });
-      // }
       return map;
     },
   });
 
   return (
-    <div className="flex w-full flex-col gap-4 sm:flex-row">
-      <div className="w-full sm:min-w-48 sm:max-w-48 md:min-w-64 md:max-w-64">
-        <DataTableFilterBar
+    <div className="flex w-full flex-col gap-3 sm:flex-row">
+      <div
+        className={cn(
+          "w-full p-1 sm:min-w-52 sm:max-w-52 md:min-w-64 md:max-w-64",
+          !controlsOpen && "hidden"
+        )}
+      >
+        <DataTableFilterControls
           table={table}
           columns={columns}
           filterFields={filterFields}
         />
       </div>
-      <div className="flex max-w-full flex-1 flex-col gap-4 overflow-hidden">
+      <div className="flex max-w-full flex-1 flex-col gap-4 overflow-hidden p-1">
         <DataTableFilterCommand
           table={table}
           schema={columnFilterSchema}
           filterFields={filterFields}
+        />
+        <DataTableToolbar
+          table={table}
+          controlsOpen={controlsOpen}
+          setControlsOpen={setControlsOpen}
         />
         <div className="rounded-md border">
           <Table>

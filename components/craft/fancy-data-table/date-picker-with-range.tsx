@@ -51,7 +51,7 @@ export function DatePickerWithRange({
             variant="outline"
             size="sm"
             className={cn(
-              "max-w-full justify-start text-left font-normal",
+              "max-w-full justify-start truncate text-left font-normal",
               !date && "text-muted-foreground"
             )}
           >
@@ -72,6 +72,8 @@ export function DatePickerWithRange({
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
           <div className="flex">
+            <DatePresets onSelect={setDate} selected={date} />
+            <Separator orientation="vertical" className="h-auto w-[px]" />
             <Calendar
               initialFocus
               mode="range"
@@ -80,8 +82,6 @@ export function DatePickerWithRange({
               onSelect={setDate}
               numberOfMonths={1}
             />
-            <Separator orientation="vertical" className="h-auto w-[px]" />
-            <DatePresets onSelect={setDate} selected={date} />
           </div>
           <Separator />
           <CustomDateRange onSelect={setDate} selected={date} />
