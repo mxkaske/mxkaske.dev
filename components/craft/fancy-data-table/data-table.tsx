@@ -99,15 +99,17 @@ export function DataTable<TData, TValue>({
     <div className="flex w-full flex-col gap-3 sm:flex-row">
       <div
         className={cn(
-          "w-full p-1 sm:min-w-52 sm:max-w-52 md:min-w-64 md:max-w-64",
+          "w-full p-1 sm:sticky sm:top-0 sm:h-screen sm:min-w-52 sm:max-w-52 sm:self-start md:min-w-64 md:max-w-64",
           !controlsOpen && "hidden"
         )}
       >
-        <DataTableFilterControls
-          table={table}
-          columns={columns}
-          filterFields={filterFields}
-        />
+        <div className="-m-1 h-full p-1 sm:overflow-x-hidden sm:overflow-y-scroll">
+          <DataTableFilterControls
+            table={table}
+            columns={columns}
+            filterFields={filterFields}
+          />
+        </div>
       </div>
       <div className="flex max-w-full flex-1 flex-col gap-4 overflow-hidden p-1">
         <DataTableFilterCommand

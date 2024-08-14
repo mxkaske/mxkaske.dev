@@ -64,7 +64,7 @@ export function DataTableFilterCheckobox<TData>({
           onChange={(e) => setInputValue(e.target.value)}
         />
       ) : null}
-      <div className="max-h-40 overflow-x-hidden overflow-y-scroll rounded-lg border border-border empty:border-none">
+      <div className="rounded-lg border border-border empty:border-none">
         {filterOptions.map((option, index) => {
           const checked = filters.includes(option.value);
 
