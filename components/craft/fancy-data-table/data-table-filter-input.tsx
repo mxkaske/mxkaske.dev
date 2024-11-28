@@ -30,7 +30,7 @@ export function DataTableFilterInput<TData>({
       const newSearchParams = updateSearchParams(values);
       router.replace(`?${newSearchParams}`, { scroll: false });
     },
-    [router, updateSearchParams]
+    [router, updateSearchParams],
   );
 
   return (

@@ -18,7 +18,7 @@ export function Thumbnail({
     <div
       className={cn(
         "group/card w-full rounded-md border border-border",
-        className
+        className,
       )}
     >
       <div className="relative flex h-32 w-full items-center justify-center overflow-hidden rounded-t-md">

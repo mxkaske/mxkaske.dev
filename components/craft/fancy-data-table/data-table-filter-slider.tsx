@@ -34,15 +34,15 @@ export function DataTableFilterSlider<TData>({
     typeof filterValue === "number"
       ? [filterValue, filterValue]
       : Array.isArray(filterValue) && isArrayOfNumbers(filterValue)
-      ? filterValue
-      : undefined;
+        ? filterValue
+        : undefined;
 
   const updatePageSearchParams = useCallback(
     (values: Record<string, string | null>) => {
       const newSearchParams = updateSearchParams(values);
       router.replace(`?${newSearchParams}`, { scroll: false });
     },
-    [router, updateSearchParams]
+    [router, updateSearchParams],
   );
 
   return (

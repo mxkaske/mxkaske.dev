@@ -2,24 +2,27 @@ import React from "react";
 import { type Post, allPosts } from "@/.content-collections/generated";
 import { components } from "@/lib/mdx";
 import Link from "next/link";
-import { Footer } from "./components/footer";
-import { Banner } from "./components/banner";
-import { Thumbnail } from "./components/thumbnail";
+import { Footer } from "./_components/footer";
+import { Banner } from "./_components/banner";
+import { Thumbnail } from "./_components/thumbnail";
 import Image from "next/image";
 
-const allPostsByMonth = allPosts.reduce((acc, curr) => {
-  const month = new Date(curr.date).toLocaleString("default", {
-    month: "long",
-    year: "numeric",
-  });
-  if (acc.hasOwnProperty(month)) {
-    acc[month].push(curr);
-  } else {
-    acc[month] = [curr];
-  }
+const allPostsByMonth = allPosts.reduce(
+  (acc, curr) => {
+    const month = new Date(curr.date).toLocaleString("default", {
+      month: "long",
+      year: "numeric",
+    });
+    if (acc.hasOwnProperty(month)) {
+      acc[month].push(curr);
+    } else {
+      acc[month] = [curr];
+    }
 
-  return acc;
-}, {} as { [month: string]: Post[] });
+    return acc;
+  },
+  {} as { [month: string]: Post[] },
+);
 
 export default function Home() {
   return (
@@ -57,7 +60,7 @@ export default function Home() {
             </div>
             {Object.keys(allPostsByMonth)
               .sort((a, b) =>
-                new Date(a).getTime() > new Date(b).getTime() ? -1 : 1
+                new Date(a).getTime() > new Date(b).getTime() ? -1 : 1,
               )
               .map((month) => {
                 return (

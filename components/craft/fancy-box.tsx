@@ -116,24 +116,24 @@ export function FancyBox() {
     setSelectedValues((currentFrameworks) =>
       !currentFrameworks.includes(framework)
         ? [...currentFrameworks, framework]
-        : currentFrameworks.filter((l) => l.value !== framework.value)
+        : currentFrameworks.filter((l) => l.value !== framework.value),
     );
     inputRef?.current?.focus();
   };
 
   const updateFramework = (framework: Framework, newFramework: Framework) => {
     setFrameworks((prev) =>
-      prev.map((f) => (f.value === framework.value ? newFramework : f))
+      prev.map((f) => (f.value === framework.value ? newFramework : f)),
     );
     setSelectedValues((prev) =>
-      prev.map((f) => (f.value === framework.value ? newFramework : f))
+      prev.map((f) => (f.value === framework.value ? newFramework : f)),
     );
   };
 
   const deleteFramework = (framework: Framework) => {
     setFrameworks((prev) => prev.filter((f) => f.value !== framework.value));
     setSelectedValues((prev) =>
-      prev.filter((f) => f.value !== framework.value)
+      prev.filter((f) => f.value !== framework.value),
     );
   };
 
@@ -184,7 +184,7 @@ export function FancyBox() {
                       <Check
                         className={cn(
                           "mr-2 h-4 w-4",
-                          isActive ? "opacity-100" : "opacity-0"
+                          isActive ? "opacity-100" : "opacity-0",
                         )}
                       />
                       <div className="flex-1">{framework.label}</div>

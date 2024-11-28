@@ -52,10 +52,10 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
   const [currentWord, setCurrentWord] = useState<string>("");
   const filterFields = useMemo(
     () => _filterFields?.filter((i) => !i.commandDisabled),
-    [_filterFields]
+    [_filterFields],
   );
   const [inputValue, setInputValue] = useState<string>(
-    serializeColumFilters(columnFilters, filterFields)
+    serializeColumFilters(columnFilters, filterFields),
   );
   const updateSearchParams = useUpdateSearchParams();
   const router = useRouter();
@@ -93,7 +93,7 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
         prev[curr.id] = curr.value;
         return prev;
       },
-      {} as Record<string, unknown>
+      {} as Record<string, unknown>,
     );
 
     if (searchParams.success) {
@@ -153,7 +153,7 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
         type="button"
         className={cn(
           "group flex w-full items-center rounded-lg border border-input bg-background px-3 text-muted-foreground ring-offset-background focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 hover:bg-accent hover:text-accent-foreground",
-          open ? "hidden" : "visible"
+          open ? "hidden" : "visible",
         )}
         onClick={() => setOpen(true)}
       >
@@ -173,7 +173,7 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
       <Command
         className={cn(
           "overflow-visible rounded-lg border shadow-md [&>div]:border-none",
-          open ? "visible" : "hidden"
+          open ? "visible" : "hidden",
         )}
         filter={(value, search, keywords) =>
           getFilterValue({ value, search, keywords, currentWord })
@@ -196,7 +196,7 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
             if (!search) return;
             const timestamp = Date.now();
             const searchIndex = lastSearches.findIndex(
-              (item) => item.search === search
+              (item) => item.search === search,
             );
             if (searchIndex !== -1) {
               lastSearches[searchIndex].timestamp = timestamp;
@@ -242,7 +242,7 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
                           const prefix = isStarting ? "" : " ";
                           const input = prev.replace(
                             `${prefix}${currentWord}`,
-                            `${prefix}${value}`
+                            `${prefix}${value}`,
                           );
                           return `${input}:`;
                         });
@@ -284,7 +284,7 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
                               optionValue,
                               value,
                               field,
-                            })
+                            }),
                           );
                           setCurrentWord("");
                         }}
@@ -339,8 +339,8 @@ export function DataTableFilterCommand<TData, TSchema extends z.AnyZodObject>({
                             // TODO: extract into function
                             setLastSearches(
                               lastSearches.filter(
-                                (i) => i.search !== item.search
-                              )
+                                (i) => i.search !== item.search,
+                              ),
                             );
                           }}
                           className="ml-1 hidden rounded-md p-0.5 hover:bg-background group-aria-[selected=true]:block"

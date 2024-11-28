@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import {  useFormStatus } from 'react-dom';
+import { Button } from "@/components/ui/button";
+import { useFormStatus } from "react-dom";
 import { LoadingAnimation } from "./loading-animation";
 
 export function SubmitButton() {
@@ -14,5 +14,5 @@ export function SubmitButton() {
     >
       {pending ? <LoadingAnimation /> : "Join"}
     </Button>
-  )
+  );
 }

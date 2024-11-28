@@ -87,7 +87,7 @@ export function Write({ textValue, setTextValue }: Props) {
         }
       }
     },
-    [setTextValue, commandValue]
+    [setTextValue, commandValue],
   );
 
   const onCommandSelect = useCallback((value: string) => {
@@ -118,7 +118,7 @@ export function Write({ textValue, setTextValue }: Props) {
         }
       }
     },
-    [commandValue]
+    [commandValue],
   );
 
   useEffect(() => {
@@ -153,7 +153,7 @@ export function Write({ textValue, setTextValue }: Props) {
       <Command
         ref={dropdownRef}
         className={cn(
-          "absolute hidden h-auto max-h-32 max-w-min overflow-y-scroll border border-popover shadow"
+          "absolute hidden h-auto max-h-32 max-w-min overflow-y-scroll border border-popover shadow",
         )}
       >
         <div className="hidden">

@@ -47,7 +47,7 @@ export const columnFilterSchema = z.object({
       z
         .string()
         .transform((val) => val.split(SLIDER_DELIMITER))
-        .pipe(z.coerce.number().array().length(2))
+        .pipe(z.coerce.number().array().length(2)),
     )
     .optional(), // TBD: we could transform to `{ min: x, max: y}`
   public: z
@@ -66,7 +66,7 @@ export const columnFilterSchema = z.object({
       z
         .string()
         .transform((val) => val.split(ARRAY_DELIMITER))
-        .pipe(z.enum(REGIONS).array())
+        .pipe(z.enum(REGIONS).array()),
     )
     .optional(),
   tags: z
@@ -75,7 +75,7 @@ export const columnFilterSchema = z.object({
       z
         .string()
         .transform((val) => val.split(ARRAY_DELIMITER))
-        .pipe(z.enum(TAGS).array())
+        .pipe(z.enum(TAGS).array()),
     )
     .optional(),
   date: z.coerce
@@ -85,7 +85,7 @@ export const columnFilterSchema = z.object({
       z
         .string()
         .transform((val) => val.split(RANGE_DELIMITER).map(Number))
-        .pipe(z.coerce.date().array())
+        .pipe(z.coerce.date().array()),
     )
     .optional(),
   // .default([subDays(new Date(), -7), new Date()]),

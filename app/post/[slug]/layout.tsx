@@ -1,5 +1,5 @@
 import { allPosts } from "@/.content-collections/generated";
-import { Footer } from "@/app/components/footer";
+import { Footer } from "@/app/_components/footer";
 
 export async function generateMetadata({
   params,

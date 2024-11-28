@@ -41,7 +41,7 @@ export function DataTableFilterCheckobox<TData>({
   const filterOptions = options.filter(
     (option) =>
       inputValue === "" ||
-      option.label.toLowerCase().includes(inputValue.toLowerCase())
+      option.label.toLowerCase().includes(inputValue.toLowerCase()),
   );
 
   // TODO: check if we could useMemo
@@ -73,7 +73,7 @@ export function DataTableFilterCheckobox<TData>({
               key={String(option.value)}
               className={cn(
                 "group relative flex items-center space-x-2 px-2 py-2.5 hover:bg-accent",
-                index !== filterOptions.length - 1 ? "border-b" : undefined
+                index !== filterOptions.length - 1 ? "border-b" : undefined,
               )}
             >
               <Checkbox
@@ -84,7 +84,7 @@ export function DataTableFilterCheckobox<TData>({
                     ? [...(filters || []), option.value]
                     : filters?.filter((value) => option.value !== value);
                   column?.setFilterValue(
-                    newValue?.length ? newValue : undefined
+                    newValue?.length ? newValue : undefined,
                   );
                   updatePageSearchParams({
                     [value]: newValue?.length

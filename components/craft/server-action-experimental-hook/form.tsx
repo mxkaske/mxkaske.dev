@@ -1,18 +1,20 @@
 "use client";
 
 /* eslint-disable react/no-unescaped-entities */
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { submitEmail } from "./actions"
-import { SubmitButton } from "./submit-button"
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { submitEmail } from "./actions";
+import { SubmitButton } from "./submit-button";
 import { Suspense, useCallback, useEffect } from "react";
 
 export function Form() {
-  return <Suspense>
-    <FormWithoutSuspense />
-  </Suspense>
+  return (
+    <Suspense>
+      <FormWithoutSuspense />
+    </Suspense>
+  );
 }
 
 export function FormWithoutSuspense() {
@@ -23,11 +25,11 @@ export function FormWithoutSuspense() {
 
   const resetSearchParams = useCallback(() => {
     const params = new URLSearchParams(searchParams.toString());
-    console.log({ params })
+    console.log({ params });
     params.delete("email");
     params.delete("form");
-    router.replace(`${pathname}?${params.toString()}`)
-  }, [searchParams, router, pathname])
+    router.replace(`${pathname}?${params.toString()}`);
+  }, [searchParams, router, pathname]);
 
   useEffect(() => {
     const form = searchParams.has("form") && searchParams.get("form");
@@ -37,13 +39,16 @@ export function FormWithoutSuspense() {
       toast({
         title: "Joined Waitlist",
         description: `Added ${email} to the fake waitlist.`,
-      })
+      });
       resetSearchParams();
     }
   }, [toast, searchParams, resetSearchParams]);
 
   return (
-    <form action={submitEmail} className="grid gap-1.5 w-full max-w-sm not-prose">
+    <form
+      action={submitEmail}
+      className="grid gap-1.5 w-full max-w-sm not-prose"
+    >
       <div className="grid gap-1.5 w-full">
         <div className="flex gap-1.5 items-end w-full">
           <div className="grid gap-1.5 w-full">
@@ -63,5 +68,5 @@ export function FormWithoutSuspense() {
         </p>
       </div>
     </form>
-  )
+  );
 }

@@ -96,7 +96,7 @@ export function DataTableToolbar<TData>({
                   prev[curr.id] = null;
                   return prev;
                 },
-                {}
+                {},
               );
               updatePageSearchParams(resetValues);
             }}
