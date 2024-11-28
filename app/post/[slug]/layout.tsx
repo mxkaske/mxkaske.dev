@@ -1,4 +1,4 @@
-import { allPosts } from "@/.contentlayer/generated";
+import { allPosts } from "@/.content-collections/generated";
 import { Footer } from "@/app/components/footer";
 
 export function generateMetadata({ params }: { params: { slug: string } }) {

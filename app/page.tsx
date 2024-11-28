@@ -1,5 +1,5 @@
 import React from "react";
-import { type Post, allPosts } from "@/.contentlayer/generated";
+import { type Post, allPosts } from "@/.content-collections/generated";
 import { components } from "@/lib/mdx";
 import Link from "next/link";
 import { Footer } from "./components/footer";

@@ -1,4 +1,4 @@
-import { allPosts } from "@/.contentlayer/generated";
+import { allPosts } from "@/.content-collections/generated";
 import { notFound } from "next/navigation";
 import { Content } from "./content";
 import { ChevronLeft, Github, Link as LinkIcon } from "lucide-react";
@@ -8,8 +8,8 @@ const URL =
   process.env.VERCEL_ENV === "production"
     ? `https://craft.mxkaske/dev`
     : process.env.VERCEL_ENV === "preview"
-      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-      : process.env.NEXT_PUBLIC_VERCEL_URL;
+    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+    : process.env.NEXT_PUBLIC_VERCEL_URL;
 
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat("en-US", {
@@ -39,12 +39,12 @@ export default async function CraftPage({
 
   return (
     <article>
-      <div className="flex justify-between items-end">
+      <div className="flex items-end justify-between">
         <div>
-          <p className="text-foreground font-cal font-bold text-lg">
+          <p className="font-cal text-lg font-bold text-foreground">
             {post.title}
           </p>
-          <p className="text-muted-foreground text-xs font-light font-mono">
+          <p className="font-mono text-xs font-light text-muted-foreground">
             {formatDate(new Date(post.date))} &#x22C5; {post.readingTime}
           </p>
         </div>
@@ -58,14 +58,14 @@ export default async function CraftPage({
             href={post.githubUrl}
             target="_blank"
             rel="noreferrer"
-            className="p-2 text-foreground bg-background rounded-md hover:bg-muted"
+            className="rounded-md bg-background p-2 text-foreground hover:bg-muted"
           >
             <Github className="h-5 w-5" />
           </a>
         </div>
       </div>
       <Content post={post} />
-      <div className="mt-8 flex justify-between items-center">
+      <div className="mt-8 flex items-center justify-between">
         <div>
           <Link href="/">Back</Link>
         </div>
