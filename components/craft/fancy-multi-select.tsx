@@ -78,11 +78,11 @@ export function FancyMultiSelect() {
         }
       }
     },
-    []
+    [],
   );
 
   const selectables = FRAMEWORKS.filter(
-    (framework) => !selected.includes(framework)
+    (framework) => !selected.includes(framework),
   );
 
   console.log(selectables, selected, inputValue);

@@ -6,16 +6,13 @@ import { Write } from "./write";
 import { Preview } from "./preview";
 // TODO: TabsList has an interesting tab focus. Need to investigate on it
 
-const defaultText = `Build by @mxkaske, _powered by_ @shadcn **ui**.\n\nSupports raw <code>html</code>.`
+const defaultText = `Build by @mxkaske, _powered by_ @shadcn **ui**.\n\nSupports raw <code>html</code>.`;
 
 export function FancyArea() {
   const [textValue, setTextValue] = React.useState(defaultText);
 
   return (
-    <Tabs
-      defaultValue="write"
-      className="w-full"
-    >
+    <Tabs defaultValue="write" className="w-full">
       <TabsList>
         <TabsTrigger value="write">Write</TabsTrigger>
         <TabsTrigger value="preview">Preview</TabsTrigger>
@@ -28,4 +25,4 @@ export function FancyArea() {
       </TabsContent>
     </Tabs>
   );
-};
+}

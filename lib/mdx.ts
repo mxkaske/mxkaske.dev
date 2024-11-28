@@ -15,5 +15,5 @@ export const components = {
   FancyArea,
   FancyBox,
   FancyMultiSelect,
-  ServerActionForm
+  ServerActionForm,
 };

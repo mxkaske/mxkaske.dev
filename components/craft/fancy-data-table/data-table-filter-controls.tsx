@@ -58,7 +58,7 @@ export function DataTableFilterControls<TData, TValue>({
                     prev[curr.id] = null;
                     return prev;
                   },
-                  {}
+                  {},
                 );
                 updatePageSearchParams(resetValues);
               }}

@@ -5,5 +5,5 @@ export function LoadingAnimation() {
       <div className="h-1 w-1 animate-pulse direction-alternate duration-700 delay-150 rounded-full bg-primary-foreground" />
       <div className="h-1 w-1 animate-pulse direction-alternate duration-700 delay-300 rounded-full bg-primary-foreground" />
     </div>
-  )
+  );
 }

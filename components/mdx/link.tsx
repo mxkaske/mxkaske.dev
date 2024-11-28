@@ -23,7 +23,7 @@ export function Link({ className, href, ...props }: LinkProps) {
       className={cn(
         // ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md
         "text-foreground underline underline-offset-4 decoration-border hover:decoration-foreground",
-        className
+        className,
       )}
       // @ts-ignore FIXME: Url only works in NextLink
       href={href}

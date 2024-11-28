@@ -91,7 +91,7 @@ export function Write() {
     textareaRef.current?.addEventListener("blur", handleBlur);
     documentRef.current?.addEventListener(
       "selectionchange",
-      handleSectionChange
+      handleSectionChange,
     );
     dropdownRef.current?.addEventListener("mousedown", handleMouseDown);
     return () => {
@@ -99,7 +99,7 @@ export function Write() {
       textareaRef.current?.removeEventListener("blur", handleBlur);
       documentRef.current?.removeEventListener(
         "selectionchange",
-        handleSectionChange
+        handleSectionChange,
       );
       dropdownRef.current?.removeEventListener("mousedown", handleMouseDown);
     };

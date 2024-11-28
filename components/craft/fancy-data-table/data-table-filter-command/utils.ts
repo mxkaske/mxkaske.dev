@@ -81,7 +81,7 @@ export function getFieldOptions<TData>({
             .filter(notEmpty)
         : Array.from(
             { length: field.max - field.min + 1 },
-            (_, i) => field.min + i
+            (_, i) => field.min + i,
           ) || [];
     }
     default: {
@@ -196,7 +196,7 @@ export function getFieldValueByType<TData>({
 }
 
 export function notEmpty<TValue>(
-  value: TValue | null | undefined
+  value: TValue | null | undefined,
 ): value is TValue {
   return value !== null && value !== undefined;
 }

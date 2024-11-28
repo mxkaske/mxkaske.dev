@@ -4,7 +4,7 @@ import "@/styles/globals.css"; // FIXME: check if possible to import custom var(
 export const runtime = "edge";
 
 const fontCal = fetch(
-  new URL("../../../public/fonts/CalSans-SemiBold.ttf", import.meta.url)
+  new URL("../../../public/fonts/CalSans-SemiBold.ttf", import.meta.url),
 ).then((res) => res.arrayBuffer());
 
 export async function GET(request: Request) {
@@ -62,6 +62,6 @@ export async function GET(request: Request) {
           weight: 600,
         },
       ],
-    }
+    },
   );
 }

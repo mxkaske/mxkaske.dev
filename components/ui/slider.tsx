@@ -1,24 +1,26 @@
 // Props to https://github.com/shadcn-ui/ui/issues/885#issuecomment-2059600641
 
-"use client"
+"use client";
 
-import * as React from "react"
-import * as SliderPrimitive from "@radix-ui/react-slider"
+import * as React from "react";
+import * as SliderPrimitive from "@radix-ui/react-slider";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 const Slider = React.forwardRef<
   React.ElementRef<typeof SliderPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>
 >(({ className, ...props }, ref) => {
-  const initialValue = Array.isArray(props.value) ? props.value : [props.min, props.max]
+  const initialValue = Array.isArray(props.value)
+    ? props.value
+    : [props.min, props.max];
 
   return (
     <SliderPrimitive.Root
       ref={ref}
       className={cn(
         "relative flex w-full touch-none select-none items-center",
-        className
+        className,
       )}
       {...props}
     >
@@ -31,8 +33,8 @@ const Slider = React.forwardRef<
         </React.Fragment>
       ))}
     </SliderPrimitive.Root>
-  )
-})
-Slider.displayName = SliderPrimitive.Root.displayName
+  );
+});
+Slider.displayName = SliderPrimitive.Root.displayName;
 
-export { Slider }
+export { Slider };
