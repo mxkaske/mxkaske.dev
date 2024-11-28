@@ -1,7 +1,6 @@
 import rehypePrettyCode from "rehype-pretty-code";
-import type * as unified from "unified";
 
-const prettyCode: unified.Pluggable<any[]> = [
+const prettyCode = [
   rehypePrettyCode,
   {
     // theme: "github-light",

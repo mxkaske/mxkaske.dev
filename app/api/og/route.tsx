@@ -1,4 +1,4 @@
-import { ImageResponse } from "next/server";
+import { ImageResponse } from "next/og";
 import "@/styles/globals.css"; // FIXME: check if possible to import custom var(--) or utility classes
 
 export const runtime = "edge";
