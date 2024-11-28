@@ -25,9 +25,10 @@ function formatNumber(value: number) {
 export default async function CraftPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const post = allPosts.find((c) => c.url === `/post/${params.slug}`);
+  const slug = (await params).slug;
+  const post = allPosts.find((c) => c.url === `/post/${slug}`);
   if (!post) {
     notFound();
   }

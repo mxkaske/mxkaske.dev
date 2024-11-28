@@ -7,9 +7,15 @@ import { useToast } from "@/components/ui/use-toast";
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { submitEmail } from "./actions"
 import { SubmitButton } from "./submit-button"
-import { useCallback, useEffect } from "react";
+import { Suspense, useCallback, useEffect } from "react";
 
 export function Form() {
+  return <Suspense>
+    <FormWithoutSuspense />
+  </Suspense>
+}
+
+export function FormWithoutSuspense() {
   const { toast } = useToast();
   const searchParams = useSearchParams();
   const pathname = usePathname();
