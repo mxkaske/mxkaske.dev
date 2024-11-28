@@ -1,5 +1,6 @@
 import { Redis } from "@upstash/redis";
 import { type NextRequest, NextResponse } from "next/server";
+import { ipAddress } from '@vercel/functions';
 
 const redis = Redis.fromEnv();
 
@@ -17,7 +18,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const ip = request.ip;
+  const ip = ipAddress(request);
   const searchParams = request.nextUrl.searchParams;
   const hasSlug = searchParams.has("slug");
   const slug = hasSlug ? searchParams.get("slug") : undefined;

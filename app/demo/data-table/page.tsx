@@ -1,5 +1,3 @@
-"use client";
-
 import { columns } from "@/components/craft/fancy-data-table/columns";
 import {
   data,
@@ -7,18 +5,13 @@ import {
 } from "@/components/craft/fancy-data-table/constants";
 import { DataTable } from "@/components/craft/fancy-data-table/data-table";
 import { columnFilterSchema } from "@/components/craft/fancy-data-table/schema";
-import { useEffect } from "react";
 
-export default function Page({
+export default async function Page({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const search = columnFilterSchema.safeParse(searchParams);
-
-  useEffect(() => {
-    fetch(`/api/views?slug=${"data-table"}`, { method: "POST" });
-  }, []);
+  const search = columnFilterSchema.safeParse(await searchParams);
 
   if (!search.success) {
     console.log(search.error);

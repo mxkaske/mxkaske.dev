@@ -1,8 +1,13 @@
 import { allPosts } from "@/.content-collections/generated";
 import { Footer } from "@/app/components/footer";
 
-export function generateMetadata({ params }: { params: { slug: string } }) {
-  const post = allPosts.find((c) => c.url === `/post/${params.slug}`);
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const post = allPosts.find((c) => c.url === `/post/${slug}`);
   return {
     title: post?.title,
     description: post?.description,
@@ -27,10 +32,8 @@ export function generateMetadata({ params }: { params: { slug: string } }) {
 
 export default function BaseLayout({
   children,
-  params,
 }: {
   children: React.ReactNode;
-  params: { slug: string[] };
 }) {
   return (
     <main className="container mx-auto flex min-h-screen max-w-[calc(65ch+100px)] flex-col gap-4 px-2 py-4 md:px-4 md:py-8">

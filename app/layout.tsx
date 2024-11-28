@@ -37,7 +37,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" style={{ colorScheme: "system" }}>
+    <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} ${calSans.variable}`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <BGGrid>{children}</BGGrid>
