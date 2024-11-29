@@ -2,6 +2,8 @@ import NextLink, { type LinkProps as NextLinkProps } from "next/link";
 import React from "react";
 import { cn } from "@/lib/utils";
 
+// TODO: add an arrow for external links
+
 export interface LinkProps extends Omit<NextLinkProps, "href"> {
   href?: string;
   className?: string;

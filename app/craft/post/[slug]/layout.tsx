@@ -1,14 +1,16 @@
 import { allPosts } from "@/.content-collections/generated";
 import { Footer } from "@/app/_components/footer";
+import { Metadata } from "next";
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
-}) {
+}): Promise<Metadata> {
   const { slug } = await params;
-  const post = allPosts.find((c) => c.url === `/post/${slug}`);
+  const post = allPosts.find((c) => c.slug === slug);
   return {
+    metadataBase: new URL("https://craft.mxkaske.dev"),
     title: post?.title,
     description: post?.description,
     twitter: {

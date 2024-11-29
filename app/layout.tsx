@@ -14,20 +14,20 @@ const calSans = LocalFont({
 });
 
 export const metadata: Metadata = {
-  title: "craft.mxkaske.dev",
-  description: "Never stop crafting.",
-  metadataBase: new URL("https://craft.mxkaske.dev"),
+  title: "mxkaske.dev",
+  description: "Never. Stop. Crafting.",
+  metadataBase: new URL("https://mxkaske.dev"),
   twitter: {
     images: [`/api/og`],
     card: "summary_large_image",
-    title: "craft.mxkaske.dev",
-    description: "Never stop crafting.",
+    title: "mxkaske.dev",
+    description: "Never. Stop. Crafting.",
   },
   openGraph: {
     type: "website",
     images: [`/api/og`],
-    title: "craft.mxkaske.dev",
-    description: "Never stop crafting.",
+    title: "mxkaske.dev",
+    description: "Never. Stop. Crafting.",
   },
 };
 
