@@ -10,19 +10,19 @@ import { Name } from "../_components/name";
 
 export const metadata: Metadata = {
   title: "craft.mxkaske.dev",
-  description: "Never stop crafting.",
+  description: "Never. Stop. Crafting.",
   metadataBase: new URL("https://craft.mxkaske.dev"),
   twitter: {
     images: [`/api/og`],
     card: "summary_large_image",
     title: "craft.mxkaske.dev",
-    description: "Never stop crafting.",
+    description: "Never. Stop. Crafting.",
   },
   openGraph: {
     type: "website",
     images: [`/api/og`],
     title: "craft.mxkaske.dev",
-    description: "Never stop crafting.",
+    description: "Never. Stop. Crafting.",
   },
 };
 
