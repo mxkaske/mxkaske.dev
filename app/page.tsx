@@ -1,97 +1,47 @@
 import React from "react";
-import { type Post, allPosts } from "@/.content-collections/generated";
-import { components } from "@/lib/mdx";
-import Link from "next/link";
 import { Footer } from "./_components/footer";
 import { Banner } from "./_components/banner";
-import { Thumbnail } from "./_components/thumbnail";
-import Image from "next/image";
+import { Metadata } from "next";
+import { Name } from "./_components/name";
+import { Link } from "@/components/mdx/link";
 
-const allPostsByMonth = allPosts.reduce(
-  (acc, curr) => {
-    const month = new Date(curr.date).toLocaleString("default", {
-      month: "long",
-      year: "numeric",
-    });
-    if (acc.hasOwnProperty(month)) {
-      acc[month].push(curr);
-    } else {
-      acc[month] = [curr];
-    }
-
-    return acc;
+export const metadata: Metadata = {
+  title: "mxkaske.dev",
+  description: "Never. Stop. Crafting.",
+  metadataBase: new URL("https://mxkaske.dev"),
+  twitter: {
+    images: [`/api/og`],
+    card: "summary_large_image",
+    title: "mxkaske.dev",
+    description: "Never. Stop. Crafting.",
   },
-  {} as { [month: string]: Post[] },
-);
+  openGraph: {
+    type: "website",
+    images: [`/api/og`],
+    title: "mxkaske.dev",
+    description: "Never. Stop. Crafting.",
+  },
+};
 
 export default function Home() {
   return (
     <div className="container mx-auto flex min-h-screen max-w-[calc(65ch+100px)] flex-col gap-4 px-2 py-4 md:px-4 md:py-8">
       <Banner />
       <div className="flex flex-1 flex-col rounded-lg border border-border/50 bg-background/50 p-4 backdrop-blur-[2px] sm:p-8">
-        <main className="mb-8 grid flex-1 gap-6 sm:gap-8">
-          <h1 className="font-cal text-lg font-bold tracking-tight text-foreground">
-            mx<span className="text-muted-foreground">kaske</span>
-          </h1>
-          <div className="grid gap-6 sm:grid-cols-[auto_1fr] sm:gap-8">
-            {/* REMINDER: extract into list */}
-            <div>
-              <p className="font-mono text-sm font-light text-muted-foreground">
-                {new Date("16. August 2024").toLocaleString("default", {
-                  month: "long",
-                  year: "numeric",
-                })}
-              </p>
-            </div>
-            <div className="grid gap-6 sm:gap-4">
-              <Thumbnail
-                url="/demo/data-table"
-                title="Data Table"
-                description="A data table with controls and cmdk filters."
-                component={
-                  <Image
-                    src="/assets/data-table.png"
-                    fill={true}
-                    alt="data-table"
-                    className="object-cover transition-transform group-hover/card:scale-105"
-                  />
-                }
-              />
-            </div>
-            {Object.keys(allPostsByMonth)
-              .sort((a, b) =>
-                new Date(a).getTime() > new Date(b).getTime() ? -1 : 1,
-              )
-              .map((month) => {
-                return (
-                  <React.Fragment key={month}>
-                    <div>
-                      <p className="font-mono text-sm font-light text-muted-foreground">
-                        {month}
-                      </p>
-                    </div>
-                    <div className="grid gap-6 sm:gap-4">
-                      {allPostsByMonth[month]
-                        .sort((a, b) => (a.date > b.date ? -1 : 1))
-                        .map((post) => {
-                          const Component =
-                            components[
-                              post.component as keyof typeof components
-                            ];
-                          return (
-                            <Thumbnail
-                              key={post.slug}
-                              url={post.url}
-                              title={post.title}
-                              description={post.description}
-                              component={<Component />}
-                            />
-                          );
-                        })}
-                    </div>
-                  </React.Fragment>
-                );
-              })}
+        <main className="mb-8 flex flex-1 flex-col gap-6 sm:gap-8">
+          <p>
+            <Name />
+          </p>
+          <div className="flex flex-col gap-4">
+            <h1 className="font-cal text-2xl">Never. Stop. Crafting.</h1>
+            {/* ADD: Open-Source Advocate */}
+            <ul className="list-inside list-disc space-y-1 marker:text-muted-foreground">
+              {links.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href}>{link.label}</Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </main>
       </div>
@@ -99,3 +49,14 @@ export default function Home() {
     </div>
   );
 }
+
+const links = [
+  { label: "craft.mxkaske.dev", href: "https://craft.mxkaske.dev" },
+  { label: "openstatus.dev", href: "https://openstatus.dev" },
+  { label: "light.openstatus.dev", href: "https://light.openstatus.dev" },
+  { label: "time.openstatus.dev", href: "https://time.openstatus.dev" },
+  {
+    label: "data-table.openstatus.dev",
+    href: "https://data-table.openstatus.dev",
+  },
+];
