@@ -2,19 +2,6 @@ const { withContentCollections } = require("@content-collections/next");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-    domains: ["craft.mxkaske.dev", "mxkaske.dev"],
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "craft.mxkaske.dev",
-      },
-      {
-        protocol: "https",
-        hostname: "mxkaske.dev",
-      },
-    ],
-  },
   async rewrites() {
     return {
       beforeFiles: [
