@@ -20,7 +20,7 @@ const nextConfig = {
       beforeFiles: [
         {
           source:
-            "/:path((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+            "/:path((?!api|assets|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
           has: [
             {
               type: "host",
