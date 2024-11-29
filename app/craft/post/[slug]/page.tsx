@@ -22,7 +22,7 @@ export default async function CraftPage({
 }) {
   const slug = (await params).slug;
   const post = allPosts.find((c) => c.slug === slug);
-  console.log({ allPosts, slug })
+  console.log({ allPosts, slug });
   if (!post) {
     notFound();
   }

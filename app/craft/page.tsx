@@ -43,7 +43,7 @@ const allPostsByMonth = allPosts.reduce(
   {} as { [month: string]: Post[] },
 );
 
-export default function Home() {
+export default function Page() {
   return (
     <div className="container mx-auto flex min-h-screen max-w-[calc(65ch+100px)] flex-col gap-4 px-2 py-4 md:px-4 md:py-8">
       <Banner />
