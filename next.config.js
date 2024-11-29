@@ -6,7 +6,8 @@ const nextConfig = {
     return {
       beforeFiles: [
         {
-          source: "/:path((?!_next|api).*)",
+          source:
+            "/:path((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
           has: [
             {
               type: "host",
