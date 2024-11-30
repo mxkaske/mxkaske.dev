@@ -15,9 +15,17 @@ export function Header({
         <Name />
       </div>
       <div>
-        <Link href="https://craft.mxkaske.dev">Craft</Link>
+        <Link href="https://mxkaske.dev" internal>
+          Home
+        </Link>
         <span className="mx-2 text-muted-foreground">·</span>
-        <Link href="https://brew.mxkaske.dev">Brew</Link>
+        <Link href="https://craft.mxkaske.dev" internal>
+          Craft
+        </Link>
+        <span className="mx-2 text-muted-foreground">·</span>
+        <Link href="https://brew.mxkaske.dev" internal>
+          Brew
+        </Link>
       </div>
     </header>
   );

@@ -1,6 +1,6 @@
 import React from "react";
 import { Metadata } from "next";
-import { Link } from "@/components/mdx/link";
+import { Link, LinkProps } from "@/components/mdx/link";
 import { BasicLayout } from "./_components/basic-layout";
 import { Separator } from "@/components/ui/separator";
 
@@ -31,9 +31,9 @@ export default function Home() {
         <div className="space-y-1">
           <p className="font-medium text-muted-foreground">Building</p>
           <ul className="list-inside list-disc space-y-1 marker:text-muted-foreground">
-            {links.map((link) => (
-              <li key={link.href}>
-                <Link href={link.href}>{link.label}</Link>
+            {links.map((props) => (
+              <li key={props.href}>
+                <Link {...props} />
               </li>
             ))}
           </ul>
@@ -42,9 +42,9 @@ export default function Home() {
         <div className="space-y-1">
           <p className="font-medium text-muted-foreground">Sharing</p>
           <ul className="list-inside list-disc space-y-1 marker:text-muted-foreground">
-            {socials.map((social) => (
-              <li key={social.href}>
-                <Link href={social.href}>{social.label}</Link>
+            {socials.map((props) => (
+              <li key={props.href}>
+                <Link {...props} />
               </li>
             ))}
           </ul>
@@ -53,9 +53,9 @@ export default function Home() {
         <div className="space-y-1">
           <p className="font-medium text-muted-foreground">Versioning</p>
           <ul className="list-inside list-disc space-y-1 marker:text-muted-foreground">
-            {versions.map((version) => (
-              <li key={version.href}>
-                <Link href={version.href}>{version.label}</Link>
+            {versions.map((props) => (
+              <li key={props.href}>
+                <Link {...props} />
               </li>
             ))}
           </ul>
@@ -65,25 +65,29 @@ export default function Home() {
   );
 }
 
-const links = [
-  { label: "openstatus.dev", href: "https://openstatus.dev" },
-  { label: "craft.mxkaske.dev", href: "https://craft.mxkaske.dev" },
-  { label: "light.openstatus.dev", href: "https://light.openstatus.dev" },
-  { label: "time.openstatus.dev", href: "https://time.openstatus.dev" },
+const links: LinkProps[] = [
+  { children: "openstatus.dev", href: "https://openstatus.dev" },
   {
-    label: "data-table.openstatus.dev",
+    children: "craft.mxkaske.dev",
+    href: "https://craft.mxkaske.dev",
+    internal: true,
+  },
+  { children: "light.openstatus.dev", href: "https://light.openstatus.dev" },
+  { children: "time.openstatus.dev", href: "https://time.openstatus.dev" },
+  {
+    children: "data-table.openstatus.dev",
     href: "https://data-table.openstatus.dev",
   },
 ];
 
-const socials = [
-  { label: "GitHub", href: "https://github.com/mxkaske" },
-  { label: "Twitter", href: "https://twitter.com/mxkaske" },
-  { label: "LinkedIn", href: "https://linkedin.com/in/mxkaske" },
-  { label: "BlueSky", href: "https://bsky.app/profile/mxkaske.dev" },
+const socials: LinkProps[] = [
+  { children: "GitHub", href: "https://github.com/mxkaske" },
+  { children: "Twitter", href: "https://twitter.com/mxkaske" },
+  { children: "LinkedIn", href: "https://linkedin.com/in/mxkaske" },
+  { children: "BlueSky", href: "https://bsky.app/profile/mxkaske.dev" },
 ];
 
-const versions = [
-  { label: "v1.mxkaske.dev", href: "https://v1.mxkaske.dev" },
-  { label: "v2.mxkaske.dev", href: "https://v2.mxkaske.dev" },
+const versions: LinkProps[] = [
+  { children: "v1.mxkaske.dev", href: "https://v1.mxkaske.dev" },
+  { children: "v2.mxkaske.dev", href: "https://v2.mxkaske.dev" },
 ];
