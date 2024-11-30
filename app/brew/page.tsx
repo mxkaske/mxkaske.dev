@@ -41,7 +41,9 @@ export default function Page() {
                   <time>{formatDay(post.date)}</time> &#x22C5;{" "}
                   {post.readingTime}
                 </p>
-                <p className="font-cal text-xl text-foreground">{post.title}</p>
+                <p className="font-cal text-xl text-foreground group-hover:underline">
+                  {post.title}
+                </p>
                 <p className="font-light text-muted-foreground">
                   {post.description}
                 </p>

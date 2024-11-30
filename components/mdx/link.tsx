@@ -45,7 +45,9 @@ export function Link({
       {...props}
     >
       {children}
-      {!isInternal ? <ArrowUpRight className="text-muted-foreground w-4 h-4 inline-block ml-0.5 group-hover:text-foreground" /> : null}
+      {!isInternal ? (
+        <ArrowUpRight className="text-muted-foreground w-4 h-4 inline-block ml-0.5 group-hover:text-foreground" />
+      ) : null}
     </Anchor>
   );
 }

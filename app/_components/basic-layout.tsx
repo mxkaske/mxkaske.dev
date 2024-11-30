@@ -8,7 +8,7 @@ export function BasicLayout({ children }: { children: React.ReactNode }) {
       <main className="flex flex-1 flex-col rounded-lg border border-border/50 bg-background/50 p-4 backdrop-blur-[2px] sm:p-8">
         {children}
       </main>
-      <Footer />
+      <Footer className="px-4 sm:px-8" />
     </div>
   );
 }
