@@ -29,7 +29,7 @@ export function Thumbnail({
       </div>
       <Link href={url}>
         <div className="group/link rounded-b-md border-t border-border bg-muted p-3">
-          <p className="mb-1 font-cal font-bold text-foreground underline-offset-2 group-hover/link:underline">
+          <p className="mb-1 font-cal text-foreground underline-offset-2 group-hover/link:underline">
             {title}
           </p>
           <p className="text-sm font-light text-muted-foreground">

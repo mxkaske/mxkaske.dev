@@ -7,6 +7,9 @@ const fontCal = fetch(
   new URL("../../../public/fonts/CalSans-SemiBold.ttf", import.meta.url),
 ).then((res) => res.arrayBuffer());
 
+const TITLE = "mxkaske.dev";
+const DESCRIPTION = "Never. Stop. Building.";
+
 export async function GET(request: Request) {
   const fontCalData = await fontCal;
   const { searchParams } = new URL(request.url);
@@ -42,10 +45,10 @@ export async function GET(request: Request) {
                 style={{ fontFamily: "cal", fontWeight: 600 }} // FIXME: seems not to work
                 tw="flex text-6xl tracking-tight mb-4"
               >
-                {title ?? "craft.mxkaske.dev"}
+                {title ?? TITLE}
               </div>
               <div tw="flex text-4xl" style={{ color: "rgb(127, 142, 163)" }}>
-                {description}
+                {description ?? DESCRIPTION}
               </div>
             </div>
           </div>
