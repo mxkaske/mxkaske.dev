@@ -19,6 +19,20 @@ const nextConfig = {
           ],
           destination: "/craft/:path*",
         },
+        {
+          source:
+            "/:path((?!api|assets|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+          has: [
+            {
+              type: "host",
+              value:
+                process.env.NODE_ENV === "production"
+                  ? "brew.mxkaske.dev"
+                  : "brew.localhost",
+            },
+          ],
+          destination: "/brew/:path*",
+        },
       ],
     };
   },

@@ -5,9 +5,9 @@ import autolinkHeadings from "./content/plugins/autolink-headings";
 import prettyCode from "./content/plugins/rehype-pretty-code";
 import slug from "rehype-slug";
 
-const posts = defineCollection({
-  name: "posts",
-  directory: "content/posts",
+const crafts = defineCollection({
+  name: "crafts",
+  directory: "content/crafts",
   include: "*.mdx",
   schema: (z) => ({
     title: z.string(),
@@ -31,6 +31,30 @@ const posts = defineCollection({
   },
 });
 
+const brews = defineCollection({
+  name: "brews",
+  directory: "content/brews",
+  include: "*.mdx",
+  schema: (z) => ({
+    title: z.string(),
+    date: z.coerce.date(),
+    description: z.string(),
+  }),
+  transform: async (document, context) => {
+    const mdx = await compileMDX(context, document, {
+      // @ts-expect-error
+      rehypePlugins: [slug, autolinkHeadings, prettyCode],
+    });
+    return {
+      ...document,
+      slug: document._meta.fileName.replace(/\.mdx$/, ""),
+      url: `/post/${document._meta.fileName.replace(/\.mdx$/, "")}`,
+      readingTime: readingTime(document.content).text,
+      mdx,
+    };
+  },
+});
+
 export default defineConfig({
-  collections: [posts],
+  collections: [crafts, brews],
 });

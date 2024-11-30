@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import { Craft } from "@/.content-collections/generated";
+import { Brew } from "@/.content-collections/generated";
 import { components } from "@/lib/mdx";
 import { MDXContent } from "@content-collections/mdx/react";
 
-export function Content({ post }: { post: Craft }) {
+export function Content({ post }: { post: Brew }) {
   React.useEffect(() => {
     fetch(`/api/views?slug=${post.slug}`, { method: "POST" });
   }, [post.slug]);
