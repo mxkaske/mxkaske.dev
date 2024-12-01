@@ -4,6 +4,7 @@ import { Content } from "./content";
 import { Link } from "@/components/mdx/link";
 import { formatDay } from "@/lib/formats";
 import type { Metadata } from "next";
+import { PaginationFooter } from "@/components/content/pagination-footer";
 
 export async function generateMetadata({
   params,
@@ -36,15 +37,23 @@ export async function generateStaticParams() {
   return allBrews.map((post) => ({ slug: post.slug }));
 }
 
+const sortedBrews = allBrews.sort((a, b) =>
+  a.date.getTime() > b.date.getTime() ? -1 : 1,
+);
+
 export default async function BrewPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const slug = (await params).slug;
-  const post = allBrews.find((c) => c.slug === slug);
+  const postIndex = sortedBrews.findIndex((c) => c.slug === slug);
+  const post = sortedBrews[postIndex];
 
   if (!post) notFound();
+
+  const prev = sortedBrews[postIndex - 1];
+  const next = sortedBrews[postIndex + 1];
 
   return (
     <article className="space-y-8">
@@ -58,16 +67,7 @@ export default async function BrewPage({
         <div />
       </div>
       <Content post={post} />
-      <div className="flex items-center justify-between">
-        <div>
-          <Link href="/">Back</Link>
-        </div>
-        <div>
-          {/* <p className="text-muted-foreground font-mono text-sm tracking-tighter">
-            {formatNumber(views)} views
-          </p> */}
-        </div>
-      </div>
+      <PaginationFooter prev={prev} next={next} className="mt-8" />
     </article>
   );
 }
