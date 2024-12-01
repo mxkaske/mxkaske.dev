@@ -2,8 +2,13 @@ import { allCrafts } from "@/.content-collections/generated";
 import { notFound } from "next/navigation";
 import { Content } from "./content";
 import { Github } from "lucide-react";
-import { Link } from "@/components/mdx/link";
 import { formatMonth } from "@/lib/formats";
+import { PaginationFooter } from "@/components/content/pagination-footer";
+import { Button } from "@/components/ui/button";
+
+const sortedCrafts = allCrafts.sort((a, b) =>
+  a.date.getTime() > b.date.getTime() ? -1 : 1,
+);
 
 export default async function CraftPage({
   params,
@@ -11,9 +16,13 @@ export default async function CraftPage({
   params: Promise<{ slug: string }>;
 }) {
   const slug = (await params).slug;
-  const post = allCrafts.find((c) => c.slug === slug);
+  const postIndex = sortedCrafts.findIndex((c) => c.slug === slug);
+  const post = sortedCrafts[postIndex];
 
   if (!post) notFound();
+
+  const prev = sortedCrafts[postIndex - 1];
+  const next = sortedCrafts[postIndex + 1];
 
   return (
     <article>
@@ -25,27 +34,15 @@ export default async function CraftPage({
           </p>
         </div>
         <div className="flex gap-2">
-          <a
-            href={post.githubUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="rounded-md bg-background p-2 text-foreground hover:bg-muted"
-          >
-            <Github className="h-5 w-5" />
-          </a>
+          <Button variant="outline" size="icon" asChild>
+            <a href={post.githubUrl} target="_blank" rel="noreferrer">
+              <Github className="h-4 w-4" />
+            </a>
+          </Button>
         </div>
       </div>
       <Content post={post} />
-      <div className="mt-8 flex items-center justify-between">
-        <div>
-          <Link href="/">Back</Link>
-        </div>
-        <div>
-          {/* <p className="text-muted-foreground font-mono text-sm tracking-tighter">
-            {formatNumber(views)} views
-          </p> */}
-        </div>
-      </div>
+      <PaginationFooter prev={prev} next={next} className="mt-8" />
     </article>
   );
 }
