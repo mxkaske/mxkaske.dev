@@ -1,23 +1,22 @@
-import rehypePrettyCode from "rehype-pretty-code";
+import rehypePrettyCode, { Options } from "rehype-pretty-code";
 
-const prettyCode = [
-  rehypePrettyCode,
-  {
-    // theme: "github-light",
-    onVisitLine(node: any) {
-      // Prevent lines from collapsing in `display: grid` mode, and
-      // allow empty lines to be copy/pasted
-      if (node.children.length === 0) {
-        node.children = [{ type: "text", value: " " }];
-      }
-    },
-    onVisitHighlightedLine(node: any) {
-      node.properties.className.push("highlighted");
-    },
-    onVisitHighlightedWord(node: any) {
-      node.properties.className = ["word"];
-    },
+const config = {
+  keepBackground: false,
+  onVisitLine(node) {
+    // Prevent lines from collapsing in `display: grid` mode, and
+    // allow empty lines to be copy/pasted
+    if (node.children.length === 0) {
+      node.children = [{ type: "text", value: " " }];
+    }
   },
-];
+  onVisitHighlightedLine(node) {
+    node.properties.className?.push("highlighted");
+  },
+  onVisitHighlightedChars(node) {
+    node.properties.className = ["word"];
+  },
+} satisfies Options;
+
+const prettyCode = [rehypePrettyCode, config];
 
 export default prettyCode;
