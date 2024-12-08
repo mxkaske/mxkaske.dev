@@ -40,7 +40,7 @@ export function FormWithoutSuspense() {
       });
       resetSearchParams();
     }
-  }, [toast, searchParams, resetSearchParams]);
+  }, [searchParams, resetSearchParams]);
 
   return (
     <form
