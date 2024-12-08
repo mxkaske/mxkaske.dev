@@ -4,6 +4,7 @@ import { Link, LinkProps } from "@/components/mdx/link";
 import { BasicLayout } from "./_components/basic-layout";
 import { Separator } from "@/components/ui/separator";
 import { NewsletterForm } from "./_components/newsletter/form";
+import { Calendar } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "mxkaske.dev",
@@ -28,7 +29,6 @@ export default function Home() {
     <BasicLayout>
       <div className="space-y-8">
         <h1 className="font-cal text-3xl">Never. Stop. Building.</h1>
-        {/* ADD: Open-Source Advocate */}
         <div className="space-y-1">
           <p className="font-medium text-muted-foreground">Building</p>
           <ul className="list-inside list-disc space-y-1 marker:text-muted-foreground/70">
@@ -55,8 +55,13 @@ export default function Home() {
           <p className="font-medium text-muted-foreground">Versioning</p>
           <ul className="list-inside list-disc space-y-1 marker:text-muted-foreground/70">
             {versions.map((props) => (
-              <li key={props.href}>
-                <Link {...props} />
+              <li key={props.href} className="flex items-center gap-4">
+                <Link className="shrink-0" {...props} />
+                <Separator orientation="horizontal" className="shrink" />
+                <div className="flex items-center gap-1 font-mono shrink-0">
+                  {props.value}
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                </div>
               </li>
             ))}
           </ul>
@@ -92,7 +97,15 @@ const socials: LinkProps[] = [
   { children: "BlueSky", href: "https://bsky.app/profile/mxkaske.dev" },
 ];
 
-const versions: LinkProps[] = [
-  { children: "v1.mxkaske.dev", href: "https://v1.mxkaske.dev" },
-  { children: "v2.mxkaske.dev", href: "https://v2.mxkaske.dev" },
+const versions: (LinkProps & { value: number })[] = [
+  {
+    children: "v1.mxkaske.dev",
+    href: "https://v1.mxkaske.dev",
+    value: 2020,
+  },
+  {
+    children: "v2.mxkaske.dev",
+    href: "https://v2.mxkaske.dev",
+    value: 2022,
+  },
 ];
