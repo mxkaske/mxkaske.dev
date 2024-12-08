@@ -37,7 +37,7 @@ export function Link({
       className={cn(
         // "ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md",
         "group text-foreground underline underline-offset-4 decoration-border hover:decoration-foreground",
-        className,
+        className
       )}
       // @ts-ignore FIXME: Url only works in NextLink
       href={href}
@@ -46,7 +46,7 @@ export function Link({
     >
       {children}
       {!isInternal ? (
-        <ArrowUpRight className="text-muted-foreground w-4 h-4 inline-block ml-0.5 group-hover:text-foreground" />
+        <ArrowUpRight className="text-muted-foreground w-4 h-4 inline-block ml-0.5 group-hover:text-foreground group-hover:-translate-y-px group-hover:translate-x-px" />
       ) : null}
     </Anchor>
   );
