@@ -3,11 +3,11 @@
 /* eslint-disable react/no-unescaped-entities */
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { submitEmail } from "./actions";
 import { SubmitButton } from "./submit-button";
 import { Suspense, useCallback, useEffect } from "react";
+import { toast } from "sonner";
 
 export function Form() {
   return (
@@ -18,7 +18,6 @@ export function Form() {
 }
 
 export function FormWithoutSuspense() {
-  const { toast } = useToast();
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -36,8 +35,7 @@ export function FormWithoutSuspense() {
     const email = searchParams.has("email") && searchParams.get("email");
 
     if (form === "success" && email) {
-      toast({
-        title: "Joined Waitlist",
+      toast("Joined Waitlist", {
         description: `Added ${email} to the fake waitlist.`,
       });
       resetSearchParams();

@@ -5,6 +5,7 @@ import { Link } from "@/components/mdx/link";
 import { formatDay } from "@/lib/formats";
 import type { Metadata } from "next";
 import { PaginationFooter } from "@/components/content/pagination-footer";
+import { ViewsNumber } from "@/components/content/views-number";
 
 export async function generateMetadata({
   params,
@@ -38,7 +39,7 @@ export async function generateStaticParams() {
 }
 
 const sortedBrews = allBrews.sort((a, b) =>
-  a.date.getTime() > b.date.getTime() ? -1 : 1,
+  a.date.getTime() > b.date.getTime() ? -1 : 1
 );
 
 export default async function BrewPage({
@@ -60,9 +61,13 @@ export default async function BrewPage({
       <div className="flex items-end justify-between">
         <div>
           <p className="font-cal text-lg text-foreground">{post.title}</p>
-          <p className="font-mono text-xs font-light text-muted-foreground">
-            {formatDay(new Date(post.date))} &#x22C5; {post.readingTime}
-          </p>
+          <div className="flex flex-wrap font-mono text-xs font-light text-muted-foreground">
+            <span>{formatDay(new Date(post.date))}</span>
+            <span className="mx-1">·</span>
+            <span>{post.readingTime}</span>
+            <span className="mx-1">·</span>
+            <ViewsNumber />
+          </div>
         </div>
         <div />
       </div>

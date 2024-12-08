@@ -5,9 +5,10 @@ import { Github } from "lucide-react";
 import { formatMonth } from "@/lib/formats";
 import { PaginationFooter } from "@/components/content/pagination-footer";
 import { Button } from "@/components/ui/button";
+import { ViewsNumber } from "@/components/content/views-number";
 
 const sortedCrafts = allCrafts.sort((a, b) =>
-  a.date.getTime() > b.date.getTime() ? -1 : 1,
+  a.date.getTime() > b.date.getTime() ? -1 : 1
 );
 
 export default async function CraftPage({
@@ -29,9 +30,13 @@ export default async function CraftPage({
       <div className="flex items-end justify-between">
         <div>
           <p className="font-cal text-lg text-foreground">{post.title}</p>
-          <p className="font-mono text-xs font-light text-muted-foreground">
-            {formatMonth(new Date(post.date))} &#x22C5; {post.readingTime}
-          </p>
+          <div className="flex flex-wrap font-mono text-xs font-light text-muted-foreground">
+            <span>{formatMonth(new Date(post.date))}</span>
+            <span className="mx-1">·</span>
+            <span>{post.readingTime}</span>
+            <span className="mx-1">·</span>
+            <ViewsNumber />
+          </div>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="icon" asChild>

@@ -38,8 +38,9 @@ export default function Page() {
             return (
               <Link key={post.slug} href={post.url} className="group">
                 <p className="font-mono text-xs font-light text-muted-foreground">
-                  <time>{formatDay(post.date)}</time> &#x22C5;{" "}
-                  {post.readingTime}
+                  <span>{formatDay(new Date(post.date))}</span>
+                  <span className="mx-1">·</span>
+                  <span>{post.readingTime}</span>
                 </p>
                 <p className="font-cal text-xl text-foreground group-hover:underline">
                   {post.title}

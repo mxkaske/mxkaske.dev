@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { Link, LinkProps } from "@/components/mdx/link";
 import { BasicLayout } from "./_components/basic-layout";
 import { Separator } from "@/components/ui/separator";
+import { NewsletterForm } from "./_components/newsletter/form";
 
 export const metadata: Metadata = {
   title: "mxkaske.dev",
@@ -30,7 +31,7 @@ export default function Home() {
         {/* ADD: Open-Source Advocate */}
         <div className="space-y-1">
           <p className="font-medium text-muted-foreground">Building</p>
-          <ul className="list-inside list-disc space-y-1 marker:text-muted-foreground">
+          <ul className="list-inside list-disc space-y-1 marker:text-muted-foreground/70">
             {links.map((props) => (
               <li key={props.href}>
                 <Link {...props} />
@@ -41,7 +42,7 @@ export default function Home() {
         <Separator />
         <div className="space-y-1">
           <p className="font-medium text-muted-foreground">Sharing</p>
-          <ul className="list-inside list-disc space-y-1 marker:text-muted-foreground">
+          <ul className="list-inside list-disc space-y-1 marker:text-muted-foreground/70">
             {socials.map((props) => (
               <li key={props.href}>
                 <Link {...props} />
@@ -52,13 +53,17 @@ export default function Home() {
         <Separator />
         <div className="space-y-1">
           <p className="font-medium text-muted-foreground">Versioning</p>
-          <ul className="list-inside list-disc space-y-1 marker:text-muted-foreground">
+          <ul className="list-inside list-disc space-y-1 marker:text-muted-foreground/70">
             {versions.map((props) => (
               <li key={props.href}>
                 <Link {...props} />
               </li>
             ))}
           </ul>
+        </div>
+        <Separator />
+        <div className="border border-border rounded-lg p-4 bg-muted/50">
+          <NewsletterForm />
         </div>
       </div>
     </BasicLayout>

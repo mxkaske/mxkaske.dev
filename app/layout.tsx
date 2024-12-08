@@ -1,6 +1,6 @@
 import { BGGrid } from "@/components/craft/bg-grid";
 import { ThemeProvider } from "@/components/theme/theme-provider";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import "@/styles/globals.css";
 import { Metadata } from "next";
 import { Inter } from "next/font/google";

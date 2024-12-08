@@ -22,11 +22,16 @@ export async function POST(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const hasSlug = searchParams.has("slug");
   const slug = hasSlug ? searchParams.get("slug") : undefined;
+  const ignore = request.cookies.get("ignore-pageviews")?.value;
+
+  if (ignore === "true") {
+    return new NextResponse("Ignored Counter", { status: 200 });
+  }
 
   if (ip) {
     const buf = await crypto.subtle.digest(
       "SHA-256",
-      new TextEncoder().encode(ip),
+      new TextEncoder().encode(ip)
     );
 
     const hash = Array.from(new Uint8Array(buf))
