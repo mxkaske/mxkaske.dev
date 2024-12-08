@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
   const email = searchParms.get("email");
 
   if (email) {
-    await redis.lrem("newsletter", 1, email);
+    await redis.lrem("newsletter", 1, email.toLowerCase());
     return new Response(`Unsubscribed "${email}".`);
   }
 
