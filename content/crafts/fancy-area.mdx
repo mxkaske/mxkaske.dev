@@ -186,8 +186,9 @@ import remarkRehype from "remark-rehype";
 import rehypeRaw from "rehype-raw";
 import rehypeReact from "rehype-react";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
-import { createElement, useEffect, useState } from "react";
+import { createElement, Fragment, useEffect, useState } from "react";
 import { Mention } from "./mention";
+import { jsx, jsxs } from "react/jsx-runtime";
 
 export function useProcessor(md: string) {
   const [content, setContent] = useState<React.ReactNode>(null);
@@ -213,6 +214,9 @@ export function useProcessor(md: string) {
       // @ts-expect-error because mention is not a valid html-tag
       .use(rehypeReact, {
         createElement,
+        Fragment,
+        jsx,
+        jsxs,
         components: {
           mention: Mention,
         },
