@@ -15,10 +15,7 @@ interface Props {
 }
 
 export function Mention({ children, handle }: Props) {
-  const isString =
-    Array.isArray(children) &&
-    children.length === 1 &&
-    typeof children[0] === "string";
+  const isString = typeof children === "string";
   // REMINDER: children has other children - return early
   if (!isString) {
     return children;
