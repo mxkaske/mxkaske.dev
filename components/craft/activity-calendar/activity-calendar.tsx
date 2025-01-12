@@ -7,6 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import "./styles.css";
 
 const DAYS_PER_WEEK = 7;
 
@@ -31,7 +32,7 @@ interface GithubCalendarGridProps {
   /**
    * Colors for each value
    */
-  colors: Record<string, string>;
+  colors: Record<number, string>;
   /**
    * Days of the week to show - 0 = Sunday, 1 = Monday, ..., 6 = Saturday
    * @default [1, 3, 5]
@@ -101,12 +102,10 @@ export const ActivityCalendar = ({
         {
           "--gh-grid-size": `${size}px`,
           "--gh-grid-gap": `${gap}px`,
-          ...colors,
         } as React.CSSProperties
       }
     >
       <div className="overflow-x-auto w-full">
-        {/* min=w-full */}
         <table className="border-spacing-[--gh-grid-gap] border-separate w-max">
           <thead>
             <tr>
@@ -138,21 +137,22 @@ export const ActivityCalendar = ({
                   )}
                   {/* Render each day of the week */}
                   {weeks.map((week, weekIndex) => {
-                    const value = week[dayIndex]?.value;
                     if (!week[dayIndex]) {
                       return (
                         <td key={weekIndex} className="size-[--gh-grid-size]" />
                       );
                     }
 
+                    const value = week[dayIndex].value;
+
                     return (
                       <TooltipProvider key={weekIndex}>
                         <Tooltip delayDuration={0}>
                           <TooltipTrigger asChild>
                             <td
-                              className="rounded border size-[--gh-grid-size]"
+                              className="rounded border border-border size-[--gh-grid-size]"
                               style={{
-                                backgroundColor: `var(--activity-${value})`,
+                                backgroundColor: `var(${colors[value]})`,
                               }}
                               // REMINDER: remove this once we have the data on the server side
                               // This happens because of Math.random()
@@ -186,11 +186,11 @@ export const ActivityCalendar = ({
         <div className="font-light text-[length:var(--gh-grid-size)] leading-none text-muted-foreground/70 tracking-tighter mr-1">
           Less
         </div>
-        {Object.entries(colors).map(([key]) => (
+        {Object.entries(colors).map(([key, entries]) => (
           <div
             key={key}
-            className="rounded border size-[--gh-grid-size]"
-            style={{ backgroundColor: `var(${key})` }}
+            className="rounded border border-border size-[--gh-grid-size]"
+            style={{ backgroundColor: `var(${entries})` }}
           />
         ))}
         <div className="font-light text-[length:var(--gh-grid-size)] leading-none text-muted-foreground/70 tracking-tighter ml-1">
