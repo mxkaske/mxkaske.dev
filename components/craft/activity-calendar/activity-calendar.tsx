@@ -17,11 +17,11 @@ export type DataOptions = {
   value: number;
 };
 
-export interface GithubCalendarGridProps {
+export interface GithubCalendarGridProps<T extends DataOptions> {
   /**
    * Data to render
    */
-  data: DataOptions[];
+  data: T[];
   /**
    * Container size of the cells
    */
@@ -33,7 +33,7 @@ export interface GithubCalendarGridProps {
   /**
    * Colors for each value
    */
-  colors: Record<number, string>;
+  colors: Record<T["value"], string>;
   /**
    * Days of the week to show - 0 = Sunday, 1 = Monday, ..., 6 = Saturday
    * @default [1, 3, 5]
@@ -41,13 +41,13 @@ export interface GithubCalendarGridProps {
   weekDays?: number[];
 }
 
-export function ActivityCalendar({
+export function ActivityCalendar<T extends DataOptions>({
   size,
   gap = 2,
   colors,
   weekDays = [1, 3, 5],
   data,
-}: GithubCalendarGridProps) {
+}: GithubCalendarGridProps<T>) {
   // TODO: check if data is empty
   const startDate = data[0]?.date as Date | undefined;
   const startDay = startDate?.getDay();
@@ -101,13 +101,13 @@ export function ActivityCalendar({
       className="w-full space-y-3"
       style={
         {
-          "--gh-grid-size": `${size}px`,
-          "--gh-grid-gap": `${gap}px`,
+          "--activity-grid-size": `${size}px`,
+          "--activity-grid-gap": `${gap}px`,
         } as React.CSSProperties
       }
     >
       <div className="overflow-x-auto w-full">
-        <table className="border-spacing-[--gh-grid-gap] border-separate w-max">
+        <table className="border-spacing-[--activity-grid-gap] border-separate w-max">
           <thead>
             <tr>
               <th />
@@ -115,7 +115,7 @@ export function ActivityCalendar({
                 <th
                   key={index}
                   colSpan={header.span}
-                  className="text-left font-normal text-[length:var(--gh-grid-size)] leading-none"
+                  className="text-left font-normal text-[length:var(--activity-grid-size)] leading-none"
                 >
                   {header.name}
                 </th>
@@ -128,7 +128,7 @@ export function ActivityCalendar({
               return (
                 <tr key={dayIndex}>
                   {weekDays.includes(dayIndex) ? (
-                    <td className="font-normal text-[length:var(--gh-grid-size)] leading-none p-0">
+                    <td className="font-normal text-[length:var(--activity-grid-size)] leading-none p-0">
                       {new Date(2024, 0, dayIndex).toLocaleString("default", {
                         weekday: "short",
                       })}
@@ -140,7 +140,10 @@ export function ActivityCalendar({
                   {weeks.map((week, weekIndex) => {
                     if (!week[dayIndex]) {
                       return (
-                        <td key={weekIndex} className="size-[--gh-grid-size]" />
+                        <td
+                          key={weekIndex}
+                          className="size-[--activity-grid-size]"
+                        />
                       );
                     }
                     const { value, label } = week[dayIndex];
@@ -150,12 +153,13 @@ export function ActivityCalendar({
                         <Tooltip delayDuration={0}>
                           <TooltipTrigger
                             style={{
-                              backgroundColor: `var(${colors[value]})`,
+                              backgroundColor:
+                                colors[value as keyof typeof colors],
                             }}
                             asChild
                             suppressHydrationWarning
                           >
-                            <td className="rounded border border-border size-[--gh-grid-size]">
+                            <td className="rounded border border-border size-[--activity-grid-size]">
                               <span className="sr-only">{label}</span>
                             </td>
                           </TooltipTrigger>
@@ -172,18 +176,18 @@ export function ActivityCalendar({
           </tbody>
         </table>
       </div>
-      <div className="flex gap-[--gh-grid-gap] justify-end">
-        <div className="font-light text-[length:var(--gh-grid-size)] leading-none text-muted-foreground/70 tracking-tighter mr-1">
+      <div className="flex gap-[--activity-grid-gap] justify-end">
+        <div className="font-light text-[length:var(--activity-grid-size)] leading-none text-muted-foreground/70 tracking-tighter mr-1">
           Less
         </div>
         {Object.entries(colors).map(([key, entries]) => (
           <div
             key={key}
-            className="rounded border border-border size-[--gh-grid-size]"
-            style={{ backgroundColor: `var(${entries})` }}
+            className="rounded border border-border size-[--activity-grid-size]"
+            style={{ backgroundColor: entries as string }}
           />
         ))}
-        <div className="font-light text-[length:var(--gh-grid-size)] leading-none text-muted-foreground/70 tracking-tighter ml-1">
+        <div className="font-light text-[length:var(--activity-grid-size)] leading-none text-muted-foreground/70 tracking-tighter ml-1">
           More
         </div>
       </div>
