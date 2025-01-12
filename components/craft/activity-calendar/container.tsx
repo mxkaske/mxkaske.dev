@@ -38,7 +38,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 const WEEK_DAY_INDEXES = [0, 1, 2, 3, 4, 5, 6];
 const START_DATE = new Date(2025, 0, 2);
-const END_DATE = new Date(2025, 9, 1);
+const END_DATE = new Date(2025, 6, 1);
 
 export const FormSchema = z.object({
   size: z.number(),
