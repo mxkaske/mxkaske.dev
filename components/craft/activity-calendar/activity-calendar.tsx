@@ -11,12 +11,13 @@ import "./styles.css";
 
 const DAYS_PER_WEEK = 7;
 
-type DataOptions = {
+export type DataOptions = {
   date: Date;
+  label: string;
   value: number;
 };
 
-interface GithubCalendarGridProps {
+export interface GithubCalendarGridProps {
   /**
    * Data to render
    */
@@ -142,35 +143,24 @@ export const ActivityCalendar = ({
                         <td key={weekIndex} className="size-[--gh-grid-size]" />
                       );
                     }
-
-                    const value = week[dayIndex].value;
+                    const { value, label } = week[dayIndex];
 
                     return (
-                      <TooltipProvider key={weekIndex}>
+                      <TooltipProvider key={`${weekIndex}-${dayIndex}`}>
                         <Tooltip delayDuration={0}>
-                          <TooltipTrigger asChild>
-                            <td
-                              className="rounded border border-border size-[--gh-grid-size]"
-                              style={{
-                                backgroundColor: `var(${colors[value]})`,
-                              }}
-                              // REMINDER: remove this once we have the data on the server side
-                              // This happens because of Math.random()
-                              suppressHydrationWarning
-                            />
+                          <TooltipTrigger
+                            style={{
+                              backgroundColor: `var(${colors[value]})`,
+                            }}
+                            asChild
+                            suppressHydrationWarning
+                          >
+                            <td className="rounded border border-border size-[--gh-grid-size]">
+                              <span className="sr-only">{label}</span>
+                            </td>
                           </TooltipTrigger>
                           <TooltipPortal>
-                            <TooltipContent>
-                              {value} activity on{" "}
-                              {new Date(week[dayIndex].date).toLocaleDateString(
-                                "en-US",
-                                {
-                                  day: "numeric",
-                                  month: "short",
-                                  year: "numeric",
-                                }
-                              )}
-                            </TooltipContent>
+                            <TooltipContent>{label}</TooltipContent>
                           </TooltipPortal>
                         </Tooltip>
                       </TooltipProvider>
