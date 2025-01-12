@@ -72,10 +72,14 @@ export function Container() {
       form.watch("date")?.to
     );
 
-    return dateRange.map((date) => ({
-      date,
-      value: getActivityLevel(),
-    }));
+    return dateRange.map((date) => {
+      const value = getActivityLevel();
+      return {
+        date,
+        value,
+        label: `${value} activit${value > 1 ? "ies" : "y"} on ${format(date, "LLL dd, y")}`,
+      };
+    });
   }, [form.watch("date")?.from, form.watch("date")?.to]);
 
   return (
