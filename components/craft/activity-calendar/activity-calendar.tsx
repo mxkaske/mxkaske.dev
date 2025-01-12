@@ -13,7 +13,7 @@ const DAYS_PER_WEEK = 7;
 
 export type DataOptions = {
   date: Date;
-  label: string;
+  label: React.ReactNode;
   value: number;
 };
 

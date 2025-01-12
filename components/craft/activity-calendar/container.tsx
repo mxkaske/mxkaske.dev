@@ -52,6 +52,21 @@ export const FormSchema = z.object({
   weekDays: z.array(z.number()),
 });
 
+function renderLabel({ value, date }: { value: number; date: Date }) {
+  const activity = value > 1 ? "activities" : "activity";
+  return (
+    <span>
+      <span className="font-medium">
+        {value} {activity}
+      </span>{" "}
+      -{" "}
+      <span className="font-mono tracking-tighter">
+        {format(date, "LLL dd, y")}
+      </span>
+    </span>
+  );
+}
+
 export function Container() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -70,11 +85,13 @@ export function Container() {
   const data = React.useMemo(() => {
     const from = form.watch("date")?.from;
     const to = form.watch("date")?.to;
+
+    // REMINDER: default values to avoid hydration errors
     if (isEqual(from, START_DATE) && to && isEqual(to, END_DATE)) {
       return defaultData.map(({ value, date }) => ({
         date,
         value,
-        label: `${value} activit${value > 1 ? "ies" : "y"} on ${format(date, "LLL dd, y")}`,
+        label: renderLabel({ value, date }),
       }));
     }
 
@@ -85,7 +102,7 @@ export function Container() {
       return {
         date,
         value,
-        label: `${value} activit${value > 1 ? "ies" : "y"} on ${format(date, "LLL dd, y")}`,
+        label: renderLabel({ value, date }),
       };
     });
   }, [form.watch("date")?.from, form.watch("date")?.to]);
@@ -212,7 +229,7 @@ export function Container() {
             control={form.control}
             name="weekDays"
             render={() => (
-              <FormItem className="md:col-span-2">
+              <FormItem className="md:col-span-full">
                 <div className="mb-3">
                   <FormLabel className="text-base">Week Days</FormLabel>
                   <FormDescription>
