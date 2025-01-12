@@ -7,8 +7,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
-import { generateDateRange, getActivityLevel } from "./utils";
 
 const DAYS_PER_WEEK = 7;
 
@@ -17,12 +15,13 @@ type DataOptions = {
   value: number;
 };
 
-interface GithubCalendarGridProps<T extends DataOptions> {
-  data: T[];
-  startDate: Date;
-  endDate: Date;
+interface GithubCalendarGridProps {
   /**
-   * Container size of the grid
+   * Data to render
+   */
+  data: DataOptions[];
+  /**
+   * Container size of the cells
    */
   size?: number;
   /**
@@ -32,7 +31,7 @@ interface GithubCalendarGridProps<T extends DataOptions> {
   /**
    * Colors for each value
    */
-  colors: Record<keyof T["value"], string>;
+  colors: Record<string, string>;
   /**
    * Days of the week to show - 0 = Sunday, 1 = Monday, ..., 6 = Saturday
    * @default [1, 3, 5]
@@ -41,31 +40,22 @@ interface GithubCalendarGridProps<T extends DataOptions> {
 }
 
 export const ActivityCalendar = ({
-  startDate = new Date("2025-01-01"),
-  endDate = new Date("2025-07-31"),
   size,
   gap = 2,
   colors,
   weekDays = [1, 3, 5],
-}: {
-  startDate?: Date;
-  endDate?: Date;
-  size: number;
-  gap?: number;
-  colors: Record<0 | 1 | 2 | 3 | 4 | 5, string>;
-  weekDays?: number[];
-}) => {
-  const daysRange = generateDateRange(startDate, endDate);
-
-  // Get the day of the week for the startDate (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
-  const startDay = startDate.getDay();
+  data,
+}: GithubCalendarGridProps) => {
+  // TODO: check if data is empty
+  const startDate = data[0]?.date as Date | undefined;
+  const startDay = startDate?.getDay();
 
   // Add empty boxes at the beginning if startDate is not a Monday
   const paddingDays = startDay === 0 ? 6 : startDay;
-  const paddedDays = Array(paddingDays).fill(null).concat(daysRange);
+  const paddedDays = Array(paddingDays).fill(null).concat(data);
 
   // Group days into weeks (columns)
-  const weeks: (string | null)[][] = [];
+  const weeks: (DataOptions | null)[][] = [];
   for (let i = 0; i < paddedDays.length; i += DAYS_PER_WEEK) {
     weeks.push(paddedDays.slice(i, i + DAYS_PER_WEEK));
   }
@@ -76,11 +66,14 @@ export const ActivityCalendar = ({
   let monthStartIndex = 0;
 
   weeks.forEach((week, weekIndex) => {
-    const firstDayOfWeek = week.find((day) => day);
+    const firstDayOfWeek = week.find((option) => option?.date);
     if (firstDayOfWeek) {
-      const monthName = new Date(firstDayOfWeek).toLocaleString("default", {
-        month: "short",
-      });
+      const monthName = new Date(firstDayOfWeek.date).toLocaleString(
+        "default",
+        {
+          month: "short",
+        }
+      );
       if (monthName !== currentMonth) {
         if (currentMonth) {
           monthHeaders.push({
@@ -108,14 +101,13 @@ export const ActivityCalendar = ({
         {
           "--gh-grid-size": `${size}px`,
           "--gh-grid-gap": `${gap}px`,
+          ...colors,
         } as React.CSSProperties
       }
     >
-      <div className="overflow-x-scroll w-full">
-        <table
-          // fix overflow: w-full
-          className="border-spacing-[--gh-grid-gap] border-separate"
-        >
+      <div className="overflow-x-auto w-full">
+        {/* min=w-full */}
+        <table className="border-spacing-[--gh-grid-gap] border-separate w-max">
           <thead>
             <tr>
               <th />
@@ -146,7 +138,7 @@ export const ActivityCalendar = ({
                   )}
                   {/* Render each day of the week */}
                   {weeks.map((week, weekIndex) => {
-                    const activity = getActivityLevel();
+                    const value = week[dayIndex]?.value;
                     if (!week[dayIndex]) {
                       return (
                         <td key={weekIndex} className="size-[--gh-grid-size]" />
@@ -160,16 +152,17 @@ export const ActivityCalendar = ({
                             <td
                               className="rounded border size-[--gh-grid-size]"
                               style={{
-                                backgroundColor: week[dayIndex]
-                                  ? colors[activity]
-                                  : "transparent",
+                                backgroundColor: `var(--activity-${value})`,
                               }}
+                              // REMINDER: remove this once we have the data on the server side
+                              // This happens because of Math.random()
+                              suppressHydrationWarning
                             />
                           </TooltipTrigger>
                           <TooltipPortal>
                             <TooltipContent>
-                              {activity} activity on{" "}
-                              {new Date(week[dayIndex]).toLocaleDateString(
+                              {value} activity on{" "}
+                              {new Date(week[dayIndex].date).toLocaleDateString(
                                 "en-US",
                                 {
                                   day: "numeric",
@@ -193,11 +186,11 @@ export const ActivityCalendar = ({
         <div className="font-light text-[length:var(--gh-grid-size)] leading-none text-muted-foreground/70 tracking-tighter mr-1">
           Less
         </div>
-        {Object.entries(colors).map(([key, value]) => (
+        {Object.entries(colors).map(([key]) => (
           <div
             key={key}
             className="rounded border size-[--gh-grid-size]"
-            style={{ backgroundColor: value }}
+            style={{ backgroundColor: `var(${key})` }}
           />
         ))}
         <div className="font-light text-[length:var(--gh-grid-size)] leading-none text-muted-foreground/70 tracking-tighter ml-1">

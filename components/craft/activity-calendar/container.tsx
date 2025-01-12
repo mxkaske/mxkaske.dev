@@ -33,10 +33,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { colors } from "./utils";
+import { colors, generateDateRange, getActivityLevel } from "./utils";
 import { Checkbox } from "@/components/ui/checkbox";
 
 const WEEK_DAY_INDEXES = [0, 1, 2, 3, 4, 5, 6];
+const START_DATE = new Date(2025, 0, 2);
+const END_DATE = new Date(2025, 9, 1);
 
 export const FormSchema = z.object({
   size: z.number(),
@@ -56,21 +58,32 @@ export function Container() {
       size: 14,
       color: "github",
       date: {
-        from: new Date(2025, 0, 2),
-        to: new Date(2025, 6, 1),
+        from: START_DATE,
+        to: END_DATE,
       },
       gap: 2,
       weekDays: [1, 3, 5],
     },
   });
 
+  const data = React.useMemo(() => {
+    const dateRange = generateDateRange(
+      form.watch("date")?.from,
+      form.watch("date")?.to
+    );
+
+    return dateRange.map((date) => ({
+      date,
+      value: getActivityLevel(),
+    }));
+  }, [form.watch("date")?.from, form.watch("date")?.to]);
+
   return (
-    <div className="space-y-4 not-prose">
+    <div className="w-full space-y-4 not-prose">
       <ActivityCalendar
+        data={data}
         size={form.watch("size")}
-        startDate={form.watch("date").from}
-        endDate={form.watch("date").to}
-        colors={colors[form.watch("color")]}
+        colors={colors[form.watch("color") as keyof typeof colors]}
         weekDays={form.watch("weekDays")}
         gap={form.watch("gap")}
       />
