@@ -41,13 +41,13 @@ export interface GithubCalendarGridProps {
   weekDays?: number[];
 }
 
-export const ActivityCalendar = ({
+export function ActivityCalendar({
   size,
   gap = 2,
   colors,
   weekDays = [1, 3, 5],
   data,
-}: GithubCalendarGridProps) => {
+}: GithubCalendarGridProps) {
   // TODO: check if data is empty
   const startDate = data[0]?.date as Date | undefined;
   const startDay = startDate?.getDay();
@@ -189,4 +189,4 @@ export const ActivityCalendar = ({
       </div>
     </div>
   );
-};
+}

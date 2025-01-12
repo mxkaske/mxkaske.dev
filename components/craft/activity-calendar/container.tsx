@@ -6,7 +6,7 @@ import { ActivityCalendar } from "./activity-calendar";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { format } from "date-fns";
+import { format, isEqual } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -35,6 +35,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { colors, generateDateRange, getActivityLevel } from "./utils";
 import { Checkbox } from "@/components/ui/checkbox";
+import { defaultData } from "./data";
 
 const WEEK_DAY_INDEXES = [0, 1, 2, 3, 4, 5, 6];
 const START_DATE = new Date(2025, 0, 2);
@@ -67,10 +68,17 @@ export function Container() {
   });
 
   const data = React.useMemo(() => {
-    const dateRange = generateDateRange(
-      form.watch("date")?.from,
-      form.watch("date")?.to
-    );
+    const from = form.watch("date")?.from;
+    const to = form.watch("date")?.to;
+    if (isEqual(from, START_DATE) && to && isEqual(to, END_DATE)) {
+      return defaultData.map(({ value, date }) => ({
+        date,
+        value,
+        label: `${value} activit${value > 1 ? "ies" : "y"} on ${format(date, "LLL dd, y")}`,
+      }));
+    }
+
+    const dateRange = generateDateRange(from, to);
 
     return dateRange.map((date) => {
       const value = getActivityLevel();
