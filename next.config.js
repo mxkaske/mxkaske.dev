@@ -12,7 +12,7 @@ const nextConfig = {
             {
               type: "host",
               value:
-                process.env.NODE_ENV === "production"
+                process.env.VERCEL_ENV === "production"
                   ? "craft.mxkaske.dev"
                   : "craft.localhost",
             },
@@ -26,7 +26,7 @@ const nextConfig = {
             {
               type: "host",
               value:
-                process.env.NODE_ENV === "production"
+                process.env.VERCEL_ENV === "production"
                   ? "brew.mxkaske.dev"
                   : "brew.localhost",
             },

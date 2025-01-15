@@ -2,7 +2,6 @@ import React from "react";
 import { type Craft, allCrafts } from "@/.content-collections/generated";
 import { components } from "@/lib/mdx";
 import { Thumbnail } from "./_components/thumbnail";
-import Image from "next/image";
 import { Metadata } from "next";
 import { BasicLayout } from "../_components/basic-layout";
 
@@ -41,7 +40,7 @@ const allCraftsByMonth = allCrafts.reduce(
 
     return acc;
   },
-  {} as { [month: string]: Craft[] },
+  {} as { [month: string]: Craft[] }
 );
 
 export default function Page() {
@@ -52,33 +51,9 @@ export default function Page() {
           Never. Stop. Crafting.
         </h1>
         <div className="grid gap-6 sm:grid-cols-[auto_1fr] sm:gap-8">
-          {/* REMINDER: extract into list */}
-          <div>
-            <p className="font-mono text-sm font-light text-muted-foreground">
-              {new Date("16. August 2024").toLocaleString("default", {
-                month: "long",
-                year: "numeric",
-              })}
-            </p>
-          </div>
-          <div className="grid gap-6 sm:gap-4">
-            <Thumbnail
-              url="/demo/data-table"
-              title="Data Table"
-              description="A data table with controls and cmdk filters."
-              component={
-                <Image
-                  src="/assets/data-table.png"
-                  fill={true}
-                  alt="data-table"
-                  className="object-cover transition-transform group-hover/card:scale-105"
-                />
-              }
-            />
-          </div>
           {Object.keys(allCraftsByMonth)
             .sort((a, b) =>
-              new Date(a).getTime() > new Date(b).getTime() ? -1 : 1,
+              new Date(a).getTime() > new Date(b).getTime() ? -1 : 1
             )
             .map((month) => {
               return (

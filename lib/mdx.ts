@@ -6,6 +6,8 @@ import { Link } from "@/components/mdx/link";
 import { FancyArea } from "@/components/craft/fancy-area/fancy-area";
 import { FancyMultiSelect } from "@/components/craft/fancy-multi-select";
 import { Form as ServerActionForm } from "@/components/craft/server-action-experimental-hook/form";
+import { DataTableCardImageLink } from "@/components/craft/data-table-card-image-link";
+import { Container } from "@/components/craft/activity-calendar/container";
 
 export const components = {
   // Image: Image,
@@ -16,4 +18,6 @@ export const components = {
   FancyBox,
   FancyMultiSelect,
   ServerActionForm,
+  ActivityCalendar: Container,
+  DataTableCardImageLink,
 };

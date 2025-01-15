@@ -4,7 +4,7 @@ export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const host = request.nextUrl.host;
 
-  if (process.env.NODE_ENV === "development") {
+  if (process.env.VERCEL_ENV !== "production") {
     return NextResponse.next();
   }
 

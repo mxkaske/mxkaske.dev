@@ -1,0 +1,27 @@
+---
+date: 2025-01-12
+title: Activity Calendar
+githubUrl: https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/activity-calendar/activity-calendar.tsx
+component: ActivityCalendar
+description: A customizable GitHub Activity Calendar Grid component.
+---
+
+<CraftWrapper>
+  <ActivityCalendar />
+</CraftWrapper>
+
+Obviously heavily inspired by GitHub's Activity Calendar.
+
+Simple and customizable:
+
+- Activity data (`date`, `value`, `label`)
+- Colors for each value (`--activity-1`, `--activity-2`, `...`)
+- Days of the week to show
+- Tooltip on hover
+- Tooltip label (`React.ReactNode`)
+- Size of the cells
+- Gap between the cells
+
+Check it out on [GitHub](https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/activity-calendar/activity-calendar.tsx) and spaghetti copy pasta it.
+
+> Besides the default data, the values are generated randomly. Why not the default data? Because of hydration errors. Don't ask.

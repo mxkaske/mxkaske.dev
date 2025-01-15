@@ -1,0 +1,59 @@
+:root {
+  --activity-github-0: #ebedf0;
+  --activity-github-1: #9be9a8;
+  --activity-github-2: #40c463;
+  --activity-github-3: #30a14e;
+  --activity-github-4: #216e39;
+  --activity-github-5: #0d3321;
+
+  --activity-vercel-0: #e0e0e0;
+  --activity-vercel-1: #b0b0b0;
+  --activity-vercel-2: #808080;
+  --activity-vercel-3: #505050;
+  --activity-vercel-4: #303030;
+  --activity-vercel-5: #101010;
+
+  --activity-twitter-0: #f7f9f9;
+  --activity-twitter-1: #1d9bf0;
+  --activity-twitter-2: #1a8cd8;
+  --activity-twitter-3: #177bbf;
+  --activity-twitter-4: #1466a5;
+  --activity-twitter-5: #0f4870;
+
+  --activity-netflix-0: #ffebee;
+  --activity-netflix-1: #ffcdd2;
+  --activity-netflix-2: #ef9a9a;
+  --activity-netflix-3: #e57373;
+  --activity-netflix-4: #ef5350;
+  --activity-netflix-5: #e53935;
+}
+
+.dark {
+  --activity-github-0: #161b22;
+  --activity-github-1: #0e4429;
+  --activity-github-2: #006d32;
+  --activity-github-3: #009d4a;
+  --activity-github-4: #26a66d;
+  --activity-github-5: #3fb950;
+
+  --activity-vercel-0: #101010;
+  --activity-vercel-1: #303030;
+  --activity-vercel-2: #505050;
+  --activity-vercel-3: #808080;
+  --activity-vercel-4: #b0b0b0;
+  --activity-vercel-5: #e0e0e0;
+
+  --activity-twitter-0: #15202b;
+  --activity-twitter-1: #1466a5;
+  --activity-twitter-2: #177bbf;
+  --activity-twitter-3: #1a8cd8;
+  --activity-twitter-4: #1d9bf0;
+  --activity-twitter-5: #39baf5;
+
+  --activity-netflix-0: #1a0f0f;
+  --activity-netflix-1: #4a0404;
+  --activity-netflix-2: #831010;
+  --activity-netflix-3: #b71c1c;
+  --activity-netflix-4: #d32f2f;
+  --activity-netflix-5: #e53935;
+}
