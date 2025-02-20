@@ -14,7 +14,8 @@ export function CraftWrapper({
       // TODO: make the height fixed and the box scrollable. That way, the container will have always the same size for different craft components. (which means avoid py/px)
       className={cn(
         "my-8 border rounded-md border-border flex flex-col w-full p-8 sm:p-16 md:p-24 items-center",
-        className,
+        "not-prose",
+        className
       )}
       {...props}
     >

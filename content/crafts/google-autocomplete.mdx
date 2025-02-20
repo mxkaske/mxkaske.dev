@@ -1,0 +1,31 @@
+---
+date: 2025-02-19
+title: Google Places Autocomplete
+githubUrl: https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/google-places-autocomplete/address-combobox.tsx
+component: AddressCombobox
+description: A combobox for your next address form.
+---
+
+<CraftWrapper>
+  <AddressCombobox />
+</CraftWrapper>
+
+It requires a `GOOGLE_API_KEY="AIza..."` in your environment variables to run.
+
+A _server action_ is used to fetch the data from Google Places API. If you are not using Next.js, make sure to query the data on the server.
+
+Design inspired by [Stripe Checkout](https://checkout.stripe.dev).
+
+See the component in action at [nomos.checkout.energy](https://nomos.checkout.energy) <span className="text-muted-foreground">(German addresses only)</span>.
+
+---
+
+Speedrun to get a `GOOGLE_API_KEY`:
+
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project (or use an existing one)
+3. Go to APIs & Services > Credentials
+4. Create Credentials > API key
+5. Set Application restrictions to "Websites" and API restrictions to at least having "Places API" enabled
+6. Go to Google Maps Platform > APIs & Services
+7. Enable the Places API

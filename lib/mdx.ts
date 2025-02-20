@@ -8,6 +8,7 @@ import { FancyMultiSelect } from "@/components/craft/fancy-multi-select";
 import { Form as ServerActionForm } from "@/components/craft/server-action-experimental-hook/form";
 import { DataTableCardImageLink } from "@/components/craft/data-table-card-image-link";
 import { Container } from "@/components/craft/activity-calendar/container";
+import { AddressCombobox } from "@/components/craft/google-places-autocomplete/address-combobox";
 
 export const components = {
   // Image: Image,
@@ -20,4 +21,5 @@ export const components = {
   ServerActionForm,
   ActivityCalendar: Container,
   DataTableCardImageLink,
+  AddressCombobox,
 };
