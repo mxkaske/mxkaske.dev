@@ -12,6 +12,8 @@ export function Footer({
       {...props}
     >
       <div>
+        <Link href="https://x.com/mxkaske">X</Link>
+        <span className="mx-2 text-muted-foreground">·</span>
         <Link href="https://github.com/mxkaske/mxkaske.dev">GitHub</Link>
         <span className="mx-2 text-muted-foreground">·</span>
         <Link href="https://openstatus.dev">OpenStatus</Link>
