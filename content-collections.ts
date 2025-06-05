@@ -15,6 +15,7 @@ const crafts = defineCollection({
     githubUrl: z.string().url(),
     description: z.string(),
     component: z.string(),
+    componentClassName: z.string().optional(),
   }),
   transform: async (document, context) => {
     const mdx = await compileMDX(context, document, {

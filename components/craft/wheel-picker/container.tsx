@@ -2,11 +2,11 @@
 
 import {
   WheelPicker,
-  WheelPickerEmpty,
   WheelPickerOptions,
   WheelPickerSelect,
 } from "@/components/craft/wheel-picker/wheel-picker";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
 import { Check, Copy } from "lucide-react";
 import { useState } from "react";
@@ -28,7 +28,9 @@ export function Container() {
     <Button
       size="sm"
       variant="outline"
-      className="relative text-xs text-foreground/70 font-mono flex items-center w-full sm:w-auto gap-2 transition-all duration-300 ease-in-out"
+      className={cn(
+        "relative text-xs text-foreground/70 font-mono flex items-center w-full sm:w-auto gap-2 transition-all duration-300 ease-in-out"
+      )}
       onClick={() =>
         copy(
           `pnpm dlx shadcn@latest add localhost:3000/r/${REGISTRY_ITEMS[selectedIndex]}`,
