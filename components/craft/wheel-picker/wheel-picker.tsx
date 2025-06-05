@@ -40,8 +40,8 @@ export interface WheelPickerProps extends React.HTMLAttributes<HTMLDivElement> {
   defaultIndex?: number;
   /** Callback that is invoked with the selected item (string) whenever the selection changes */
   onValueChange?: (value: string) => void;
-  /** Optional externally controlled value (index). If provided, component becomes controlled */
-  value?: number;
+  /** Optional externally controlled value (string). If provided, component becomes controlled */
+  value?: string;
   /** Radius (in `px`) of the carousel – tweak to fit line height of text (Default: 28) */
   radius?: number;
 }
@@ -67,7 +67,13 @@ const WheelPicker = React.forwardRef<HTMLDivElement, WheelPickerProps>(
 
     const [internalIndex, setInternalIndex] = React.useState(defaultIndex + 1); // +1 to account for placeholder
 
-    const selectedIndex = isControlled ? (value ?? 0) + 1 : internalIndex;
+    const selectedIndex = React.useMemo(() => {
+      if (isControlled && value != null) {
+        const idx = items.indexOf(value);
+        return idx !== -1 ? idx + 1 : internalIndex;
+      }
+      return internalIndex;
+    }, [isControlled, value, items, internalIndex]);
 
     const getItem = React.useCallback(
       (renderIdx: number): string | null => {

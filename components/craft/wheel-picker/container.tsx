@@ -19,11 +19,12 @@ const REGISTRY_ITEMS = [
   "empty-state.json",
 ];
 
-const DEFAULT_INDEX = 2;
+const DEFAULT_VALUE = REGISTRY_ITEMS[2];
 
 export function Container() {
   const { copy, isCopied } = useCopyToClipboard();
-  const [selectedIndex, setSelectedIndex] = useState(DEFAULT_INDEX);
+  const [value, setValue] = useState(DEFAULT_VALUE);
+
   return (
     <Button
       size="sm"
@@ -32,12 +33,9 @@ export function Container() {
         "relative text-xs text-foreground/70 font-mono flex items-center w-full sm:w-auto gap-2 transition-all duration-300 ease-in-out"
       )}
       onClick={() =>
-        copy(
-          `pnpm dlx shadcn@latest add localhost:3000/r/${REGISTRY_ITEMS[selectedIndex]}`,
-          {
-            successMessage: `Copied ${REGISTRY_ITEMS[selectedIndex]} url to clipboard`,
-          }
-        )
+        copy(`pnpm dlx shadcn@latest add localhost:3000/r/${value}`, {
+          successMessage: `Copied ${value} url to clipboard`,
+        })
       }
     >
       <div className="flex items-center w-full">
@@ -47,10 +45,8 @@ export function Container() {
         <WheelPicker
           items={REGISTRY_ITEMS}
           className="w-[122px] min-w-[122px]"
-          value={selectedIndex}
-          onValueChange={(value) => {
-            setSelectedIndex(REGISTRY_ITEMS.indexOf(value));
-          }}
+          value={value}
+          onValueChange={(value) => setValue(value)}
         >
           <WheelPickerSelect>
             <WheelPickerOptions />
