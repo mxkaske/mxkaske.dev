@@ -1,6 +1,11 @@
 "use client";
 
-import { WheelPicker } from "@/components/craft/wheel-picker/wheel-picker";
+import {
+  WheelPicker,
+  WheelPickerEmpty,
+  WheelPickerOptions,
+  WheelPickerSelect,
+} from "@/components/craft/wheel-picker/wheel-picker";
 import { Button } from "@/components/ui/button";
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
 import { Check, Copy } from "lucide-react";
@@ -40,9 +45,15 @@ export function Container() {
         <WheelPicker
           items={REGISTRY_ITEMS}
           className="w-[122px] min-w-[122px]"
-          selectedIndex={selectedIndex}
-          setSelectedIndex={setSelectedIndex}
-        />
+          value={selectedIndex}
+          onValueChange={(value) => {
+            setSelectedIndex(REGISTRY_ITEMS.indexOf(value));
+          }}
+        >
+          <WheelPickerSelect>
+            <WheelPickerOptions />
+          </WheelPickerSelect>
+        </WheelPicker>
       </div>
       <div className="sm:block hidden">
         {isCopied ? (
