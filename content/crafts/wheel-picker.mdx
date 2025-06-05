@@ -16,11 +16,25 @@ Super simple CSS and HTML only wheel picker that supports keyboard navigation.
 {/* TODO: add the openstatus template demo */}
 
 ```tsx
-<WheelPicker items={["Item 1", "Item 2", "Item 3"]}>
-  <WheelPickerSelect>
-    <WheelPickerOption />
-  </WheelPickerSelect>
-</WheelPicker>
+import {
+  WheelPicker,
+  WheelPickerSelect,
+  WheelPickerOption,
+} from "@/components/craft/wheel-picker/wheel-picker";
+import { useState } from "react";
+
+const ITEMS = ["Item 1", "Item 2", "Item 3"];
+
+export function WheelPickerDemo() {
+  const [value, setValue] = useState(ITEMS[0]);
+  return (
+    <WheelPicker items={ITEMS} value={value} onValueChange={setValue}>
+      <WheelPickerSelect>
+        <WheelPickerOption />
+      </WheelPickerSelect>
+    </WheelPicker>
+  );
+}
 ```
 
 Inspired by [3dtransforms.desandro.com/carousel](https://3dtransforms.desandro.com/carousel).
