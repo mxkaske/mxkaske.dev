@@ -6,23 +6,30 @@ export function Thumbnail({
   title,
   description,
   component,
+  componentClassName,
   className,
 }: {
   url: string;
   title: string;
   description: string;
   component: React.ReactElement;
+  componentClassName?: string;
   className?: string;
 }) {
   return (
     <div
       className={cn(
         "group/card w-full rounded-md border border-border",
-        className,
+        className
       )}
     >
       <div className="relative flex h-32 w-full items-center justify-center overflow-hidden rounded-t-md">
-        <div className="absolute h-full min-h-full w-full p-5">
+        <div
+          className={cn(
+            "absolute h-full min-h-full w-full p-5",
+            componentClassName
+          )}
+        >
           {/* FIXME: h-full fucks up FancyBox but works for FancyArea */}
           <div className="flex items-center justify-center">{component}</div>
         </div>

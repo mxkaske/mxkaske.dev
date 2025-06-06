@@ -76,6 +76,7 @@ export default function Page() {
                             title={post.title}
                             description={post.description}
                             component={<Component />}
+                            componentClassName={post.componentClassName}
                           />
                         );
                       })}

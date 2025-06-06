@@ -1,0 +1,46 @@
+---
+date: 2025-06-06
+title: Wheel Picker
+githubUrl: https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/wheel-picker/wheel-picker.tsx
+component: WheelPicker
+componentClassName: py-12
+description: A different way to select an item from a list.
+---
+
+<CraftWrapper>
+  <WheelPicker />
+</CraftWrapper>
+
+Super simple CSS and HTML only wheel picker that supports keyboard navigation.
+
+{/* TODO: add the openstatus template demo */}
+
+```tsx
+import {
+  WheelPicker,
+  WheelPickerSelect,
+  WheelPickerOption,
+} from "@/components/craft/wheel-picker/wheel-picker";
+import { useState } from "react";
+
+const ITEMS = ["Item 1", "Item 2", "Item 3"];
+
+export function WheelPickerDemo() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  return (
+    <WheelPicker
+      items={ITEMS}
+      currentIndex={currentIndex}
+      onIndexChange={setCurrentIndex}
+      // radius in px
+      radius={28}
+    >
+      <WheelPickerSelect>
+        <WheelPickerOption />
+      </WheelPickerSelect>
+    </WheelPicker>
+  );
+}
+```
+
+Inspired by [3dtransforms.desandro.com/carousel](https://3dtransforms.desandro.com/carousel).

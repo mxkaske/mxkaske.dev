@@ -7,7 +7,8 @@ import { FancyArea } from "@/components/craft/fancy-area/fancy-area";
 import { FancyMultiSelect } from "@/components/craft/fancy-multi-select";
 import { Form as ServerActionForm } from "@/components/craft/server-action-experimental-hook/form";
 import { DataTableCardImageLink } from "@/components/craft/data-table-card-image-link";
-import { Container } from "@/components/craft/activity-calendar/container";
+import { Container as ActivityCalendarContainer } from "@/components/craft/activity-calendar/container";
+import { Container as WheelPickerContainer } from "@/components/craft/wheel-picker/container";
 import { AddressCombobox } from "@/components/craft/google-places-autocomplete/address-combobox";
 
 export const components = {
@@ -19,7 +20,8 @@ export const components = {
   FancyBox,
   FancyMultiSelect,
   ServerActionForm,
-  ActivityCalendar: Container,
+  ActivityCalendar: ActivityCalendarContainer,
+  WheelPicker: WheelPickerContainer,
   DataTableCardImageLink,
   AddressCombobox,
 };
