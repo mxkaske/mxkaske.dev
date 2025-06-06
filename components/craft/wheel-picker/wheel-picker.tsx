@@ -197,6 +197,7 @@ const WheelPickerSelect = React.forwardRef<
   return (
     <div
       ref={ref}
+      data-slot="wheel-select"
       role="listbox"
       aria-label="Select option"
       aria-activedescendant={`wheel-option-${selectedIndex}`}
@@ -231,6 +232,7 @@ const WheelPickerOptions = React.forwardRef<
   return (
     <div
       ref={ref}
+      data-slot="wheel-options"
       className={cn(
         "rounded-md h-full w-full [perspective:1000px] [transform-style:preserve-3d]",
         className
@@ -254,6 +256,7 @@ const WheelPickerOptions = React.forwardRef<
           return (
             <div
               key={item}
+              data-slot="wheel-option"
               id={`wheel-option-${renderIdx}`}
               role="option"
               aria-selected={isSelected}
@@ -315,6 +318,7 @@ const WheelPickerEmpty = React.forwardRef<
   return (
     <div
       ref={ref}
+      data-slot="wheel-empty"
       id={`wheel-option-${renderIdx}`}
       role="option"
       aria-selected={selectedIndex === renderIdx}
