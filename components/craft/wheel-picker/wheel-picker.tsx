@@ -207,14 +207,13 @@ const WheelPickerOptions = React.forwardRef<
 
         {/* Real items */}
         {items.map((item, idx) => {
-          const renderIdx = idx + 1; // offset for first placeholder
-          const angle = theta * renderIdx;
-          const isSelected = renderIdx === currentIndex;
+          const angle = theta * idx;
+          const isSelected = idx === currentIndex;
           return (
             <div
               key={item}
               data-slot="wheel-option"
-              id={`wheel-option-${renderIdx}`}
+              id={`wheel-option-${idx}`}
               role="option"
               aria-selected={isSelected}
               className={cn(
@@ -228,7 +227,7 @@ const WheelPickerOptions = React.forwardRef<
                 if (!isSelected) {
                   e.preventDefault();
                   e.stopPropagation();
-                  onIndexChange(renderIdx);
+                  onIndexChange(idx);
                 }
               }}
             >
