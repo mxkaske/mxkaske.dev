@@ -9,8 +9,8 @@ import { cn } from "@/lib/utils";
 
 interface WheelPickerContextValue {
   items: string[];
-  selectedIndex: number;
-  setSelectedIndex: (index: number) => void;
+  currentIndex: number;
+  onIndexChange: (index: number) => void;
   theta: number; // angle between two items
   radius: number; // translateZ distance
   count: number; // items including placeholders
@@ -36,12 +36,10 @@ const useWheelPickerContext = () => {
 
 export interface WheelPickerProps extends React.HTMLAttributes<HTMLDivElement> {
   items: string[];
-  /** 0-based index of the initially selected item. Defaults to 0. */
-  defaultIndex?: number;
-  /** Callback that is invoked with the selected item (string) whenever the selection changes */
-  onValueChange?: (value: string) => void;
-  /** Optional externally controlled value (string). If provided, component becomes controlled */
-  value?: string;
+  /** 0-based index of the currently selected item. Defaults to 0. */
+  currentIndex: number;
+  /** Callback that is invoked with the currently selected item (string) whenever the selection changes */
+  onIndexChange: (index: number) => void;
   /** Radius (in `px`) of the carousel – tweak to fit line height of text (Default: 28) */
   radius?: number;
 }
@@ -50,9 +48,8 @@ const WheelPicker = React.forwardRef<HTMLDivElement, WheelPickerProps>(
   (
     {
       items,
-      defaultIndex = 0,
-      onValueChange,
-      value,
+      currentIndex,
+      onIndexChange,
       radius: radiusProp = 28,
       className,
       children,
@@ -63,49 +60,17 @@ const WheelPicker = React.forwardRef<HTMLDivElement, WheelPickerProps>(
     // internal render count includes two placeholders at start & end
     const count = items.length + 2;
     const theta = (2 * Math.PI) / count;
-    const isControlled = value !== undefined;
-
-    const [internalIndex, setInternalIndex] = React.useState(defaultIndex + 1); // +1 to account for placeholder
-
-    const selectedIndex = React.useMemo(() => {
-      if (isControlled && value != null) {
-        const idx = items.indexOf(value);
-        return idx !== -1 ? idx + 1 : internalIndex;
-      }
-      return internalIndex;
-    }, [isControlled, value, items, internalIndex]);
-
-    const getItem = React.useCallback(
-      (renderIdx: number): string | null => {
-        if (renderIdx === 0 || renderIdx === count - 1) return null;
-        return items[renderIdx - 1];
-      },
-      [items, count]
-    );
-
-    const setSelectedIndex = React.useCallback(
-      (idx: number) => {
-        if (!isControlled) {
-          setInternalIndex(idx);
-        }
-        const item = getItem(idx);
-        if (item) {
-          onValueChange?.(item);
-        }
-      },
-      [isControlled, onValueChange, getItem]
-    );
 
     const contextValue = React.useMemo<WheelPickerContextValue>(
       () => ({
         items,
-        selectedIndex,
-        setSelectedIndex,
+        currentIndex,
+        onIndexChange,
         theta,
         radius: radiusProp,
         count,
       }),
-      [items, selectedIndex, setSelectedIndex, theta, radiusProp, count]
+      [items, currentIndex, onIndexChange, theta, radiusProp, count]
     );
 
     return (
@@ -130,31 +95,23 @@ const WheelPickerSelect = React.forwardRef<
   HTMLDivElement,
   WheelPickerSelectProps
 >(({ className, children, ...props }, ref) => {
-  const { selectedIndex, setSelectedIndex, count } = useWheelPickerContext();
+  const { currentIndex, onIndexChange, count } = useWheelPickerContext();
 
   // Helpers -------------------------------------------------------------------------
   const firstReal = 1;
   const lastReal = count - 2;
 
-  const getItem = React.useCallback(
-    (renderIdx: number): string | null => {
-      if (renderIdx === 0 || renderIdx === count - 1) return null;
-      return children ? null : null; // placeholder, unused; we have items separately in Options
-    },
-    [count, children]
-  );
-
   const moveTo = React.useCallback(
     (idx: number) => {
       if (idx < firstReal || idx > lastReal) return;
-      setSelectedIndex(idx);
+      onIndexChange(idx);
     },
-    [firstReal, lastReal, setSelectedIndex]
+    [firstReal, lastReal, onIndexChange]
   );
 
   const moveBy = React.useCallback(
     (delta: number) => {
-      let idx = selectedIndex + delta;
+      let idx = currentIndex + delta;
       // skip empty placeholders
       while (
         (idx === 0 || idx === count - 1) &&
@@ -165,7 +122,7 @@ const WheelPickerSelect = React.forwardRef<
       }
       moveTo(idx);
     },
-    [selectedIndex, count, firstReal, lastReal, moveTo]
+    [currentIndex, count, firstReal, lastReal, moveTo]
   );
 
   const handleKeyDown = React.useCallback(
@@ -200,7 +157,7 @@ const WheelPickerSelect = React.forwardRef<
       data-slot="wheel-select"
       role="listbox"
       aria-label="Select option"
-      aria-activedescendant={`wheel-option-${selectedIndex}`}
+      aria-activedescendant={`wheel-option-${currentIndex}`}
       tabIndex={0}
       className={cn(
         "relative w-full h-6 focus:outline-none border border-transparent focus:border-ring focus:ring-ring/50 focus:ring-2 rounded-md text-left",
@@ -226,7 +183,7 @@ const WheelPickerOptions = React.forwardRef<
   HTMLDivElement,
   WheelPickerOptionsProps
 >(({ className, ...props }, ref) => {
-  const { items, selectedIndex, setSelectedIndex, theta, radius, count } =
+  const { items, currentIndex, onIndexChange, theta, radius, count } =
     useWheelPickerContext();
 
   return (
@@ -242,7 +199,7 @@ const WheelPickerOptions = React.forwardRef<
       <div
         className="relative h-full w-full [transform-style:preserve-3d] transition-transform duration-500 ease-out"
         style={{
-          transform: `translateZ(-${radius}px) rotateX(${-selectedIndex * theta}rad)`,
+          transform: `translateZ(-${radius}px) rotateX(${-currentIndex * theta}rad)`,
         }}
       >
         {/* First placeholder */}
@@ -252,7 +209,7 @@ const WheelPickerOptions = React.forwardRef<
         {items.map((item, idx) => {
           const renderIdx = idx + 1; // offset for first placeholder
           const angle = theta * renderIdx;
-          const isSelected = renderIdx === selectedIndex;
+          const isSelected = renderIdx === currentIndex;
           return (
             <div
               key={item}
@@ -271,7 +228,7 @@ const WheelPickerOptions = React.forwardRef<
                 if (!isSelected) {
                   e.preventDefault();
                   e.stopPropagation();
-                  setSelectedIndex(renderIdx);
+                  onIndexChange(renderIdx);
                 }
               }}
             >
@@ -310,7 +267,7 @@ const WheelPickerEmpty = React.forwardRef<
   HTMLDivElement,
   WheelPickerEmptyProps
 >(({ position, className, ...props }, ref) => {
-  const { theta, radius, count, selectedIndex } = useWheelPickerContext();
+  const { theta, radius, count, currentIndex } = useWheelPickerContext();
 
   const renderIdx = position === "first" ? 0 : count - 1;
   const angle = theta * renderIdx;
@@ -321,7 +278,7 @@ const WheelPickerEmpty = React.forwardRef<
       data-slot="wheel-empty"
       id={`wheel-option-${renderIdx}`}
       role="option"
-      aria-selected={selectedIndex === renderIdx}
+      aria-selected={currentIndex === renderIdx}
       aria-disabled
       className={cn(
         "absolute inset-0 select-none [backface-visibility:hidden]",
