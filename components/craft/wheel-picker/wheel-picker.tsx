@@ -95,34 +95,23 @@ const WheelPickerSelect = React.forwardRef<
   HTMLDivElement,
   WheelPickerSelectProps
 >(({ className, children, ...props }, ref) => {
-  const { currentIndex, onIndexChange, count } = useWheelPickerContext();
-
-  // Helpers -------------------------------------------------------------------------
-  const firstReal = 1;
-  const lastReal = count - 2;
-
-  const moveTo = React.useCallback(
-    (idx: number) => {
-      if (idx < firstReal || idx > lastReal) return;
-      onIndexChange(idx);
-    },
-    [firstReal, lastReal, onIndexChange]
-  );
+  const { items, currentIndex, onIndexChange, count } = useWheelPickerContext();
 
   const moveBy = React.useCallback(
     (delta: number) => {
-      let idx = currentIndex + delta;
-      // skip empty placeholders
-      while (
-        (idx === 0 || idx === count - 1) &&
-        idx >= firstReal &&
-        idx <= lastReal
-      ) {
-        idx += delta > 0 ? 1 : -1;
+      const itemsLength = items.length;
+      let newIndex = currentIndex + delta;
+
+      // Handle wrapping
+      if (newIndex < 0) {
+        newIndex = itemsLength - 1;
+      } else if (newIndex >= itemsLength) {
+        newIndex = 0;
       }
-      moveTo(idx);
+
+      onIndexChange(newIndex);
     },
-    [currentIndex, count, firstReal, lastReal, moveTo]
+    [currentIndex, items.length, onIndexChange]
   );
 
   const handleKeyDown = React.useCallback(
@@ -140,15 +129,15 @@ const WheelPickerSelect = React.forwardRef<
           break;
         case "Home":
           e.preventDefault();
-          moveTo(firstReal);
+          onIndexChange(0);
           break;
         case "End":
           e.preventDefault();
-          moveTo(lastReal);
+          onIndexChange(items.length - 1);
           break;
       }
     },
-    [moveBy, moveTo, firstReal, lastReal]
+    [moveBy, onIndexChange, items.length]
   );
 
   return (
@@ -199,7 +188,7 @@ const WheelPickerOptions = React.forwardRef<
       <div
         className="relative h-full w-full [transform-style:preserve-3d] transition-transform duration-500 ease-out"
         style={{
-          transform: `translateZ(-${radius}px) rotateX(${-currentIndex * theta}rad)`,
+          transform: `translateZ(-${radius}px) rotateX(${-(currentIndex + 1) * theta}rad)`,
         }}
       >
         {/* First placeholder */}
@@ -207,7 +196,9 @@ const WheelPickerOptions = React.forwardRef<
 
         {/* Real items */}
         {items.map((item, idx) => {
-          const angle = theta * idx;
+          // Render index = item index + 1 (accounting for first placeholder)
+          const renderIdx = idx + 1;
+          const angle = theta * renderIdx;
           const isSelected = idx === currentIndex;
           return (
             <div
