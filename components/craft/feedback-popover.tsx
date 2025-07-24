@@ -50,9 +50,7 @@ export function FeedbackPopover() {
     }
 
     const SpeechRecognitionCtor =
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any).webkitSpeechRecognition ||
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any).SpeechRecognition;
 
     // Browser not supported
