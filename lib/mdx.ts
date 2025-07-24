@@ -10,6 +10,7 @@ import { DataTableCardImageLink } from "@/components/craft/data-table-card-image
 import { Container as ActivityCalendarContainer } from "@/components/craft/activity-calendar/container";
 import { Container as WheelPickerContainer } from "@/components/craft/wheel-picker/container";
 import { AddressCombobox } from "@/components/craft/google-places-autocomplete/address-combobox";
+import { FeedbackPopover } from "@/components/craft/feedback-popover";
 
 export const components = {
   // Image: Image,
@@ -24,4 +25,5 @@ export const components = {
   WheelPicker: WheelPickerContainer,
   DataTableCardImageLink,
   AddressCombobox,
+  FeedbackPopover,
 };

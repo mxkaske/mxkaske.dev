@@ -1,0 +1,23 @@
+---
+date: 2025-07-24
+title: Feedback Popover
+githubUrl: https://github.com/mxkaske/mxkaske.dev/tree/main/components/craft/feedback-popover.tsx
+component: FeedbackPopover
+description: A feedback popover that allows users to submit feedback using voice or text.
+---
+
+<CraftWrapper>
+  <FeedbackPopover />
+</CraftWrapper>
+
+The Feedback Popover is inspired by [Resend](https://resend.com)'s feedback form. Designed with [ui.shadcn](https://ui.shadcn.com).
+
+Install the `@types/dom-speech-recognition` types package to get the `SpeechRecognition` type.
+
+```bash
+npm install --save-dev @types/dom-speech-recognition
+```
+
+Exchange `const [status, setStatus] = useState<Status>("idle");` with your own actions to send the feedback to your slack channel e.g.
+
+{/* Check out OpenStatus to see it work with trpc */}

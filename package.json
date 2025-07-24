@@ -75,6 +75,7 @@
     "@content-collections/core": "^0.7.3",
     "@content-collections/mdx": "^0.2.0",
     "@content-collections/next": "^0.2.4",
+    "@types/dom-speech-recognition": "^0.0.6",
     "prettier": "^3.4.1",
     "prettier-plugin-tailwindcss": "^0.6.9"
   }
