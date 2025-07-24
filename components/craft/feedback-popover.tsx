@@ -164,7 +164,7 @@ export function FeedbackPopover() {
           </Kbd>
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="relative p-0 border-none">
+      <PopoverContent align="center" className="relative p-0 border-none">
         {status === "submitted" ? (
           <div className="p-3 h-[120px] flex flex-col gap-1 items-center justify-center rounded-md border border-input text-base shadow-xs">
             <Inbox className="size-4 shrink-0" />
@@ -180,7 +180,7 @@ export function FeedbackPopover() {
                 control={form.control}
                 name="message"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="space-y-0">
                     <FormLabel className="sr-only">Feedback</FormLabel>
                     <FormControl>
                       <Textarea
