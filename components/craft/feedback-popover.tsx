@@ -165,8 +165,10 @@ export function FeedbackPopover() {
       <PopoverContent align="center" className="relative p-0 border-none">
         {status === "submitted" ? (
           <div className="p-3 h-[120px] flex flex-col gap-1 items-center justify-center rounded-md border border-input text-base shadow-xs">
-            <Inbox className="size-4 shrink-0" />
-            <p className="font-medium text-center">Thanks for sharing!</p>
+            <Inbox className="size-4 shrink-0 text-foreground" />
+            <p className="font-medium text-center text-foreground">
+              Thanks for sharing!
+            </p>
             <p className="text-muted-foreground text-sm text-center">
               We&apos;ll get in touch if there&apos;s a follow-up.
             </p>
