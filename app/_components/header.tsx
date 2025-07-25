@@ -19,8 +19,8 @@ function subdomain() {
 const level = [
   {
     name: "Home",
-    href: "https://mxkaske.dev",
-    active: "mxkaske",
+    href: "https://www.mxkaske.dev",
+    active: "wwww",
   },
   {
     name: "Craft",
