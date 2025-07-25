@@ -20,7 +20,7 @@ const level = [
   {
     name: "Home",
     href: "https://www.mxkaske.dev",
-    active: "wwww",
+    active: "www",
   },
   {
     name: "Craft",
