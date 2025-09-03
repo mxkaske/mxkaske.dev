@@ -36,6 +36,29 @@ const nextConfig = {
       ],
     };
   },
+
+  async redirects() {
+    if (process.env.VERCEL_ENV !== "production") return [];
+
+    return [
+      {
+        // If path starts with /craft and host does NOT include "craft" → redirect
+        source: "/craft/:path*",
+        destination: "https://craft.mxkaske.dev/:path*",
+        permanent: false,
+        // faithful to: !host.includes("craft")
+        missing: [{ type: "host", value: ".*craft.*" }],
+      },
+      {
+        // If path starts with /brew and host does NOT include "brew" → redirect
+        source: "/brew/:path*",
+        destination: "https://brew.mxkaske.dev/:path*",
+        permanent: false,
+        // faithful to: !host.includes("brew")
+        missing: [{ type: "host", value: ".*brew.*" }],
+      },
+    ];
+  },
 };
 
 module.exports = withContentCollections(nextConfig);
