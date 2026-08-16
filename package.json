@@ -63,6 +63,7 @@
     "rehype-stringify": "^10.0.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.1",
+    "sharp": "^0.35.3",
     "sonner": "^1.7.0",
     "tailwind-merge": "^2.5.5",
     "tailwindcss": "^3.4.15",

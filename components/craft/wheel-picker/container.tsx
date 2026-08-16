@@ -28,14 +28,14 @@ export function Container() {
       size="sm"
       variant="outline"
       className={cn(
-        "relative text-xs text-foreground/70 font-mono flex items-center w-full sm:w-auto gap-2 transition-all duration-300 ease-in-out"
+        "relative text-xs text-foreground/70 font-mono flex items-center w-full sm:w-auto gap-2 transition-all duration-300 ease-in-out",
       )}
       onClick={() =>
         copy(
           `pnpm dlx shadcn@latest add localhost:3000/r/${REGISTRY_ITEMS[currentIndex]}`,
           {
             successMessage: `Copied ${REGISTRY_ITEMS[currentIndex]} url to clipboard`,
-          }
+          },
         )
       }
     >

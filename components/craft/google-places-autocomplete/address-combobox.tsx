@@ -27,7 +27,7 @@ export function AddressCombobox({ onSubmit, className }: AddressComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const [isPending, startTransition] = React.useTransition();
   const [items, setItems] = React.useState<{ value: string; label: string }[]>(
-    []
+    [],
   );
   const [search, setSearch] = React.useState("");
   const debouncedSearch = useDebounce(search, 300);
@@ -42,7 +42,7 @@ export function AddressCombobox({ onSubmit, className }: AddressComboboxProps) {
             data.map((d) => ({
               label: d.description,
               value: d.place_id,
-            }))
+            })),
           );
         }
       });
@@ -98,7 +98,7 @@ export function AddressCombobox({ onSubmit, className }: AddressComboboxProps) {
         className={cn(
           "flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
           "placeholder:font-light",
-          className
+          className,
         )}
       />
       <div className="relative">
@@ -169,6 +169,6 @@ function getHighlightedText(text: string, query: string) {
       </span>
     ) : (
       <React.Fragment key={index}>{part}</React.Fragment>
-    )
+    ),
   );
 }

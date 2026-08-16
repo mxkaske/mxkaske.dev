@@ -9,7 +9,7 @@ export async function submitEmail(data: FormData) {
     // connect to database and store email
     await wait(2000);
     redirect(
-      `${prefix}/post/server-action-experimental-hook?form=success&email=${email}`
+      `${prefix}/post/server-action-experimental-hook?form=success&email=${email}`,
     );
   }
   return;

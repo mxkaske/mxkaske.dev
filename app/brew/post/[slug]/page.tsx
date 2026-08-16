@@ -1,11 +1,16 @@
 import { allBrews } from "@/.content-collections/generated";
 import { notFound } from "next/navigation";
 import { Content } from "./content";
-import { Link } from "@/components/mdx/link";
 import { formatDay } from "@/lib/formats";
 import type { Metadata } from "next";
 import { PaginationFooter } from "@/components/content/pagination-footer";
+import {
+  PageHeader,
+  PageHeaderMeta,
+  PageHeaderTitle,
+} from "@/components/content/page-header";
 import { ViewsNumber } from "@/components/content/views-number";
+import { Separator } from "@/components/ui/separator";
 
 export async function generateMetadata({
   params,
@@ -39,7 +44,7 @@ export async function generateStaticParams() {
 }
 
 const sortedBrews = allBrews.sort((a, b) =>
-  a.date.getTime() > b.date.getTime() ? -1 : 1
+  a.date.getTime() > b.date.getTime() ? -1 : 1,
 );
 
 export default async function BrewPage({
@@ -58,21 +63,17 @@ export default async function BrewPage({
 
   return (
     <article className="space-y-8">
-      <div className="flex items-end justify-between">
-        <div>
-          <p className="font-cal text-lg text-foreground">{post.title}</p>
-          <div className="flex flex-wrap font-mono text-xs font-light text-muted-foreground">
-            <span>{formatDay(new Date(post.date))}</span>
-            <span className="mx-1">·</span>
-            <span>{post.readingTime}</span>
-            <span className="mx-1">·</span>
-            <ViewsNumber />
-          </div>
-        </div>
-        <div />
-      </div>
+      <PageHeader>
+        <PageHeaderTitle>{post.title}</PageHeaderTitle>
+        <PageHeaderMeta>
+          <span>{formatDay(new Date(post.date))}</span>
+          <span>{post.readingTime}</span>
+          <ViewsNumber />
+        </PageHeaderMeta>
+      </PageHeader>
       <Content post={post} />
-      <PaginationFooter prev={prev} next={next} className="mt-8" />
+      <Separator className="my-8" />
+      <PaginationFooter prev={prev} next={next} />
     </article>
   );
 }

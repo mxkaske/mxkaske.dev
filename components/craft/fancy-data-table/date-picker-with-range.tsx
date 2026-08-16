@@ -19,8 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useDebounce } from "@/hooks/use-debounce";
 
-interface DatePickerWithRangeProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+interface DatePickerWithRangeProps extends React.HTMLAttributes<HTMLDivElement> {
   date: DateRange | undefined;
   setDate: (date: DateRange | undefined) => void;
 }
@@ -53,7 +52,7 @@ export function DatePickerWithRange({
             size="sm"
             className={cn(
               "max-w-full justify-start truncate text-left font-normal",
-              !date && "text-muted-foreground"
+              !date && "text-muted-foreground",
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
@@ -153,7 +152,7 @@ function DatePresets({
               onClick={() => onSelect({ from, to })}
               className={cn(
                 "flex items-center justify-between gap-6",
-                !isActive && "border border-transparent"
+                !isActive && "border border-transparent",
               )}
             >
               <span className="mr-auto">{label}</span>
@@ -175,7 +174,7 @@ function CustomDateRange({
   onSelect: (date: DateRange | undefined) => void;
 }) {
   const [dateFrom, setDateFrom] = React.useState<Date | undefined>(
-    selected?.from
+    selected?.from,
   );
   const [dateTo, setDateTo] = React.useState<Date | undefined>(selected?.to);
   const debounceDateFrom = useDebounce(dateFrom, 1000);

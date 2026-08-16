@@ -2,8 +2,7 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-export interface InputWithAddonsProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputWithAddonsProps extends React.InputHTMLAttributes<HTMLInputElement> {
   leading?: React.ReactNode;
   trailing?: React.ReactNode;
   containerClassName?: string;
