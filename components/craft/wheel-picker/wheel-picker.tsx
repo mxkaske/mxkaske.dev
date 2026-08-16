@@ -88,7 +88,8 @@ WheelPicker.displayName = "WheelPicker";
 // WheelPickerSelect ---------------------------------------------------------------------------------------------------
 // ---------------------------------------------------------------------------------------------------------------------
 
-export interface WheelPickerSelectProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface WheelPickerSelectProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
 
 const WheelPickerSelect = React.forwardRef<
   HTMLDivElement,
@@ -164,7 +165,8 @@ WheelPickerSelect.displayName = "WheelPickerSelect";
 // WheelPickerOptions --------------------------------------------------------------------------------------------------
 // ---------------------------------------------------------------------------------------------------------------------
 
-export interface WheelPickerOptionsProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface WheelPickerOptionsProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
 
 const WheelPickerOptions = React.forwardRef<
   HTMLDivElement,
@@ -246,7 +248,8 @@ WheelPickerOptions.displayName = "WheelPickerOptions";
 
 type PlaceholderPosition = "first" | "last";
 
-export interface WheelPickerEmptyProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface WheelPickerEmptyProps
+  extends React.HTMLAttributes<HTMLDivElement> {
   position: PlaceholderPosition;
 }
 
