@@ -11,10 +11,17 @@ export async function GET(request: NextRequest) {
   const hasSlug = searchParams.has("slug");
   const slug = hasSlug ? searchParams.get("slug") : undefined;
 
-  const views =
-    (await redis.get<number>(["pageviews", "posts", slug].join(":"))) ?? 0;
+  if (!slug) {
+    return new NextResponse("0", { status: 200 });
+  }
 
-  return new NextResponse(views.toString(), { status: 200 });
+  // Degrade to 0 instead of a 500 when redis is unreachable (e.g. missing env
+  // vars locally) — the client would otherwise parse the error page as NaN.
+  const views = await redis
+    .get<number>(["pageviews", "posts", slug].join(":"))
+    .catch(() => 0);
+
+  return new NextResponse((views ?? 0).toString(), { status: 200 });
 }
 
 export async function POST(request: NextRequest) {
@@ -44,12 +51,12 @@ export async function POST(request: NextRequest) {
     });
 
     if (!isNew) {
-      new NextResponse("Already Increased Counter", { status: 200 });
+      return new NextResponse("Already Increased Counter", { status: 200 });
     }
   }
 
   if (!slug) {
-    new NextResponse("Slug Not Found", { status: 404 });
+    return new NextResponse("Slug Not Found", { status: 404 });
   }
 
   await redis.incr(["pageviews", "posts", slug].join(":"));
