@@ -12,9 +12,15 @@ export function ViewsNumber() {
   const params = useParams<{ slug: string }>();
 
   useEffect(() => {
+    if (!params.slug) return;
+
     fetch(`/api/views?slug=${params.slug}`)
-      .then((res) => res.text())
-      .then((res) => setValue(parseInt(res)));
+      .then((res) => (res.ok ? res.text() : Promise.reject(res.status)))
+      .then((res) => {
+        const parsed = parseInt(res, 10);
+        setValue(Number.isFinite(parsed) ? parsed : 0);
+      })
+      .catch(() => setValue(0));
   }, [params.slug]);
 
   return (
