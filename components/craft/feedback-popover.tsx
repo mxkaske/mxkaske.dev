@@ -67,7 +67,7 @@ export function FeedbackPopover() {
         .join(" ");
       form.setValue(
         "message",
-        `${form.getValues("message") ?? ""}${transcript} `
+        `${form.getValues("message") ?? ""}${transcript} `,
       );
     };
 

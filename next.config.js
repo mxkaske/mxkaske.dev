@@ -33,6 +33,20 @@ const nextConfig = {
           ],
           destination: "/brew/:path*",
         },
+        {
+          source:
+            "/:path((?!api|assets|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+          has: [
+            {
+              type: "host",
+              value:
+                process.env.VERCEL_ENV === "production"
+                  ? "gallery.mxkaske.dev"
+                  : "gallery.localhost",
+            },
+          ],
+          destination: "/gallery/:path*",
+        },
       ],
     };
   },
@@ -56,6 +70,14 @@ const nextConfig = {
         permanent: false,
         // faithful to: !host.includes("brew")
         missing: [{ type: "host", value: ".*brew.*" }],
+      },
+      {
+        // If path starts with /gallery and host does NOT include "gallery" → redirect
+        source: "/gallery/:path*",
+        destination: "https://gallery.mxkaske.dev/:path*",
+        permanent: false,
+        // faithful to: !host.includes("gallery")
+        missing: [{ type: "host", value: ".*gallery.*" }],
       },
     ];
   },

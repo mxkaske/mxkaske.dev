@@ -80,4 +80,12 @@
       "rlig" 1,
       "calt" 1;
   }
+
+  /* Safari 15 - 16.3 draws a gray line where a lazy-loaded image will appear.
+   * https://bugs.webkit.org/show_bug.cgi?id=243601 */
+  @supports (font: -apple-system-body) and (-webkit-appearance: none) {
+    img[loading="lazy"] {
+      clip-path: inset(0.6px);
+    }
+  }
 }

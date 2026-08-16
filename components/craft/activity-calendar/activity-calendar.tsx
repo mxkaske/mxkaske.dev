@@ -74,7 +74,7 @@ export function ActivityCalendar<T extends DataOptions>({
         "default",
         {
           month: "short",
-        }
+        },
       );
       if (monthName !== currentMonth) {
         if (currentMonth) {

@@ -40,7 +40,7 @@ const allCraftsByMonth = allCrafts.reduce(
 
     return acc;
   },
-  {} as { [month: string]: Craft[] }
+  {} as { [month: string]: Craft[] },
 );
 
 export default function Page() {
@@ -53,7 +53,7 @@ export default function Page() {
         <div className="grid gap-6 sm:grid-cols-[auto_1fr] sm:gap-8">
           {Object.keys(allCraftsByMonth)
             .sort((a, b) =>
-              new Date(a).getTime() > new Date(b).getTime() ? -1 : 1
+              new Date(a).getTime() > new Date(b).getTime() ? -1 : 1,
             )
             .map((month) => {
               return (

@@ -132,7 +132,7 @@ export function Container() {
                           variant="outline"
                           className={cn(
                             "pl-3 justify-start font-normal w-full",
-                            !field.value && "text-muted-foreground"
+                            !field.value && "text-muted-foreground",
                           )}
                         >
                           <CalendarIcon className="h-4 w-4 mr-2" />
@@ -255,8 +255,8 @@ export function Container() {
                                   ? field.onChange([...field.value, item])
                                   : field.onChange(
                                       field.value?.filter(
-                                        (value) => value !== item
-                                      )
+                                        (value) => value !== item,
+                                      ),
                                     );
                               }}
                             />

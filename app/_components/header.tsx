@@ -32,6 +32,11 @@ const level = [
     href: "https://brew.mxkaske.dev",
     active: "brew",
   },
+  {
+    name: "Gallery",
+    href: "https://gallery.mxkaske.dev",
+    active: "gallery",
+  },
 ];
 
 export function Header({
@@ -46,7 +51,10 @@ export function Header({
 
   return (
     <header
-      className={cn("flex items-center justify-between", className)}
+      className={cn(
+        "flex flex-wrap items-center justify-between gap-x-4 gap-y-1",
+        className,
+      )}
       {...props}
     >
       <div>

@@ -4,11 +4,18 @@ import { Content } from "./content";
 import { Github } from "lucide-react";
 import { formatMonth } from "@/lib/formats";
 import { PaginationFooter } from "@/components/content/pagination-footer";
+import {
+  PageHeader,
+  PageHeaderActions,
+  PageHeaderMeta,
+  PageHeaderTitle,
+} from "@/components/content/page-header";
 import { Button } from "@/components/ui/button";
 import { ViewsNumber } from "@/components/content/views-number";
+import { Separator } from "@/components/ui/separator";
 
 const sortedCrafts = allCrafts.sort((a, b) =>
-  a.date.getTime() > b.date.getTime() ? -1 : 1
+  a.date.getTime() > b.date.getTime() ? -1 : 1,
 );
 
 export default async function CraftPage({
@@ -27,27 +34,24 @@ export default async function CraftPage({
 
   return (
     <article>
-      <div className="flex items-end justify-between">
-        <div>
-          <p className="font-cal text-lg text-foreground">{post.title}</p>
-          <div className="flex flex-wrap font-mono text-xs font-light text-muted-foreground">
-            <span>{formatMonth(new Date(post.date))}</span>
-            <span className="mx-1">·</span>
-            <span>{post.readingTime}</span>
-            <span className="mx-1">·</span>
-            <ViewsNumber />
-          </div>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="icon" asChild>
+      <PageHeader>
+        <PageHeaderTitle>{post.title}</PageHeaderTitle>
+        <PageHeaderMeta>
+          <span>{formatMonth(new Date(post.date))}</span>
+          <span>{post.readingTime}</span>
+          <ViewsNumber />
+        </PageHeaderMeta>
+        <PageHeaderActions>
+          <Button variant="ghost" size="icon" asChild>
             <a href={post.githubUrl} target="_blank" rel="noreferrer">
               <Github className="h-4 w-4" />
             </a>
           </Button>
-        </div>
-      </div>
+        </PageHeaderActions>
+      </PageHeader>
       <Content post={post} />
-      <PaginationFooter prev={prev} next={next} className="mt-8" />
+      <Separator className="my-8" />
+      <PaginationFooter prev={prev} next={next} />
     </article>
   );
 }

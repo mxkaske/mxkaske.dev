@@ -15,7 +15,7 @@ export function CraftWrapper({
       className={cn(
         "my-8 border rounded-md border-border flex flex-col w-full p-8 sm:p-16 md:p-24 items-center",
         "not-prose",
-        className
+        className,
       )}
       {...props}
     >
