@@ -8,59 +8,75 @@ const fontCal = fetch(
   new URL("../../../../public/fonts/CalSans-SemiBold.ttf", import.meta.url),
 ).then((res) => res.arrayBuffer());
 
-const TITLE = "gallery.mxkaske.dev";
-const DESCRIPTION = "Never. Stop. Looking.";
-
 const GRID =
   "linear-gradient(0deg, transparent 24%, rgba(255, 255, 255, .05) 25%, rgba(255, 255, 255, .05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, .05) 75%, rgba(255, 255, 255, .05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(255, 255, 255, .05) 25%, rgba(255, 255, 255, .05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, .05) 75%, rgba(255, 255, 255, .05) 76%, transparent 77%, transparent)";
 
-const MUTED = "rgb(127, 142, 163)";
-const RING = "rgba(255, 255, 255, 0.12)";
+const CANVAS = { width: 1200, height: 630 };
 
 /**
- * The box the photo is fitted into, whatever its shape. Height is the card's
- * full inner height; width leaves the title a column it can wrap in. Fitting
- * rather than cropping means a portrait and a landscape get the same treatment
- * — same frame, same type, same composition — and neither loses an edge.
+ * The photo bleeds off the top, left and bottom edges: it is always the card's
+ * full height, and its width follows from its own shape. A portrait therefore
+ * takes a narrow strip and leaves the title a wide column; a landscape takes
+ * most of the card and leaves a slim one. The title column reads differently in
+ * each case, which is the point — the photo decides the composition.
+ *
+ * The one exception: below COLUMN_MIN the title has nowhere left to go, so a
+ * very wide photo is cropped rather than allowed to squeeze it further.
  */
-const FRAME = { width: 620, height: 502 };
+const COLUMN_MIN = 370;
 
-const RADIUS = 12;
+const PADDING = { x: 48, y: 56 };
 
-/**
- * The hairline is an inset shadow rather than a border. A border is a second
- * rounded rect laid over the photo's own, and satori rounds the two off by a
- * pixel — visible as the outline drifting away from the corner it should trace.
- * An inset ring is painted on the image's box itself, so there's nothing to
- * misalign.
- */
-function framed(
-  src: string,
-  size: { width: number; height: number },
-  marginRight = 0,
-) {
-  return (
-    <img
-      src={src}
-      width={size.width}
-      height={size.height}
-      alt=""
-      style={{
-        objectFit: "cover",
-        borderRadius: RADIUS,
-        boxShadow: `inset 0 0 0 1px ${RING}`,
-        marginRight,
-      }}
-    />
+/** Column width the photo leaves behind, honouring COLUMN_MIN. */
+function layout({ width, height }: { width: number; height: number }) {
+  const photo = Math.min(
+    Math.round((CANVAS.height * width) / height),
+    CANVAS.width - COLUMN_MIN,
   );
+  return { photo, column: CANVAS.width - photo };
 }
 
-function fit({ width, height }: { width: number; height: number }) {
-  const scale = Math.min(FRAME.width / width, FRAME.height / height);
-  return {
-    width: Math.round(width * scale),
-    height: Math.round(height * scale),
-  };
+/**
+ * Satori has no way to tell us how wide a rendered string came out, so the size
+ * is decided up front: wrap the title at each candidate size and take the first
+ * pairing that holds. CalSans SemiBold measures ~0.55em per character in mixed
+ * case — rounded down, so a title errs towards a step smaller rather than
+ * overflowing the column.
+ *
+ * The order encodes the preference: as large as possible over two lines, and
+ * only a longer title is allowed to shrink further and take a third or fourth.
+ */
+const FITS = [
+  { lines: 2, sizes: [64, 56, 48] },
+  { lines: 3, sizes: [48, 40] },
+  { lines: 4, sizes: [40, 32] },
+];
+const AVG_CHAR = 0.55;
+
+function fitTitle(title: string, width: number) {
+  for (const { lines, sizes } of FITS) {
+    const size = sizes.find((size) => {
+      const perLine = Math.floor(width / (size * AVG_CHAR));
+      return perLine > 0 && lineCount(title, perLine) <= lines;
+    });
+    if (size) return size;
+  }
+  return 32;
+}
+
+function lineCount(text: string, perLine: number) {
+  let lines = 1;
+  let used = 0;
+  for (const word of text.split(" ")) {
+    const next = used ? used + 1 + word.length : word.length;
+    if (used && next > perLine) {
+      lines++;
+      used = word.length;
+    } else {
+      used = next;
+    }
+  }
+  return lines;
 }
 
 export async function GET(request: Request) {
@@ -69,14 +85,10 @@ export async function GET(request: Request) {
   const slug = searchParams.get("slug");
   const photo = slug ? allPhotos.find((p) => p.slug === slug) : undefined;
 
-  const absolute = (src: string) => new URL(src, request.url).href;
+  if (!photo) return new Response("Not found", { status: 404 });
 
-  const frame = photo ? fit(photo) : FRAME;
-
-  // Newest first, so the index card shows what a visitor lands on.
-  const recent = [...allPhotos]
-    .sort((a, b) => (a.date > b.date ? -1 : 1))
-    .slice(0, 3);
+  const { photo: photoWidth, column } = layout(photo);
+  const titleSize = fitTitle(photo.title, column - PADDING.x * 2);
 
   return new ImageResponse(
     (
@@ -94,47 +106,37 @@ export async function GET(request: Request) {
           tw="absolute inset-0 flex h-full bg-transparent"
           style={{ backgroundImage: GRID, backgroundSize: "50px 50px" }}
         />
-        {photo ? (
-          <div tw="flex w-full h-full items-center p-16">
-            {framed(absolute(photo.image), frame)}
-            <div tw="flex flex-col flex-1 justify-center pl-12">
-              <div
-                tw="flex text-white text-5xl"
-                style={{ fontFamily: "cal", fontWeight: 600 }}
-              >
-                {photo.title}
-              </div>
-            </div>
+        <img
+          src={new URL(photo.image, request.url).href}
+          width={photoWidth}
+          height={CANVAS.height}
+          alt=""
+          style={{ objectFit: "cover" }}
+        />
+        <div
+          tw="flex flex-col justify-end"
+          style={{
+            width: column,
+            padding: `${PADDING.y}px ${PADDING.x}px`,
+          }}
+        >
+          <div
+            tw="flex text-white"
+            style={{
+              fontFamily: "cal",
+              fontWeight: 600,
+              fontSize: titleSize,
+              lineHeight: 1.1,
+            }}
+          >
+            {photo.title}
           </div>
-        ) : (
-          <div tw="flex flex-col w-full h-full p-16 justify-center">
-            <div
-              tw="flex text-6xl text-white"
-              style={{ fontFamily: "cal", fontWeight: 600 }}
-            >
-              {DESCRIPTION}
-            </div>
-            <div tw="flex mt-4 text-3xl" style={{ color: MUTED }}>
-              {TITLE}
-            </div>
-            <div tw="flex mt-12">
-              {recent.map((p, index) => (
-                <div key={p.slug} style={{ display: "flex" }}>
-                  {framed(
-                    absolute(p.image),
-                    { width: 341, height: 240 },
-                    index < recent.length - 1 ? 24 : 0,
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     ),
     {
-      width: 1200,
-      height: 630,
+      width: CANVAS.width,
+      height: CANVAS.height,
       fonts: [{ name: "cal", data: fontCalData, weight: 600 }],
       headers: {
         "cache-control":

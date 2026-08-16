@@ -15,14 +15,14 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   metadataBase: new URL("https://gallery.mxkaske.dev"),
   twitter: {
-    images: [`/api/og/gallery`],
+    images: [`/api/og?title=${TITLE}&description=${DESCRIPTION}`],
     card: "summary_large_image",
     title: TITLE,
     description: DESCRIPTION,
   },
   openGraph: {
     type: "website",
-    images: [`/api/og/gallery`],
+    images: [`/api/og?title=${TITLE}&description=${DESCRIPTION}`],
     title: TITLE,
     description: DESCRIPTION,
   },
