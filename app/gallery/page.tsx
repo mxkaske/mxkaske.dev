@@ -43,19 +43,43 @@ export default function Page() {
         <h1 className="font-cal text-3xl text-foreground">
           Never. Stop. Looking.
         </h1>
-        {/* Uniform row tracks: every row is exactly one track tall, so rows line up
-          no matter what mix of orientations lands in them. Orientation decides
-          only how many columns a tile spans. The cost is a mild crop — uniform
-          height and full-width rows can't both hold while also preserving every
-          aspect ratio. Full frames live on the permalink page. */}
-        <div className="grid auto-rows-[190px] grid-cols-2 gap-3 sm:auto-rows-[210px] sm:grid-cols-4">
+        {/* Tile height comes from the tile's own aspect ratio, not a fixed row
+          track. A constant track height only matches the photo at one viewport
+          width — everywhere else the column has grown or shrunk underneath it,
+          and at two columns on a ~600px screen that turned every portrait into
+          a landscape crop. Declaring the real ratio instead lets the row track
+          follow the column.
+
+          Rows still line up: a mixed row takes the tallest tile's height and
+          `stretch` pulls the rest to match, which `object-cover` absorbs. At two
+          columns the rows are uniform by construction — a pair of verticals, or
+          one full-width horizontal — so those tiles are shown uncropped.
+
+          `dense` backfills the holes. A vertical followed by a horizontal can't
+          share a two-column row, so the horizontal wrapped and left the cell
+          beside the vertical empty; dense pulls a later single-column tile up
+          into it. It's a no-op at four columns, where the set already packs. */}
+        <div className="grid grid-flow-row-dense grid-cols-2 gap-3 sm:grid-cols-4">
           {sortedPhotos.map((photo, index) => {
             const wide = photo.orientation === "horizontal";
             return (
               <Link
                 key={photo.slug}
                 href={photo.url}
-                className={cn("group relative", wide && "col-span-2")}
+                className={cn(
+                  "group relative",
+                  // Only the vertical tile declares a ratio, and that is what
+                  // sizes the row. A grid item with an aspect ratio ignores
+                  // `stretch` on whichever axis is auto — give the wide tile
+                  // `aspect-[3/2]` too and it holds a shorter height than the
+                  // row (ragged bottom edge); pin its height instead and the
+                  // ratio drives the width, overflowing the span. With no ratio
+                  // it stretches on both axes and `object-cover` takes the
+                  // difference. Alone in a row — every horizontal at two
+                  // columns — nothing sets a height, so it falls back to the
+                  // photo's own 3:2.
+                  wide ? "col-span-2" : "aspect-[2/3]",
+                )}
               >
                 <PhotoImage
                   photo={photo}
@@ -69,7 +93,12 @@ export default function Page() {
                 >
                   <div
                     className={cn(
-                      "pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-3 pt-8",
+                      "pointer-events-none absolute inset-x-0 bottom-0 p-3 pt-10",
+                      // A two-stop ramp is already down to ~40% black where the
+                      // title sits, which loses white text against a bright sky
+                      // or a sunlit slope. Extra stops hold the scrim dark
+                      // through both caption lines and only then fall away.
+                      "bg-[linear-gradient(to_top,rgba(0,0,0,0.85)_0%,rgba(0,0,0,0.65)_35%,rgba(0,0,0,0.25)_70%,transparent_100%)]",
                       "translate-y-2 opacity-0 transition-[opacity,transform] duration-300 ease-out motion-reduce:transition-none",
                       "group-hover:translate-y-0 group-hover:opacity-100",
                       // Keyboard users tab to the link, so mirror hover on focus.
@@ -80,10 +109,13 @@ export default function Page() {
                   >
                     {/* One line each — a narrow tile would otherwise wrap the
                       title to three lines and push the overlay up the frame. */}
-                    <p className="truncate font-cal text-sm text-white">
+                    {/* The shadow is the second line of defence: it rides along
+                      with the glyphs, so it still separates them from whatever
+                      detail the scrim alone doesn't flatten. */}
+                    <p className="truncate font-cal text-sm text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.7)]">
                       {photo.title}
                     </p>
-                    <p className="truncate font-mono text-xs font-light text-white/70">
+                    <p className="truncate font-mono text-xs font-light text-white/80 [text-shadow:0_1px_3px_rgba(0,0,0,0.7)]">
                       <span>{photo.location}</span>
                       <span className="mx-1">·</span>
                       <span>{formatDay(new Date(photo.date))}</span>
